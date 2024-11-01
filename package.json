@@ -2,13 +2,15 @@
   "name": "HiTS_FRONT",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-
+  "scripts": {},
+  "devDependencies": {
+    "browser-sync": "^3.0.3",
+    "gulp": "^5.0.0",
+    "gulp-concat": "^2.6.1"
   },
   "dependencies": {
-
-  },
-  "devDependencies": {
-
+    "gulp-clean-css": "^4.3.0",
+    "gulp-less": "^5.0.0",
+    "gulp-plumber": "^1.2.1"
   }
 }
