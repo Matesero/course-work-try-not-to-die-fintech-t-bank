@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="header">
+    <img src="">
+    <p></p>
+    <div class="header__buttons">
+        <button class="header__button" id="patient-button">Пациенты</button>
+        <button class="header__button" id="consultation-button">Консультации</button>
+        <button class="header__button" id="stats-button">Отчеты и статистика</button>
+    </div>
+    <button class="header__button" id="profile-button">Иванов Иван Иванович</button>
+</div>
+<form class="form col-6">
+    <div class="form__header">
+        <p class="form__title">Профиль</p>
+        <button class="img-button" id="edit-button" type="button"></button>
+    </div>
+
+    <div class="form__input-fields">
+        <label>
+            <p class="input-field__label">Имя</p>
+            <input class="input-field" id="name-input" type="text" placeholder="Иванов Иван Иванович" disabled>
+        </label>
+        <div>
+            <label>
+                <p class="input-field__label">Пол</p>
+                <select id="gender-input" class="input-field" disabled>
+                    <option value="Male">Мужской</option>
+                    <option value="Female">Женский</option>
+                </select>
+            </label>
+            <label>
+                <p class="input-field__label">Дата рождения</p>
+                <input class="input-field" id="date-input" type="date" disabled>
+            </label>
+        </div>
+        <label>
+            <p class="input-field__label">Телефон</p>
+            <input class="input-field" id="number-input" type="text" placeholder="+7 (xxx) xxx xx-xx" disabled>
+        </label>
+        <label>
+            <p class="input-field__label">Email</p>
+            <input class="input-field" id="email-input" type="text" placeholder="name@example.com" disabled>
+        </label>
+    </div>
+    <div class="form__buttons">
+        <button class="form__button hidden" id="submit-button" type="button">Сохранить изменения</button>
+    </div>
+</form>
+</body>
+<script type="module" src="./js/header.js"></script>
+<script type="module" src="./js/profilePage.js"></script>
+<script type="module" src="./js/api/index.js"></script>
+</html>

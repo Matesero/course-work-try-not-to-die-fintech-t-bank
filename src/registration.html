@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="header">
+    <img src="">
+    <p></p>
+    <button class="header__button" id="login-button">Вход</button>
+</div>
+<form class="form col-6">
+    <p class="form__title">Регистрация</p>
+    <div class="form__input-fields">
+        <label>
+            <p class="input-field__label">Имя</p>
+            <input class="input-field" id="name-input" type="text" placeholder="Иванов Иван Иванович">
+        </label>
+        <div>
+            <label>
+                <p class="input-field__label">Пол</p>
+                <select id="gender-input" class="input-field">
+                    <option value="Male">Мужской</option>
+                    <option value="Female">Женский</option>
+                </select>
+            </label>
+            <label>
+                <p class="input-field__label">Дата рождения</p>
+                <input class="input-field" id="date-input" type="date">
+            </label>
+        </div>
+        <label>
+            <p class="input-field__label">Телефон</p>
+            <input class="input-field" id="number-input" type="text" placeholder="+7 (xxx) xxx xx-xx">
+        </label>
+        <label>
+            <p class="input-field__label">Специальность</p>
+            <select class="input-field" id="spec-input"></select>
+        </label>
+        <label>
+            <p class="input-field__label">Email</p>
+            <input class="input-field" id="email-input" type="text" placeholder="name@example.com">
+        </label>
+        <label>
+            <p class="input-field__label">Пароль</p>
+            <input class="input-field" id="password-input" type="password">
+        </label>
+    </div>
+    <div class="form__buttons">
+        <button class="form__button" id="submit-button" type="button">Зарегистрироваться</button>
+    </div>
+</form>
+</body>
+<script type="module" src="./js/header.js"></script>
+<script type="module" src="./js/registrationPage.js"></script>
+<script type="module" src="./js/api/doctor.js"></script>
+</html>
