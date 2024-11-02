@@ -40,10 +40,6 @@ function find() {
     const sort = sortInput.value;
     const size = sizeInput.value;
 
-    console.log(scheduled)
-
-    console.log(size)
-
     const params = new URLSearchParams('');
 
     if (name) params.append("name", name);
@@ -54,8 +50,6 @@ function find() {
     params.append("page", pagination.page);
     params.append("size", size);
     const href = `?${params.toString()}`;
-
-    console.log(href)
 
     window.location.href = href;
 }

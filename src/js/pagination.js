@@ -4,15 +4,19 @@ export class Pagination {
     sorting = null;
     scheduledVisits = null;
     onlyMine = null;
+    grouped = null;
+    icdRoots = null;
     page = 1;
     size = 5;
 
-    constructor({ name = null, conclusions = null, sorting = null, scheduledVisits = null, onlyMine = null, page = null, size = null } = {}) {
+    constructor({ name = null, conclusions = null, sorting = null, scheduledVisits = null, onlyMine = null, grouped = null, icdRoots = null, page = null, size = null } = {}) {
         this.name = name;
         this.conclusions = conclusions;
         this.sorting = sorting;
         this.scheduledVisits = scheduledVisits;
         this.onlyMine = onlyMine;
+        this.grouped = grouped;
+        this.icdRoots = icdRoots;
         if (page) this.page = page;
         if (size) this.size = size;
     }
@@ -51,10 +55,12 @@ export function getParams(){
     const sorting = urlParams.get('sorting') || '';
     const scheduledVisits = urlParams.get('scheduledVisits') || '';
     const onlyMine = urlParams.get('onlyMine') || '';
+    const grouped = urlParams.get('grouped') || '';
+    const icdRoots = urlParams.get('icdRoots') || '';
     const page = urlParams.get('page') || '';
     const size = urlParams.get('size') || '';
 
-    console.log(name, conclusions, sorting, scheduledVisits, onlyMine, page, size);
+    console.log(name, conclusions, sorting, scheduledVisits, onlyMine, grouped, page, size);
 
-    return {name, conclusions, sorting, scheduledVisits, onlyMine, page, size};
+    return {name, conclusions, sorting, scheduledVisits, onlyMine, grouped, icdRoots, page, size};
 }

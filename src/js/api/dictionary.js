@@ -37,3 +37,24 @@ export async function getSpecialities({
         console.log(error);
     }
 }
+
+export async function getICDRoots() {
+    let url =  new URL(`${path}/dictionary/icd10/roots`);
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'text/plain',
+            },
+        });
+
+        const data = await response.json(); // используем await для чтения ответа
+
+        console.log(data)
+
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+}

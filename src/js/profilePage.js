@@ -36,13 +36,12 @@ function switchEditing() {
 }
 
 function formatDate(date) {
-    const newDate = new Date(date);
-    const year = newDate.getFullYear();
-    const month = String(newDate.getMonth() + 1).padStart(2, '0'); // Месяцы начинаются с 0
-    const day = String(newDate.getDate()).padStart(2, '0');
+    const parts = date.split('T');
+    const datePart = parts[0];
 
-    return `${year}-${month}-${day}`;
+    return datePart;
 }
+
 
 async function setProfileData(request = true) {
     if (request) {
