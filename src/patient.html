@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="header">
+    <img src="">
+    <p></p>
+    <button class="header__button" id="login-button">Вход</button>
+</div>
+<div class="container">
+    <div class="container__head">
+        <div>
+            <p>Медицинская карта пациента</p>
+            <button class="head__button" id="add-consultation-button">Добавить осмотр</button>
+        </div>
+        <div>
+            <div>
+                <p class="patient__name" id="patient-name"></p>
+                <img class="gender-icon" id="gender-icon">
+            </div>
+            <div>
+                <p class="patient__birthday">Дата рождения</p>
+                <p class="patient__birthday" id="patient-birthday"></p>
+            </div>
+        </div>
+    </div>
+    <form class="container__filters" id="filters">
+        <div class="filters__row">
+            <label for="mkb-select" class="input-field__label">МКБ-10</label>
+            <select id="mkb-select" class="input-field">
+                <option value="" disabled selected>Выбрать</option>
+            </select>
+            <label class="radio-option">
+                <input type="radio" name="grouped" id="grouped" value=true />
+                <span>Сгруппировать по повторным</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="grouped" value=false checked />
+                <span>Показать все</span>
+            </label>
+        </div>
+        <div class="filters__row">
+            <label>
+                <p class="input-field__label">Число осмотров на странице</p>
+                <select id="size-input" class="input-field">
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                </select>
+            </label>
+            <div class="form__buttons">
+                <button class="form__button" id="submit-button">Поиск</button>
+            </div>
+        </div>
+    </form>
+    <div class="container__list"></div>
+    <div class="pagination" id="pagination-container"></div>
+</div>
+</body>
+
+<script type="module" src="/js/patientPage.js"></script>
+<script type="module" src="/js/header.js"></script>
+
+</html>

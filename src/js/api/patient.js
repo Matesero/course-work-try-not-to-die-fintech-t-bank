@@ -82,3 +82,71 @@ export async function postPatient(name, birthday, gender){
         console.log(error)
     }
 }
+
+export async function getInspections({id, grouped, icdRoots, page, size} = {}){
+
+    console.log(id, grouped, icdRoots, page, size)
+    const token = getCookie('jwt');
+
+    if (!token){
+        return false;
+    }
+
+    let url = new URL(`${path}/patient/${id}/inspections`);
+
+    const params = {
+        name,
+        grouped,
+        icdRoots,
+        page,
+        size
+    };
+
+    Object.entries(params).forEach(([key, value]) => {
+        if (value) {
+            url.searchParams.append(key, value);
+        }
+    });
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'text/plain',
+                'Authorization': `Bearer ${token}`,
+            }
+        })
+
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function getPatient(id){
+    const token = getCookie('jwt');
+
+    if (!token){
+        return false;
+    }
+
+    let url = new URL(`${path}/patient/${id}`);
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'text/plain',
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+
+        const data = await response.json();
+
+        return data;
+    } catch (error) {
+        console.log(error)
+    }
+}
