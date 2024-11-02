@@ -9,12 +9,18 @@ const paths = {
     styles: {
         src: 'src/less/**/*.less',
         dest: 'src/css'
-    }
+    },
+    html: './src/*.html'
 };
 
 function styles() {
     return gulp.src(paths.styles.src)
-      .pipe(plumber({ errorHandler: function(err) {  }}))
+      .pipe(plumber({
+          errorHandler: function (err) {
+              console.error(err.message);
+              this.emit('end');
+          }
+      }))
       .pipe(less())
       .pipe(concat('style.css'))
       .pipe(cleanCSS())
@@ -25,11 +31,23 @@ function styles() {
 function serve() {
     browserSync.init({
         server: {
-            baseDir: './src'
+            baseDir: './src',
+            middleware: [
+                function (req, res, next) {
+                    const url = req.url;
+                    const regex = new RegExp('^/patient/[0-9a-fA-F-]{36}/?');
+
+                    if (url.match(regex)) {
+                        req.url = '/patient.html';
+                    }
+                    next();
+                },
+            ]
         }
     });
+
     gulp.watch(paths.styles.src, styles);
-    gulp.watch('./src/*.html').on('change', browserSync.reload);
+    gulp.watch(paths.html).on('change', browserSync.reload);
 }
 
 exports.styles = styles;
