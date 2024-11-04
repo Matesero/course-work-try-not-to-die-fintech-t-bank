@@ -1,3 +1,5 @@
+import {formatDate} from "./patient.js";
+
 export function renderInspection(date, conclusion, diagnosis, doctor) {
     const inspectionDiv = document.createElement('div');
     inspectionDiv.className = 'inspection';
@@ -13,7 +15,7 @@ export function renderInspection(date, conclusion, diagnosis, doctor) {
 
     const dateP = document.createElement('p');
     dateP.className = 'inspection__date';
-    dateP.textContent = date; // Set the date
+    dateP.textContent = formatDate(date);
 
     const labelP = document.createElement('p');
     labelP.className = 'inspection__label';
@@ -26,25 +28,41 @@ export function renderInspection(date, conclusion, diagnosis, doctor) {
     buttonsDiv.className = 'head__buttons';
 
     const addButton = document.createElement('button');
-    addButton.className = 'inspection-button';
+    addButton.className = 'inspection__button';
     addButton.innerHTML = `<img class="button__img"> Добавить осмотр`;
 
     const detailsButton = document.createElement('button');
-    detailsButton.className = 'inspection-button';
+    detailsButton.className = 'inspection__button';
     detailsButton.innerHTML = `<img class="button__img"> Детали осмотра`;
 
-    buttonsDiv.appendChild(addButton);
+    if (conclusion !== "Death") {
+        buttonsDiv.appendChild(addButton);
+    }
+
     buttonsDiv.appendChild(detailsButton);
 
     headDiv.appendChild(rowDiv);
     headDiv.appendChild(buttonsDiv);
 
     const infoDiv = document.createElement('div');
-    infoDiv.className = 'inspection__info column';
+    infoDiv.className = 'inspection__info';
 
-    const conclusionDiv = createInfoElement('Заключение', conclusion);
-    const diagnosisDiv = createInfoElement('Основной диагноз', `${diagnosis.name} (${diagnosis.code})`);
-    const doctorDiv = createInfoElement('Медицинский работник', doctor);
+    let newConclusion = '';
+    switch (conclusion) {
+        case "Death":
+            newConclusion = "смерть";
+            break;
+        case "Disease":
+            newConclusion = "болезнь";
+            break;
+        case "Recovery":
+            newConclusion = "выздоровление";
+            break;
+    }
+
+    const conclusionDiv = createInfoElement('Заключение:', newConclusion);
+    const diagnosisDiv = createInfoElement('Основной диагноз:', `${diagnosis.name} (${diagnosis.code})`);
+    const doctorDiv = createInfoElement('Медицинский работник:', doctor);
 
     infoDiv.appendChild(conclusionDiv);
     infoDiv.appendChild(diagnosisDiv);
@@ -58,15 +76,24 @@ export function renderInspection(date, conclusion, diagnosis, doctor) {
 
 function createInfoElement(label, value) {
     const info = document.createElement('div');
-    info.className = 'info';
+    info.className = 'inspection-info';
 
     const labelP = document.createElement('p');
-    labelP.className = 'info__label';
+    labelP.className = 'inspection-info__label';
     labelP.textContent = label;
 
     const valueP = document.createElement('p');
-    valueP.className = 'info__value';
+    valueP.className = 'inspection-info__value';
     valueP.textContent = value;
+
+    if (label === "Медицинский работник:") {
+        labelP.classList.add('doctor');
+        valueP.classList.add('doctor');
+    }
+
+    if (value === "смерть") {
+        valueP.classList.add('death');
+    }
 
     info.appendChild(labelP);
     info.appendChild(valueP);

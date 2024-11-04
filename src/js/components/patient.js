@@ -21,10 +21,10 @@ export function renderPatient(id, name, gender, birthday) {
     genderDiv.className = "info__gender";
     const genderLabel = document.createElement('p');
     genderLabel.className = "info__label";
-    genderLabel.textContent = "Пол - ";
+    genderLabel.textContent = "Пол – ";
     const genderValue = document.createElement('p');
     genderValue.className = "info__value";
-    genderValue.textContent = gender;
+    genderValue.textContent = gender === "Male" ? " Мужчина" : " Женщина";
     genderDiv.appendChild(genderLabel);
     genderDiv.appendChild(genderValue);
 
@@ -32,10 +32,11 @@ export function renderPatient(id, name, gender, birthday) {
     birthdayDiv.className = "info__birthday";
     const birthdayLabel = document.createElement('p');
     birthdayLabel.className = "info__label";
-    birthdayLabel.textContent = "Дата рождения - ";
+    birthdayLabel.textContent = "Дата рождения – ";
     const birthdayValue = document.createElement('p');
     birthdayValue.className = "info__value";
-    birthdayValue.textContent = birthday;
+    birthdayValue.textContent = formatDate(birthday);
+
     birthdayDiv.appendChild(birthdayLabel);
     birthdayDiv.appendChild(birthdayValue);
 
@@ -51,11 +52,30 @@ export function renderPatient(id, name, gender, birthday) {
 
 export async function reg(event) {
     event.preventDefault();
-    event.target.classList.add('hidden')
 
     const name = nameInput.value;
     const gender = genderInput.value;
     const birthday = birthdayInput.value;
 
+    resetFields();
+
     await postPatient(name, birthday, gender);
+}
+
+
+export function resetFields() {
+    nameInput.value = '';
+    genderInput.value = "Male";
+    birthdayInput.value = '';
+    document.getElementById('register-form').classList.add('hidden');
+    document.getElementById('registration-background').classList.add('hidden');
+}
+
+export function formatDate(dateString) {
+    const parts = dateString.split('T');
+    const datePart = parts[0];
+
+    const [year, month, day] = datePart.split('-');
+
+    return `${day}.${month}.${year}`;
 }
