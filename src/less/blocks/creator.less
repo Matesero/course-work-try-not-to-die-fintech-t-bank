@@ -1,0 +1,51 @@
+.creator {
+  display: flex;
+  flex-direction: column;
+  .adaptive-width(30vh, 30vw);
+  .adaptive-gap(1vh, 0.5vw);
+  margin: auto;
+
+  &__head {
+
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    background: @lightGray;
+    border-radius: 0.25vh;
+    .adaptive-gap(1vh, 0.75vw);
+    .adaptive-padding(1vh, 1vw, 0.2vw);
+  }
+}
+
+.section {
+  &__label {
+    .adaptive-font-size(1vh, 1vw);
+    color: @darkSea;
+    font-weight: bold;
+    line-height: 1;
+    margin: 0;
+  }
+
+  &__input {
+
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__button {
+    width: fit-content;
+    border: none;
+    color: @white;
+    cursor: pointer;
+    background: @tuftsBlue;
+    .adaptive-border-radius(0.2vh, 0.2vw);
+    .adaptive-font-size(1vh, 0.9vw);
+    .adaptive-padding(0.75vh, 0.75vw, 0.25vw);
+  }
+}

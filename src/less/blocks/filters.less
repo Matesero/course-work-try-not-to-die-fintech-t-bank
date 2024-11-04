@@ -1,0 +1,51 @@
+.filters {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: fit-content;
+  background: @lightGray;
+  border-radius: 1vh;
+  .adaptive-gap(1vh, 0.5vw);
+  .adaptive-padding(2vh, 1vw, 0vw);
+  margin: auto;
+
+  &__title {
+    .adaptive-font-size(1.5vh, 1.5vw);
+    font-weight: bold;
+    margin: 0;
+    line-height: 1;
+  }
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+
+    > * {
+      width: 49%;
+    }
+
+    &.bottom {
+      > * {
+        .adaptive-width(15vh, 15vw);;
+        height: auto;
+      }
+    }
+  }
+
+  &__input-fields {
+    display: flex;
+    flex-direction: column;
+    .adaptive-gap(1.1vh, 0.8vw);
+  }
+
+  &.registration, &.profile {
+    width: fit-content;
+    z-index: 2;
+  }
+
+  &.hidden {
+    display: none;
+  }
+}

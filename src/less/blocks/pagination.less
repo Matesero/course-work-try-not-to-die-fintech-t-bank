@@ -2,23 +2,33 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-}
+  .adaptive-gap(1vh, 1vw);
 
-.pagination button {
-  padding: 8px 12px;
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+  &__button {
+    .adaptive-padding(0.5vh, 0.5vw, 0.21vw);
+    .adaptive-font-size(1vh, 1vw);
+    text-decoration: none;
+    border: 0.15vh solid #ddd;
+    color: black;
+    .adaptive-border-radius(0.25vh, 0.25vw);
+    cursor: pointer;
+    transition: background-color 0.3s;
 
-.pagination .active {
-  background-color: #4CAF50;
-  color: white;
-  border-color: #4CAF50;
+    &.active {
+      border: 0.15vh solid @tuftsBlue;
+      color: @tuftsBlue;
+    }
+
+    &:hover {
+      background-color: @lightGray;
+    }
+
+    &.disabled {
+      color: @gray;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
 }
 
 .pagination button:hover {

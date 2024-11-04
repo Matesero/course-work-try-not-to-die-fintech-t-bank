@@ -1,0 +1,23 @@
+.adaptive-font-size(@vh-value, @vw-value){
+  font-size: calc((@vh-value + @vw-value) / 2);
+}
+
+.adaptive-width(@vh-value, @vw-value){
+  width: calc((@vh-value + @vw-value) / 2);
+}
+
+.adaptive-height(@vh-value, @vw-value){
+  height: calc(((@vh-value + @vw-value) / 2));
+}
+
+.adaptive-padding(@vh-value, @vw-value, @diff){
+  padding: calc(((@vh-value + @vw-value) / 2)) calc(((@vh-value + @vw-value) / 2) + @diff) ;
+}
+
+.adaptive-gap(@vh-value, @vw-value){
+  gap: calc(((@vh-value + @vw-value) / 2));
+}
+
+.adaptive-border-radius(@vh-value, @vw-value){
+  border-radius: calc(((@vh-value + @vw-value) / 2));
+}

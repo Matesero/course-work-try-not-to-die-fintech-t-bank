@@ -1,0 +1,42 @@
+.patient {
+  width: 49%;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+
+  height: fit-content;
+  .adaptive-padding(1.3vh, 1vw, 0.3vw);
+  background: @lightGray;
+  border-radius: 0.5vh;
+
+  &__name {
+    .adaptive-font-size(1vh, 1vw);
+    font-weight: bold;
+    line-height: 1;
+    margin-top: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    .adaptive-gap(0.3vh, 0.3vw);
+  }
+}
+
+.info {
+  &__label, &__value {
+    .adaptive-font-size(1vh, 1vw);
+    color: @darkGray;
+    margin: 0;
+  }
+
+  &__value {
+    color: black;
+  }
+
+  &__gender, &__birthday {
+    display: flex;
+    .adaptive-gap(0.25vh, 0.25vw);
+  }
+}
