@@ -1,6 +1,7 @@
 import {getInspections, getPatient} from "./api/patient.js";
 import {getParams, Pagination} from "./pagination.js";
 import {renderInspection} from "./components/inspection.js";
+import {formatDate} from "./components/patient.js";
 
 window.addEventListener('DOMContentLoaded', () => {
     onload();
@@ -24,18 +25,14 @@ function getPatientId() {
     return parts[2];
 }
 
-function formatDate(dateString) {
-    const parts = dateString.split('T');
-    const datePart = parts[0];
-
-    const [year, month, day] = datePart.split('-');
-
-    return `${day}.${month}.${year}`;
-}
-
 function setData(name, gender, birthday) {
     patientName.textContent = name;
+
+    console.log(birthday)
+
     patientBirthday.textContent = formatDate(birthday);
+
+    console.log(patientBirthday.textContent)
 
     if (gender === 'Male') {
         genderIcon.src = "/public/imgs/male.png"
@@ -55,7 +52,6 @@ async function onload() {
     setData(name, gender, birthday)
 
     inspections.forEach(({ date, conclusion, diagnosis, doctor}) => {
-        console.log(diagnosis)
         const inspection = renderInspection(date, conclusion, diagnosis, doctor);
         containerList.appendChild(inspection);
     })

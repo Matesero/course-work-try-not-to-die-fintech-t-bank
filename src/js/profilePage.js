@@ -24,6 +24,7 @@ function switchEditing() {
         numberInput.disabled = false;
         emailInput.disabled = false;
         submitBtn.classList.remove('hidden');
+        editBtn.textContent="Отмена";
     } else {
         nameInput.disabled = true;
         genderInput.disabled = true;
@@ -31,6 +32,7 @@ function switchEditing() {
         numberInput.disabled = true;
         emailInput.disabled = true;
         submitBtn.classList.add('hidden');
+        editBtn.textContent="Редактировать";
         setProfileData(false);
     }
 }

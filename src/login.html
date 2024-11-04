@@ -4,30 +4,38 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="header">
-    <img src="">
-    <p></p>
-    <button class="header__button" id="login-button">Вход</button>
+<div class="container">
+    <div class="header row row-1">
+        <div class="header__img col-1"></div>
+        <div class="styled-text col-2">
+            Try not to<br><strong>DIE</strong>
+        </div>
+        <div class="col-21"></div>
+        <button class="header__button col-1" id="login-button">Вход</button>
+    </div>
 </div>
-<form class="form col-6">
-    <p class="form__title">Вход</p>
-    <div class="form__input-fields">
-        <label>
-            <p class="input-field__label">Email</p>
-            <input class="input-field" id="email-input" type="text" placeholder="name@example.com">
-        </label>
-        <label>
-            <p class="input-field__label">Пароль</p>
-            <input class="input-field" id="password-input" type="password">
-        </label>
-    </div>
-    <div class="form__buttons">
-        <button class="form__button" id="submit-button" type="button">Войти</button>
-        <button class="form__button" id="register" type="button">Регистрация</button>
-    </div>
-</form>
+<div class="main-content">
+    <form class="form">
+        <p class="form__title">Вход</p>
+        <div class="form__input-fields">
+            <label>
+                <p class="input-field__label">Email</p>
+                <input class="input-field" id="email-input" type="text" placeholder="name@example.com">
+            </label>
+            <label>
+                <p class="input-field__label">Пароль</p>
+                <input class="input-field" id="password-input" type="password">
+            </label>
+        </div>
+        <div class="form__buttons">
+            <button class="form__button submit" id="submit-button" type="button">Войти</button>
+            <button class="form__button" id="register" type="button">Регистрация</button>
+        </div>
+    </form>
+</div>
 </body>
 <script type="module" src="./js/header.js"></script>
 <script type="module" src="./js/loginPage.js"></script>

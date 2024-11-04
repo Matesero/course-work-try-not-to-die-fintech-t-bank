@@ -1,6 +1,6 @@
 import {getPatients} from "./api/patient.js";
 import {Pagination, getParams} from "./pagination.js";
-import {reg, renderPatient} from "./components/patient.js";
+import {reg, renderPatient, resetFields} from "./components/patient.js";
 
 const registerForm = document.getElementById('register-form');
 const nameInput = document.getElementById('name-input');
@@ -11,6 +11,8 @@ const sortInput = document.getElementById('sort-input');
 const sizeInput = document.getElementById('size-input');
 const registerBtn = document.getElementById('register-patient-button');
 const findBtn = document.getElementById('submit-button');
+const registrationBG = document.getElementById('registration-background');
+
 let pagination = new Pagination()
 
 window.onload = async function () {
@@ -31,6 +33,8 @@ window.onload = async function () {
 findBtn.addEventListener('click', () => find());
 registerBtn.addEventListener('click', () => register());
 registerForm.addEventListener('submit', (event) => reg(event));
+registrationBG.addEventListener('click', () => resetFields());
+
 
 function find() {
     const name = nameInput.value;
@@ -47,7 +51,7 @@ function find() {
     if (sort) params.append("sorting", sort);
     if (scheduled) params.append("scheduledVisits", scheduled);
     if (onlyMine) params.append("onlyMine", onlyMine);
-    params.append("page", pagination.page);
+    params.append("page", "1");
     params.append("size", size);
     const href = `?${params.toString()}`;
 
@@ -56,4 +60,5 @@ function find() {
 
 function register() {
     registerForm.classList.remove('hidden');
+    registrationBG.classList.remove('hidden');
 }

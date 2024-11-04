@@ -4,55 +4,59 @@
     <meta charset="UTF-8">
     <title>Profile</title>
     <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="header">
-    <img src="">
-    <p></p>
-    <div class="header__buttons">
-        <button class="header__button" id="patient-button">Пациенты</button>
-        <button class="header__button" id="consultation-button">Консультации</button>
-        <button class="header__button" id="stats-button">Отчеты и статистика</button>
+<div class="container">
+    <div class="header row row-1">
+        <div class="header__img col-1"></div>
+        <div class="styled-text col-2">
+            Try not to<br><strong>DIE</strong>
+        </div>
+        <div class="col-1"></div>
+        <button class="header__button col-1" id="patients-button">Пациенты</button>
+        <button class="header__button col-2" id="consultations-button">Консультации</button>
+        <button class="header__button col-2" id="stats-button">Отчеты и статистика</button>
+        <div class="col-19"></div>
+        <button class="header__button col-1" id="login-button">Вход</button>
     </div>
-    <button class="header__button" id="profile-button">Иванов Иван Иванович</button>
 </div>
-<form class="form col-6">
-    <div class="form__header">
+<div class="main-content">
+    <form class="form profile">
         <p class="form__title">Профиль</p>
-        <button class="img-button" id="edit-button" type="button"></button>
-    </div>
-
-    <div class="form__input-fields">
-        <label>
-            <p class="input-field__label">Имя</p>
-            <input class="input-field" id="name-input" type="text" placeholder="Иванов Иван Иванович" disabled>
-        </label>
-        <div>
+        <div class="form__input-fields">
             <label>
-                <p class="input-field__label">Пол</p>
-                <select id="gender-input" class="input-field" disabled>
-                    <option value="Male">Мужской</option>
-                    <option value="Female">Женский</option>
-                </select>
+                <p class="input-field__label">Имя</p>
+                <input class="input-field" id="name-input" type="text" placeholder="Иванов Иван Иванович" disabled>
+            </label>
+            <div class="form__row">
+                <label>
+                    <p class="input-field__label">Пол</p>
+                    <select id="gender-input" class="input-field" disabled>
+                        <option value="Male">Мужской</option>
+                        <option value="Female">Женский</option>
+                    </select>
+                </label>
+                <label>
+                    <p class="input-field__label">Дата рождения</p>
+                    <input class="input-field" id="date-input" type="date" disabled>
+                </label>
+            </div>
+            <label>
+                <p class="input-field__label">Телефон</p>
+                <input class="input-field" id="number-input" type="text" placeholder="+7 (xxx) xxx xx-xx" disabled>
             </label>
             <label>
-                <p class="input-field__label">Дата рождения</p>
-                <input class="input-field" id="date-input" type="date" disabled>
+                <p class="input-field__label">Email</p>
+                <input class="input-field" id="email-input" type="text" placeholder="name@example.com" disabled>
             </label>
         </div>
-        <label>
-            <p class="input-field__label">Телефон</p>
-            <input class="input-field" id="number-input" type="text" placeholder="+7 (xxx) xxx xx-xx" disabled>
-        </label>
-        <label>
-            <p class="input-field__label">Email</p>
-            <input class="input-field" id="email-input" type="text" placeholder="name@example.com" disabled>
-        </label>
-    </div>
-    <div class="form__buttons">
-        <button class="form__button hidden" id="submit-button" type="button">Сохранить изменения</button>
-    </div>
-</form>
+        <div class="form__buttons">
+            <button class="form__button submit hidden" id="submit-button" type="button">Сохранить изменения</button>
+            <button class="form__button" id="edit-button" type="button">Редактировать</button>
+        </div>
+    </form>
+</div>
 </body>
 <script type="module" src="./js/header.js"></script>
 <script type="module" src="./js/profilePage.js"></script>
