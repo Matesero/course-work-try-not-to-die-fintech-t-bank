@@ -1,10 +1,23 @@
 .header {
   background: @darkSea;
+  height: 45px;
+
+  &__img {
+    scale: 0.7;
+
+    background: url("@{img}scull.png") center no-repeat;
+    background-size: contain;
+  }
 
   &__button {
+    font-size: 12px;
     background: none;
     border: none;
     color: white;
     cursor: pointer;
+
+    & + & {
+      margin-left: 12px;
+    }
   }
 }

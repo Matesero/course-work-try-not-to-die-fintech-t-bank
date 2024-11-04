@@ -15,3 +15,6 @@ export function navigateToProfile() {
 export function navigateToPatientCard(id) {
     window.location.href = `${path}/patient/${id}`;
 }
+export function navigateToPatients() {
+    window.location.href = `${path}/patients.html`;
+}
