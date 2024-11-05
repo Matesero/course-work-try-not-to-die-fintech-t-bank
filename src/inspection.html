@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="container-header">
+    <div class="header row-1">
+        <div class="header__img col-3"></div>
+        <div class="styled-text col-3">
+            Try not to<br><strong>DIE</strong>
+        </div>
+        <div class="row col-12">
+            <button class="header__button hidden" id="patients-button">Пациенты</button>
+            <button class="header__button hidden" id="consultations-button">Консультации</button>
+            <button class="header__button hidden" id="stats-button">Отчеты и статистика</button>
+        </div>
+        <div class="col-27"></div>
+        <button class="header__button col-7" id="login-button">Вход</button>
+        <button class="header__button col-4" id="user-button"></button>
+        <div class="user-menu hidden" id="userMenu">
+            <button class="user-menu__item" id="profile-button">Профиль</button>
+            <button class="user-menu__item" id="logout-button">Выход</button>
+        </div>
+    </div>
+</div>
+<div class="main-content">
+    <div class="container">
+        <form class="full-inspection">
+            <div class="full-inspection__head">
+                <div class="full-inspection__head__label">
+                    <p class="full-inspection__label" id="inspection-date"></p>
+                    <button class="container__button" id="edit-inspection-button">Редактировать осмотр</button>
+                </div>
+                <div class="inspection__info">
+                    <div class="inspection-info">
+                        <p class="inspection-info__label bold">Пациент:</p>
+                        <p class="inspection-info__value bold" id="patient-name"></p>
+                    </div>
+                    <div class="inspection-info">
+                        <p class="inspection-info__label">Пол:</p>
+                        <p class="inspection-info__value" id="patient-gender"></p>
+                    </div>
+                    <div class="inspection-info">
+                        <p class="inspection-info__label">Дата рождения:</p>
+                        <p class="inspection-info__value" id="patient-birthday"></p>
+                    </div>
+                    <div class="inspection-info">
+                        <p class="inspection-info__label doctor">Медицинский работник:</p>
+                        <p class="inspection-info__value doctor" id="doctor-name"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="full-inspection__section">
+                <p class="section__label">Жалобы</p>
+                <p class="inspection-info__value" id="complaint"></p>
+            </div>
+            <div class="full-inspection__section">
+                <p class="section__label">Анамнез заболевания</p>
+                <p class="inspection-info__value" id="amnesia"></p>
+            </div>
+            <div class="full-inspection__section">
+                <p class="section__label">Рекомендации по лечению</p>
+                <p class="inspection-info__value" id="recommendations"></p>
+            </div>
+            <div class="full-inspection__section">
+                <p class="section__label">Диагнозы</p>
+                <div class="diagnoses-list"></div>
+            </div>
+            <div class="full-inspection__section">
+                <p class="section__label">Заключение</p>
+                <p class="inspection-info__value bold" id="conclusion"></p>
+                <div class="inspection-info hidden" id="conclusion-date">
+                    <p class="inspection-info__label"></p>
+                    <p class="inspection-info__value"></p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script type="module" src="/js/header.js"></script>
+<script type="module" src="/js/inspectionPage.js"></script>
+</html>

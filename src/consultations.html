@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -30,24 +30,13 @@
 <div class="main-content">
     <div class="container">
         <div class="container__head">
-            <p class="container__title">Медицинская карта пациента</p>
-            <button class="container__button" id="add-consultation-button">Добавить осмотр</button>
-        </div>
-        <div class="container__head">
-            <div>
-                <p class="patient__name" id="patient-name"></p>
-                <img class="gender-icon" id="gender-icon">
-            </div>
-            <div>
-                <p class="patient__birthday">Дата рождения:</p>
-                <p class="patient__birthday" id="patient-birthday"></p>
-            </div>
+            <p class="container__title">Консультации</p>
         </div>
         <form class="filters" id="filters">
             <div class="filters__row">
                 <label>
                     <p class="input-field__label">МКБ-10</p>
-                    <select id="mkb-select" class="input-field">
+                    <select id="mkb-input" class="input-field">
                         <option value="" disabled selected>Выбрать</option>
                     </select>
                 </label>
@@ -81,7 +70,8 @@
     </div>
 </div>
 </body>
-
-<script type="module" src="/js/patientPage.js"></script>
-<script type="module" src="/js/header.js"></script>
+<script type="module" src="./js/pagination.js"></script>
+<script type="module" src="./js/header.js"></script>
+<script type="module" src="./js/consultationsPage.js"></script>
+<script type="module" src="./js/api/doctor.js"></script>
 </html>

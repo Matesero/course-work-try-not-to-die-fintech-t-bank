@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<div class="container-header">
+    <div class="header row-1">
+        <div class="header__img col-3"></div>
+        <div class="styled-text col-3">
+            Try not to<br><strong>DIE</strong>
+        </div>
+        <div class="row col-12">
+            <button class="header__button hidden" id="patients-button">Пациенты</button>
+            <button class="header__button hidden" id="consultations-button">Консультации</button>
+            <button class="header__button hidden" id="stats-button">Отчеты и статистика</button>
+        </div>
+        <div class="col-27"></div>
+        <button class="header__button col-7" id="login-button">Вход</button>
+        <button class="header__button col-4" id="user-button"></button>
+        <div class="user-menu hidden" id="userMenu">
+            <button class="user-menu__item" id="profile-button">Профиль</button>
+            <button class="user-menu__item" id="logout-button">Выход</button>
+        </div>
+    </div>
+</div>
+<div class="main-content">
+    <div class="container">
+        <div class="container__head">
+            <p class="container__title">Создание осмотра</p>
+        </div>
+        <form class="creator">
+            <div class="creator__head">
+                <div>
+                    <p class="patient__name" id="patient-name"></p>
+                    <img class="gender-icon" id="gender-icon">
+                </div>
+                <div>
+                    <p class="patient__birthday">Дата рождения:</p>
+                    <p class="patient__birthday" id="patient-birthday"></p>
+                </div>
+                <div class="switch-container">
+                    <p class="switch__label">Первичный осмотр</p>
+                    <label class="switch">
+                        <input type="checkbox" id="first-inspection-input">
+                        <span class="slider"></span>
+                    </label>
+                    <p class="switch__label">Повторный осмотр</p>
+                </div>
+                <label>
+                    <p class="input-field__label">Дата осмотра</p>
+                    <input class="input-field" id="date-input" type="date">
+                </label>
+            </div>
+            <div class="creator__section">
+                <p class="section__label">Жалобы</p>
+                <input class="input-field" id="complaint-input" type="text">
+            </div>
+            <div class="creator__section">
+                <p class="section__label">Анамнез заболевания</p>
+                <input class="input-field" id="amnesia-input" type="text">
+            </div>
+            <div class="creator__section">
+                <p class="section__label">Консультация</p>
+                <div class="section__row">
+                    <label class="switch">
+                        <input type="checkbox" id="inspection-required-input">
+                        <span class="slider"></span>
+                    </label>
+                    <p class="switch__label">Требуется консультация</p>
+                </div>
+                <label>
+                    <p class="input-field__label">Комментарий</p>
+                    <input class="input-field" id="anamnesis-input" type="text">
+                </label>
+                <button class="section__button" id="add-consultation">Добавить консультацию</button>
+            </div>
+            <div class="creator__section">
+                <p class="section__label">Диагнозы</p>
+            </div>
+            <div class="creator__section">
+                <p class="section__label">Рекомендации по лечению</p>
+                <input class="input-field" id="recommendations-input" type="text">
+            </div>
+            <div class="creator__section">
+                <p class="section__label">Заключение</p>
+                <div class="section__row">
+                    <label>
+                        <p class="input-field__label">Заключение</p>
+                        <select id="conclusions-input" class="input-field">
+                            <option value="" selected disabled>Выберите заключение</option>
+                            <option value="Recovery">Выздоровление</option>
+                            <option value="Disease">Болезнь</option>
+                            <option value="Death">Смерть</option>
+                        </select>
+                    </label>
+                    <label class="hidden">
+                        <p class="input-field__label">Дата следующего визита</p>
+                        <input class="input-field" id="next-date-input" type="date">
+                    </label>
+                </div>
+            </div>
+            <div class="creator__buttons">
+                <button class="creator__button">Сохранить осмотр</button>
+                <button class="creator__button cancel" id="cancel-button">Отмена</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script type="module" src="./js/header.js"></script>
+<script type="module" src="./js/components/patient.js"></script>
+</html>
