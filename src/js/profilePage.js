@@ -1,4 +1,6 @@
-import { getProfile, putProfile } from "./api/index.js";
+import {checkAuth, getProfile, putProfile} from "./api/index.js";
+import {navigateToLogin} from "./router.js";
+import {validate} from "./validator.js";
 
 const editBtn = document.getElementById('edit-button');
 const submitBtn = document.getElementById("submit-button");
@@ -8,7 +10,13 @@ const birthdayInput = document.getElementById('date-input');
 const numberInput = document.getElementById('number-input');
 const emailInput = document.getElementById('email-input');
 
-document.addEventListener('DOMContentLoaded', () => setProfileData());
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!checkAuth()) {
+        navigateToLogin();
+    }
+    await setProfileData()
+});
+
 editBtn.addEventListener('click', () => switchEditing());
 submitBtn.addEventListener('click', () => onSubmitClick());
 
@@ -24,6 +32,7 @@ function switchEditing() {
         numberInput.disabled = false;
         emailInput.disabled = false;
         submitBtn.classList.remove('hidden');
+        editBtn.classList.remove('edit');
         editBtn.textContent="Отмена";
     } else {
         nameInput.disabled = true;
@@ -32,6 +41,7 @@ function switchEditing() {
         numberInput.disabled = true;
         emailInput.disabled = true;
         submitBtn.classList.add('hidden');
+        editBtn.classList.add('edit');
         editBtn.textContent="Редактировать";
         setProfileData(false);
     }
@@ -75,6 +85,11 @@ function getDataFromInputs() {
 
 async function onSubmitClick() {
     const { name, email, birthday, gender, phone } = getDataFromInputs();
+
+    if (!validate(phone, 'phone')) {
+        return;
+    }
+
     await putProfile(name, email, birthday, gender, phone);
     profile = await getProfile();
     switchEditing();

@@ -1,6 +1,8 @@
 import {getPatients} from "./api/patient.js";
 import {Pagination, getParams} from "./pagination.js";
 import {reg, renderPatient, resetFields} from "./components/patient.js";
+import {checkAuth} from "./api/index.js";
+import {navigateToLogin} from "./router.js";
 
 const registerForm = document.getElementById('register-form');
 const nameInput = document.getElementById('name-input');
@@ -16,6 +18,9 @@ const registrationBG = document.getElementById('registration-background');
 let pagination = new Pagination()
 
 window.onload = async function () {
+    if (!checkAuth()) {
+        navigateToLogin();
+    }
     const params = getParams();
     pagination = new Pagination(params);
     sizeInput.value = pagination.size;

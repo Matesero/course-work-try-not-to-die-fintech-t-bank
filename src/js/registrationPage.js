@@ -1,4 +1,5 @@
 import {getSpecialities, postRegister} from "./api/index.js";
+import {validate} from "./validator.js";
 
 const nameInput = document.getElementById('name-input');
 const genderInput = document.getElementById('gender-input');
@@ -45,5 +46,10 @@ async function onSubmit() {
         phone,
         speciality
     } = getDataFromInputs();
+
+    if (!validate(phone, 'phone')) {
+        return;
+    }
+
     await postRegister(name, password, email, birthday, gender, phone, speciality);
 }

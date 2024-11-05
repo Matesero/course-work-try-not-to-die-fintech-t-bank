@@ -1,55 +1,28 @@
-import {getInspections, getPatient} from "./api/patient.js";
 import {getParams, Pagination} from "./pagination.js";
 import {renderInspection} from "./components/inspection.js";
-import {formatDate} from "./components/patient.js";
 import {checkAuth} from "./api/index.js";
 import {navigateToLogin} from "./router.js";
+import {getConsultations} from "./api/consultation.js";
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
     if (!checkAuth()) {
         navigateToLogin();
     }
-    onload();
+    await onload();
 })
 
 const filtersForm = document.getElementById('filters');
 const mkbInput = document.getElementById('mkb-select');
 const groupedInput = document.getElementById('grouped');
 const sizeInput = document.getElementById('size-input');
-const patientName = document.getElementById('patient-name');
-const genderIcon = document.getElementById('gender-icon');
-const patientBirthday = document.getElementById('patient-birthday');
 const containerList = document.querySelector('.container__list');
 
 filtersForm.addEventListener('submit', (event) => submit(event));
 
-function getPatientId() {
-    const urlPath = window.location.pathname;
-    const parts = urlPath.split('/');
-    return parts[2];
-}
-
-function setData(name, gender, birthday) {
-    patientName.textContent = name;
-
-    patientBirthday.textContent = formatDate(birthday);
-
-    if (gender === 'Male') {
-        genderIcon.src = "/public/imgs/male.png"
-    } else {
-        genderIcon.src = "/public/imgs/female.png"
-    }
-}
-
 async function onload() {
-    const patientId = getPatientId();
     const { grouped, icdRoots, page, size} = getParams();
     const paginat = new Pagination({ grouped, icdRoots, page, size });
-    const { inspections, pagination } = await getInspections({ id: patientId, grouped, icdRoots, page, size });
-
-    const { name, gender, birthday } = await getPatient(patientId);
-
-    setData(name, gender, birthday)
+    const { inspections, pagination } = await getConsultations({ grouped, icdRoots, page, size });
 
     inspections.forEach(({id, date, conclusion, diagnosis, doctor}) => {
         const inspection = renderInspection(id, date, conclusion, diagnosis, doctor);
@@ -61,7 +34,8 @@ async function onload() {
 
 function submit(event){
     event.preventDefault()
-    const mkb = mkbInput.value;
+
+    const mkb = null;
     const grouped = groupedInput.checked;
     const size = sizeInput.value;
 

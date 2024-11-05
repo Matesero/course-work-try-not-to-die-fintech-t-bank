@@ -1,5 +1,11 @@
-import { postLogin } from "./api/index.js";
-import { navigateToRegistration } from "./router.js";
+import {checkAuth, getCookie, postLogin} from "./api/index.js";
+import {navigateToPatients, navigateToRegistration} from "./router.js";
+
+window.addEventListener('DOMContentLoaded', () => {
+    if (checkAuth()) {
+        navigateToPatients();
+    }
+})
 
 const submitBtn = document.getElementById("submit-button");
 const registerBtn = document.getElementById("register");
