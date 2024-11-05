@@ -1,4 +1,5 @@
-import { getCookie, path } from "./index.js";
+import {getCookie, handleResponseStatus, path} from "./index.js";
+import {navigateToLogin} from "../router.js";
 
 export async function postLogin(email, password) {
     const url = new URL(`${path}/doctor/login`);
@@ -19,8 +20,6 @@ export async function postLogin(email, password) {
 
         const data = await response.json();
         const token = data.token;
-
-        console.log(token)
 
         if (token) {
             document.cookie = `jwt=${token}; path=/;`;
@@ -73,12 +72,33 @@ export async function postRegister(
     }
 }
 
-export async function getProfile(){
+export async function logout() {
     const token = getCookie('jwt');
 
-    if (!token){
-        return false;
+    let url =  `${path}/doctor/logout`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Accept': 'text/plain',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+
+        document.cookie = "jwt=; expires=Thu, 07 Apr 2005 00:00:00 UTC; path=/;";
+        navigateToLogin();
+    } catch (error) {
+        handleResponseStatus(error);
     }
+}
+
+export async function getProfile(){
+    const token = getCookie('jwt');
 
     let url =  `${path}/doctor/profile`;
 
@@ -91,13 +111,15 @@ export async function getProfile(){
             },
         });
 
-        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
 
-        console.log(data)
+        const data = await response.json();
 
         return data;
     } catch (error) {
-        console.log(error);
+        handleResponseStatus(error);
     }
 }
 

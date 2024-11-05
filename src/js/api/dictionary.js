@@ -28,7 +28,7 @@ export async function getSpecialities({
             },
         });
 
-        const data = await response.json(); // используем await для чтения ответа
+        const data = await response.json();
 
         console.log(data)
 
@@ -49,7 +49,7 @@ export async function getICDRoots() {
             },
         });
 
-        const data = await response.json(); // используем await для чтения ответа
+        const data = await response.json();
 
         console.log(data)
 

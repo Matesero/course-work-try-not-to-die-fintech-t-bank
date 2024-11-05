@@ -1,4 +1,4 @@
-import { getCookie, path } from "./index.js";
+import {getCookie, handleResponseStatus, path} from "./index.js";
 
 export async function getPatients({
     name = null,
@@ -15,7 +15,7 @@ export async function getPatients({
     if (!token){
         return false;
     }
-    console.log(token);
+
     let url = new URL(`${path}/patient`);
 
     const params = {
@@ -43,11 +43,15 @@ export async function getPatients({
             }
         })
 
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+
         const data = await response.json();
 
         return data;
     } catch (error) {
-        console.log(error)
+        handleResponseStatus(error)
     }
 }
 
@@ -57,7 +61,7 @@ export async function postPatient(name, birthday, gender){
     if (!token){
         return false;
     }
-    console.log(token);
+
     let url = new URL(`${path}/patient`);
 
     try {
@@ -84,8 +88,6 @@ export async function postPatient(name, birthday, gender){
 }
 
 export async function getInspections({id, grouped, icdRoots, page, size} = {}){
-
-    console.log(id, grouped, icdRoots, page, size)
     const token = getCookie('jwt');
 
     if (!token){
