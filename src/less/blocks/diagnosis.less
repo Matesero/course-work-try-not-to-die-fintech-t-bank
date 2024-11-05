@@ -1,0 +1,17 @@
+.diagnosis {
+  display: flex;
+  flex-direction: column;
+  .adaptive-gap(0.5vh, 0.5vw);
+
+  &__label {
+    .adaptive-font-size(0.8vh, 0.8vw);
+    margin: 0;
+    font-weight: 600;
+  }
+
+  &__info {
+    .adaptive-font-size(0.8vh, 0.8vw);
+    color: @darkGray;
+    margin: 0;
+  }
+}

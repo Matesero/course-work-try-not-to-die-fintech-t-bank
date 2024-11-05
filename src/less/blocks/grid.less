@@ -1,7 +1,7 @@
-@columns: 25;
-@rows: 25;
-@grid-width: 3840px;
-@grid-height: 2160px;
+@columns: 50;
+@rows: 50;
+@grid-width: 100vw;
+@grid-height: 100vh;
 
 .grid(@columns, @i: 1) when (@i <= @columns) {
   .col-@{i} {
@@ -27,6 +27,7 @@
 
 .row {
   display: flex;
+  justify-content: center;
 }
 
 .grid(@columns);
