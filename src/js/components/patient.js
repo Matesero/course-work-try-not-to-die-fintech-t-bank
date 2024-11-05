@@ -71,8 +71,12 @@ export function resetFields() {
     document.getElementById('registration-background').classList.add('hidden');
 }
 
-export function formatDate(dateString) {
-    const parts = dateString.split('T');
+export function formatDate(date) {
+    if (!date) {
+        return 'without birthday';
+    }
+
+    const parts = date.split('T');
     const datePart = parts[0];
 
     const [year, month, day] = datePart.split('-');

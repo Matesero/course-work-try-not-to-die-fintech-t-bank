@@ -35,11 +35,17 @@ function serve() {
             middleware: [
                 function (req, res, next) {
                     const url = req.url;
-                    const regex = new RegExp('^/patient/[0-9a-fA-F-]{36}/?');
+                    const patientRegex = new RegExp('^/patient/[0-9a-fA-F-]{36}/?');
+                    const inspectionRegex = new RegExp('^/inspection/[0-9a-fA-F-]{36}/?')
 
-                    if (url.match(regex)) {
+                    if (url.match(patientRegex)) {
                         req.url = '/patient.html';
                     }
+
+                    if (url.match(inspectionRegex)) {
+                        req.url = '/inspection.html';
+                    }
+
                     next();
                 },
             ]

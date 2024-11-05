@@ -1,8 +1,10 @@
 import {formatDate} from "./patient.js";
+import {navigateToInspection} from "../router.js";
 
-export function renderInspection(date, conclusion, diagnosis, doctor) {
+export function renderInspection(id, date, conclusion, diagnosis, doctor) {
     const inspectionDiv = document.createElement('div');
     inspectionDiv.className = 'inspection';
+    inspectionDiv.addEventListener('click', () => navigateToInspection(id));
 
     if (conclusion === "Death") {
         inspectionDiv.classList.add('death');
@@ -92,7 +94,7 @@ function createInfoElement(label, value) {
     }
 
     if (value === "смерть") {
-        valueP.classList.add('death');
+        valueP.classList.add('bold');
     }
 
     info.appendChild(labelP);
