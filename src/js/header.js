@@ -1,4 +1,10 @@
-import {navigateToConsultations, navigateToLogin, navigateToPatients, navigateToProfile} from "./router.js";
+import {
+    navigateToConsultations,
+    navigateToLogin,
+    navigateToPatients,
+    navigateToProfile,
+    navigateToReports
+} from "./router.js";
 import {checkAuth, getProfile} from "./api/index.js";
 import {logout} from "./api/doctor.js";
 
@@ -6,7 +12,7 @@ const loginBtn = document.getElementById('login-button');
 const userBtn = document.getElementById('user-button');
 const patientsBtn = document.getElementById('patients-button');
 const consultationsBtn = document.getElementById('consultations-button');
-const statsBtn = document.getElementById('stats-button');
+const reportsBtn = document.getElementById('stats-button');
 const userMenu = document.getElementById('userMenu');
 const profileBtn = document.getElementById('profile-button');
 const logoutBtn = document.getElementById('logout-button');
@@ -19,7 +25,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         consultationsBtn.classList.remove('hidden');
         consultationsBtn.addEventListener('click', () => navigateToConsultations());
 
-        statsBtn.classList.remove('hidden');
+        reportsBtn.classList.remove('hidden');
+        reportsBtn.addEventListener('click', () => navigateToReports());
 
         const { name } = await getProfile();
         userBtn.textContent = name;

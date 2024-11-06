@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="container-header">
+    <div class="header row-1">
+        <div class="header__img col-3"></div>
+        <div class="styled-text col-3">
+            Try not to<br><strong>DIE</strong>
+        </div>
+        <div class="row col-12">
+            <button class="header__button hidden" id="patients-button">Пациенты</button>
+            <button class="header__button hidden" id="consultations-button">Консультации</button>
+            <button class="header__button hidden" id="stats-button">Отчеты и статистика</button>
+        </div>
+        <div class="col-27"></div>
+        <button class="header__button col-7" id="login-button">Вход</button>
+        <button class="header__button col-4" id="user-button"></button>
+        <div class="dropdown usermenu hidden" id="userMenu">
+            <button class="dropdown__item" id="profile-button">Профиль</button>
+            <button class="dropdown__item" id="logout-button">Выход</button>
+        </div>
+    </div>
+</div>
+<div class="main-content">
+    <form class="form reports" id="form">
+        <p class="form__title">Статистика осмотров</p>
+        <div class="form__input-fields row">
+            <label>
+                <p class="input-field__label">Дата с</p>
+                <input class="input-field" id="start-date" type="date">
+            </label>
+            <label>
+                <p class="input-field__label">Дата по</p>
+                <input class="input-field" id="end-date" type="date">
+            </label>
+            <label>
+                <p class="input-field__label">МКБ-10</p>
+                <div class="input-list icdRoots reports" id="select-icdRoots">Выбрать</div>
+                <div class="dropdown reports input hidden" id="icdRoots"></div>
+            </label>
+        </div>
+        <div class="form__buttons">
+            <button class="form__button submit" id="submit-button">Сохранить сводку</button>
+        </div>
+    </form>
+    <div class="table-container hidden">
+        <table id="table"></table>
+    </div>
+</div>
+</body>
+<script type="module" src="./js/header.js"></script>
+<script type="module" src="./js/reportsPage.js"></script>
+</html>
