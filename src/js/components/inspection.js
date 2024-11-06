@@ -26,8 +26,9 @@ export async function renderInspection({id, date, conclusion, diagnosis, doctor,
 
     if (hasNested && grouped) {
         const openBtn = document.createElement('button');
-        openBtn.classList.add('inspection-chain__open');
+        openBtn.classList.add('inspection-chain__button');
         openBtn.classList.add('closed');
+        openBtn.textContent = '+';
 
         openBtn.addEventListener('click', () => {
             if (openBtn.classList.contains('closed')) {
@@ -36,6 +37,9 @@ export async function renderInspection({id, date, conclusion, diagnosis, doctor,
                 nested.forEach((next) => {
                     next.classList.remove('hidden');
                 })
+
+                openBtn.textContent = '–';
+
             } else {
                 for (let i = copyNumber + 1; i <= 3; i++){
                     const nested = inspectionDiv.parentNode.querySelectorAll(`.chain-${i}`);
@@ -45,6 +49,8 @@ export async function renderInspection({id, date, conclusion, diagnosis, doctor,
                         if (nextBtn) nextBtn.classList.add('closed');
                         next.classList.add('hidden');
                     })
+
+                    openBtn.textContent = '+';
                 }
             }
             openBtn.classList.toggle('closed');
