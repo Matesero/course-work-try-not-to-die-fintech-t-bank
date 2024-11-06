@@ -71,8 +71,8 @@ async function onload() {
 
     setData(name, gender, birthday)
 
-    for (const {id, date, conclusion, diagnosis, doctor} of inspections) {
-        const inspection = await renderInspection(id, date, conclusion, diagnosis, doctor);
+    for (const data of inspections) {
+        const inspection = await renderInspection(data, params.grouped);
         containerList.appendChild(inspection);
     }
 
