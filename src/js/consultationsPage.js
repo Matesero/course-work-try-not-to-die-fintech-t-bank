@@ -24,7 +24,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 async function onload() {
     const params = getParams();
 
-    console.log(params)
     setPaginationData(params)
 
     const paginationPage = new Pagination(params);
@@ -43,10 +42,10 @@ async function onload() {
     dropdown.addNewOptions(options, valueOptions, selectedOptions);
     dropdown.setSelected(params.icdRoots)
 
-    inspections.forEach(({id, date, conclusion, diagnosis, doctor}) => {
-        const inspection = renderInspection(id, date, conclusion, diagnosis, doctor);
+    for (const data of inspections) {
+        const inspection = await renderInspection(data, params.grouped);
         containerList.appendChild(inspection);
-    })
+    }
 
     paginationPage.createPagination(pagination.count)
 }

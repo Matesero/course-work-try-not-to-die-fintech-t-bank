@@ -39,8 +39,6 @@ export async function getConsultations({grouped, icdRoots, page, size} = {}){
 
         const data = await response.json();
 
-        console.log(data)
-
         return data;
     } catch (error) {
         console.log(error)

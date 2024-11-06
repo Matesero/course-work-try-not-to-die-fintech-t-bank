@@ -10,15 +10,18 @@ export function renderDiagnosis({code, name, type, description}) {
     const infoDiv = document.createElement('div');
     const typeParagraph = document.createElement('p');
     typeParagraph.className = "diagnosis__info";
+
     switch (type) {
         case "Main": {
             typeParagraph.textContent = `Тип в осмотре: Основной`;
             break;
         }
+
         case "Concomitant": {
             typeParagraph.textContent = `Тип в осмотре: Сопутствующий`;
             break;
         }
+
         case "Complication": {
             typeParagraph.textContent = `Тип в осмотре: Осложнение`;
             break;
@@ -33,6 +36,6 @@ export function renderDiagnosis({code, name, type, description}) {
     infoDiv.appendChild(descParagraph);
     diagnosisDiv.appendChild(infoDiv);
 
-    const containerList = document.querySelector('.diagnoses-list');
+    const containerList = document.querySelector('.diagnosis-list');
     containerList.appendChild(diagnosisDiv);
 }

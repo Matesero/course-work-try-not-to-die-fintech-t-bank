@@ -32,7 +32,6 @@ function getInspectionId() {
 async function onLoad() {
     const inspectionId = getInspectionId();
     const inspection = await getInspection(inspectionId)
-    console.log(inspection);
 
     setPatientData(inspection.date ,inspection.patient, inspection.doctor)
     setInspectionData(inspection);
@@ -41,10 +40,12 @@ async function onLoad() {
 function setPatientData(date, {id, name, birthday, gender}, {name: doctor}) {
     const formatDate = formatsDateWithTime(date);
     inspectionDate.textContent = `Амбулаторный осмотр от ${formatDate}`;
+
     patientName.textContent = name;
     patientName.addEventListener('click', () => {
         navigateToPatientCard(id);
     })
+
     gender === "Male" ? patientGender.textContent = "мужской" : "женский";
     patientBirthday.textContent = formatsDateWithoutTime(birthday);
     doctorName.textContent = doctor;
@@ -53,7 +54,7 @@ function setPatientData(date, {id, name, birthday, gender}, {name: doctor}) {
 function setInspectionData({complaints, anamnesis, diagnoses, consultations, treatment, conclusion, nextVisitDate, deathDate,}) {
     complaint.textContent = complaints;
     amnesia.textContent = anamnesis;
-    recommendations.textContent = treatment;
+    recommendations.textContent = treatment
 
     switch (conclusion) {
         case "Death":
@@ -62,12 +63,14 @@ function setInspectionData({complaints, anamnesis, diagnoses, consultations, tre
             conclusionDate.querySelector('.inspection-info__label').textContent = "Дата и время смерти:"
             conclusionDate.querySelector('.inspection-info__value').textContent = formatsDateWithTime(deathDate);
             break;
+
         case "Disease":
             conclusionP.textContent = "Болезнь";
             conclusionDate.classList.remove('hidden');
             conclusionDate.querySelector('.inspection-info__label').textContent = "Дата следующего визита:"
             conclusionDate.querySelector('.inspection-info__value').textContent = formatsDateWithTime(nextVisitDate);
             break;
+
         case "Recovery":
             conclusionP.textContent = "Выздоровление";
     }

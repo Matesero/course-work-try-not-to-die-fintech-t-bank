@@ -37,6 +37,41 @@ function serve() {
                     const url = req.url;
                     const patientRegex = new RegExp('^/patient/[0-9a-fA-F-]{36}/?');
                     const inspectionRegex = new RegExp('^/inspection/[0-9a-fA-F-]{36}/?')
+                    const registrationRegex = new RegExp('^/registration/?');
+                    const loginRegex = new RegExp('^/login/?');
+                    const profileRegex = new RegExp('^/profile/?');
+                    const patientsRegex = new RegExp('^/patients/?');
+                    const consultationsRegex = new RegExp('^/consultations/?');
+                    const reportsRegex = new RegExp('^/reports/?');
+                    const createRegex = new RegExp('^/create/?');
+
+                    if (url.match(createRegex)) {
+                        req.url = '/create.html';
+                    }
+
+                    if (url.match(reportsRegex)) {
+                        req.url = '/reports.html';
+                    }
+
+                    if (url.match(consultationsRegex)) {
+                        req.url = '/consultations.html';
+                    }
+
+                    if (url.match(patientsRegex)) {
+                        req.url = url.replace(patientsRegex, '/patients.html');
+                    }
+
+                    if (url.match(registrationRegex)) {
+                        req.url = '/registration.html'
+                    }
+
+                    if (url.match(loginRegex)) {
+                        req.url = '/login.html'
+                    }
+
+                    if (url.match(profileRegex)) {
+                        req.url = '/profile.html'
+                    }
 
                     if (url.match(patientRegex)) {
                         req.url = '/patient.html';

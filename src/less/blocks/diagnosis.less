@@ -1,17 +1,22 @@
+.diagnosis-list {
+  display: flex;
+  flex-direction: column;
+  .adaptive-gap(0.75vh, 0.75w);
+}
+
 .diagnosis {
   display: flex;
   flex-direction: column;
-  .adaptive-gap(0.5vh, 0.5vw);
 
   &__label {
     .adaptive-font-size(0.8vh, 0.8vw);
-    margin: 0;
     font-weight: 600;
+    line-height: 0;
   }
 
   &__info {
     .adaptive-font-size(0.8vh, 0.8vw);
     color: @darkGray;
-    margin: 0;
+    line-height: 0;
   }
 }

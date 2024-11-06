@@ -7,8 +7,6 @@ import {Dropdown} from "./dropdown.js";
 
 const registerForm = document.getElementById('register-form');
 const nameInput = document.getElementById('name-input');
-const conclusionsInput = document.getElementById('select-conclusions');
-const conclusionsDropdown = document.getElementById('conclusions');
 const scheduledInput = document.getElementById('scheduled-visits-input');
 const onlyMineInput = document.getElementById('only-mine-input');
 const sortInput = document.getElementById('sort-input');

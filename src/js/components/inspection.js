@@ -1,10 +1,19 @@
 import {formatDate} from "./patient.js";
+import {getInspectionChain} from "../api/inspection.js";
 import {navigateToInspection} from "../router.js";
 
-export function renderInspection(id, date, conclusion, diagnosis, doctor) {
+export async function renderInspection({id, date, conclusion, diagnosis, doctor, hasChain, hasNested} = {}, grouped,number = 1) {
+    const containerDiv = document.createElement('div');
+    containerDiv.className = 'inspection-chain';
+
     const inspectionDiv = document.createElement('div');
     inspectionDiv.className = 'inspection';
-    inspectionDiv.addEventListener('click', () => navigateToInspection(id));
+    inspectionDiv.id = id;
+
+    if ((number !== 1 || hasNested) && grouped){
+        inspectionDiv.classList.add(`chain-${number}`);
+    }
+    const copyNumber = number;
 
     if (conclusion === "Death") {
         inspectionDiv.classList.add('death');
@@ -14,6 +23,35 @@ export function renderInspection(id, date, conclusion, diagnosis, doctor) {
     headDiv.className = 'inspection__head';
     const rowDiv = document.createElement('div');
     rowDiv.className = 'row';
+
+    if (hasNested && grouped) {
+        const openBtn = document.createElement('button');
+        openBtn.classList.add('inspection-chain__open');
+        openBtn.classList.add('closed');
+
+        openBtn.addEventListener('click', () => {
+            if (openBtn.classList.contains('closed')) {
+                const nested = inspectionDiv.parentNode.querySelectorAll(`.chain-${copyNumber + 1}`);
+
+                nested.forEach((next) => {
+                    next.classList.remove('hidden');
+                })
+            } else {
+                for (let i = copyNumber + 1; i <= 3; i++){
+                    const nested = inspectionDiv.parentNode.querySelectorAll(`.chain-${i}`);
+
+                    nested.forEach((next) => {
+                        const nextBtn = next.querySelector('.inspection-chain__open');
+                        if (nextBtn) nextBtn.classList.add('closed');
+                        next.classList.add('hidden');
+                    })
+                }
+            }
+            openBtn.classList.toggle('closed');
+        })
+        openBtn.type = "button";
+        rowDiv.appendChild(openBtn);
+    }
 
     const dateP = document.createElement('p');
     dateP.className = 'inspection__date';
@@ -29,17 +67,17 @@ export function renderInspection(id, date, conclusion, diagnosis, doctor) {
     const buttonsDiv = document.createElement('div');
     buttonsDiv.className = 'head__buttons';
 
-    const addButton = document.createElement('button');
-    addButton.className = 'inspection__button';
-    addButton.innerHTML = `<img class="button__img"> Добавить осмотр`;
+    if ((!grouped || !hasNested) && conclusion !== "Death") {
+        const addButton = document.createElement('button');
+        addButton.className = 'inspection__button';
+        addButton.innerHTML = `<img class="button__img"> Добавить осмотр`;
+        buttonsDiv.appendChild(addButton);
+    }
 
     const detailsButton = document.createElement('button');
     detailsButton.className = 'inspection__button';
     detailsButton.innerHTML = `<img class="button__img"> Детали осмотра`;
-
-    if (conclusion !== "Death") {
-        buttonsDiv.appendChild(addButton);
-    }
+    detailsButton.addEventListener('click',  () => navigateToInspection(id));
 
     buttonsDiv.appendChild(detailsButton);
 
@@ -73,7 +111,25 @@ export function renderInspection(id, date, conclusion, diagnosis, doctor) {
     inspectionDiv.appendChild(headDiv);
     inspectionDiv.appendChild(infoDiv);
 
-    return inspectionDiv;
+    if (hasChain && grouped) {
+        containerDiv.appendChild(inspectionDiv);
+
+        inspectionDiv.classList.add(`chain-${number}`);
+        const nextInspections = await getInspectionChain(id);
+
+        for (const inspection of nextInspections) {
+            const next = await renderInspection(inspection, grouped, number === 3 ? number : number + 1);
+            next.classList.add('hidden');
+            number++;
+            containerDiv.appendChild(next);
+        }
+    }
+
+    if (hasChain && grouped) {
+        return containerDiv;
+    } else {
+        return inspectionDiv;
+    }
 }
 
 function createInfoElement(label, value) {

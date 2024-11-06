@@ -71,10 +71,11 @@ async function onload() {
 
     setData(name, gender, birthday)
 
-    inspections.forEach(({id, date, conclusion, diagnosis, doctor}) => {
-        const inspection = renderInspection(id, date, conclusion, diagnosis, doctor);
+    for (const {id, date, conclusion, diagnosis, doctor} of inspections) {
+        const inspection = await renderInspection(id, date, conclusion, diagnosis, doctor);
         containerList.appendChild(inspection);
-    })
+    }
+
 
     paginationPage.createPagination(pagination.count)
 }
