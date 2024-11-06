@@ -60,13 +60,13 @@ function setInspectionData({complaints, anamnesis, diagnoses, consultations, tre
             conclusionP.textContent = "Умер";
             conclusionDate.classList.remove('hidden');
             conclusionDate.querySelector('.inspection-info__label').textContent = "Дата и время смерти:"
-            conclusionDate.querySelector('.inspection-info__value').textContent = formatsDate(deathDate);
+            conclusionDate.querySelector('.inspection-info__value').textContent = formatsDateWithTime(deathDate);
             break;
         case "Disease":
             conclusionP.textContent = "Болезнь";
             conclusionDate.classList.remove('hidden');
             conclusionDate.querySelector('.inspection-info__label').textContent = "Дата следующего визита:"
-            conclusionDate.querySelector('.inspection-info__value').textContent = formatsDate(nextVisitDate);
+            conclusionDate.querySelector('.inspection-info__value').textContent = formatsDateWithTime(nextVisitDate);
             break;
         case "Recovery":
             conclusionP.textContent = "Выздоровление";
