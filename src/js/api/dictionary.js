@@ -36,8 +36,6 @@ export async function getSpecialities({
 
         const data = await response.json();
 
-        console.log(data)
-
         return data;
     } catch (error) {
         console.log(error);
@@ -75,8 +73,6 @@ export async function getICD({ request = null, page, size } = {}) {
 
         const data = await response.json();
 
-        console.log(data)
-
         return data;
     } catch (error) {
         console.log(error);
@@ -95,8 +91,6 @@ export async function getICDRoots() {
         });
 
         const data = await response.json();
-
-        console.log(data)
 
         return data;
     } catch (error) {

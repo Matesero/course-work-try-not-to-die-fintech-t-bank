@@ -148,7 +148,7 @@ export class Dropdown {
         }
 
         if (!this.selected.length) {
-            list.textContent = 'Выберите заключение';
+            list.textContent = 'Выберите';
             return;
         }
 
@@ -165,15 +165,6 @@ export class Dropdown {
             selectDiv.appendChild(valueP);
 
             list.appendChild(selectDiv);
-        })
-    }
-
-    clearSelected() {
-        this.selected = [];
-        const list = document.getElementById(this.id);
-
-        list.childNodes.forEach((child) => {
-            child.classList.remove('selected');
         })
     }
 }

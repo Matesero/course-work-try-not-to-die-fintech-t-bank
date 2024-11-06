@@ -1,9 +1,9 @@
-import {getParams, Pagination, setPaginationData} from "./pagination.js";
+import {getParams, Pagination, setPaginationData} from "./classes/pagination.js";
 import {renderInspection} from "./components/inspection.js";
 import {checkAuth} from "./api/index.js";
 import {navigateToLogin} from "./router.js";
 import {getConsultations} from "./api/consultation.js";
-import {Dropdown} from "./dropdown.js";
+import {Dropdown} from "./classes/dropdown.js";
 import {getICDRoots} from "./api/dictionary.js";
 
 const filtersForm = document.getElementById('filters');

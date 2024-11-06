@@ -47,7 +47,6 @@ export class Pagination {
         const numberedPage = Number(this.page);
 
         for (let i = start - 1; i <= end + 1; i++) {
-            console.log(params.toString())
             const copyParams = new URLSearchParams(params.toString());
             const pageBtn = renderPaginationButton(copyParams, i, numberedPage, this.size, pageCount, start, end);
             if (i === numberedPage && start + end !== 1) pageBtn.classList.add("active");

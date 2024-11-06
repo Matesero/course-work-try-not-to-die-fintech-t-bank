@@ -1,9 +1,9 @@
 import {getPatients} from "./api/patient.js";
-import {Pagination, getParams, setPaginationData} from "./pagination.js";
+import {Pagination, getParams, setPaginationData} from "./classes/pagination.js";
 import {reg, renderPatient, resetFields} from "./components/patient.js";
 import {checkAuth} from "./api/index.js";
 import {navigateToLogin} from "./router.js";
-import {Dropdown} from "./dropdown.js";
+import {Dropdown} from "./classes/dropdown.js";
 
 const registerForm = document.getElementById('register-form');
 const nameInput = document.getElementById('name-input');

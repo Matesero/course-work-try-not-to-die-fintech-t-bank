@@ -1,6 +1,6 @@
 import {checkAuth} from "./api/index.js";
 import {navigateToLogin} from "./router.js";
-import {Dropdown} from "./dropdown.js";
+import {Dropdown} from "./classes/dropdown.js";
 import {getICDRoots} from "./api/dictionary.js";
 import {getReports} from "./api/report.js";
 

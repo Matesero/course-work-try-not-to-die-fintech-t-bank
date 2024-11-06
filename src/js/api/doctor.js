@@ -132,10 +132,6 @@ export async function putProfile(
 ) {
     const token = getCookie('jwt');
 
-    if (!token){
-        return false;
-    }
-
     const url = `${path}/doctor/profile`;
 
     try {

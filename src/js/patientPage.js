@@ -1,10 +1,10 @@
 import {getInspections, getPatient} from "./api/patient.js";
-import {getParams, Pagination, setPaginationData} from "./pagination.js";
+import {getParams, Pagination, setPaginationData} from "./classes/pagination.js";
 import {renderInspection} from "./components/inspection.js";
 import {formatDate} from "./components/patient.js";
 import {checkAuth} from "./api/index.js";
 import {navigateToCreate, navigateToLogin} from "./router.js";
-import {Dropdown} from "./dropdown.js";
+import {Dropdown} from "./classes/dropdown.js";
 import {getICDRoots} from "./api/dictionary.js";
 
 const filtersForm = document.getElementById('filters');

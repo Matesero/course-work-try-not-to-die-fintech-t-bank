@@ -86,3 +86,32 @@ label {
   display: flex;
   justify-content: space-between;
 }
+
+.radio {
+  &-option {
+    display: flex;
+    flex-direction: row;
+    .adaptive-gap(0.25vh, 0.25vw);
+
+    & + & > {
+      margin-right: calc((5vh + 5vw) / 2);
+    }
+  }
+
+  &-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    height: calc((2.8vh + 2.8vw) / 2);
+    padding: calc((.35vh + .35vw) / 2) calc(((.35vh + .35vw) / 2) + 0vw);
+    font-size: calc((1.25vh + 1.25vw) / 2);
+    width: 100%;
+    opacity: .75;
+  }
+
+  &__label {
+    .adaptive-font-size(1.5vh, 1.5vw);
+  }
+}
