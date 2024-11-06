@@ -21,9 +21,9 @@
         <div class="col-27"></div>
         <button class="header__button col-7" id="login-button">Вход</button>
         <button class="header__button col-4" id="user-button"></button>
-        <div class="user-menu hidden" id="userMenu">
-            <button class="user-menu__item" id="profile-button">Профиль</button>
-            <button class="user-menu__item" id="logout-button">Выход</button>
+        <div class="dropdown usermenu hidden" id="userMenu">
+            <button class="dropdown__item" id="profile-button">Профиль</button>
+            <button class="dropdown__item" id="logout-button">Выход</button>
         </div>
     </div>
 </div>
@@ -68,25 +68,25 @@
                 </label>
                 <label>
                     <p class="input-field__label">Имеющиеся заключения</p>
-                    <select id="conclusions-input" class="input-field">
-                        <option value="" selected disabled>Выберите заключение</option>
-                        <option value="Recovery">Выздоровление</option>
-                        <option value="Disease">Болезнь</option>
-                        <option value="Death">Смерть</option>
-                    </select>
+                    <div class="input-list" id="select-conclusions">Выберите заключения</div>
+                    <div class="dropdown patients-conclusions input hidden" id="conclusions"></div>
                 </label>
             </div>
             <div class="filters__row">
-                <label class="switch">
-                    <input type="checkbox" id="scheduled-visits-input">
-                    <span class="slider"></span>
-                </label>
-                <p>Есть запланированные визиты</p>
-                <label class="switch">
-                    <input type="checkbox" id="only-mine-input">
-                    <span class="slider"></span>
-                </label>
-                <p>Мои пациенты</p>
+                <div class="switch-box">
+                    <label class="switch">
+                        <input type="checkbox" id="scheduled-visits-input">
+                        <span class="slider"></span>
+                    </label>
+                    <p class="switch__label">Есть запланированные визиты</p>
+                </div>
+                <div class="switch-box">
+                    <label class="switch">
+                        <input type="checkbox" id="only-mine-input">
+                        <span class="slider"></span>
+                    </label>
+                    <p class="switch__label">Мои пациенты</p>
+                </div>
                 <label>
                     <p class="input-field__label">Сортировка пациентов</p>
                     <select id="sort-input" class="input-field">
@@ -121,8 +121,8 @@
     </div>
 </div>
 </body>
-<script type="module" src="./js/pagination.js"></script>
 <script type="module" src="./js/header.js"></script>
+<script type="module" src="./js/pagination.js"></script>
 <script type="module" src="./js/patientsPage.js"></script>
 <script type="module" src="./js/api/doctor.js"></script>
 <script type="module" src="./js/components/patient.js"></script>

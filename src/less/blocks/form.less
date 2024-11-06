@@ -32,6 +32,11 @@
     display: flex;
     flex-direction: column;
     .adaptive-gap(1.1vh, 0.8vw);
+
+    &.row {
+      display: flex;
+      flex-direction: row;
+    }
   }
 
   &__buttons {
@@ -68,6 +73,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+
+  &.reports {
+    width: fit-content;
+    z-index: 2;
+    margin: 0;
+    margin-top: calc((1.5vh + 1.5vw) / 2);
   }
 
   &__background {

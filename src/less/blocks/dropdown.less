@@ -1,0 +1,67 @@
+.dropdown {
+  position: absolute;
+  background-color: @white;
+  border: calc((0.15vh + 0.15vw) / 2) solid @darkGray;
+  .adaptive-border-radius(0.5vh, 0.5vw);
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  z-index: 1;
+
+  &.usermenu {
+    .adaptive-width(12vh, 12vw);
+    height: fit-content;
+    top: calc((3vh + 3vw) / 2);
+    right: calc((1.5vh + 1.5vw) / 2);
+  }
+
+  &.patients-conclusions {
+    .adaptive-width(50vh, 50vw);
+    top: calc((19.1vh + 19.1vw) / 2);
+    right: calc((16.9vh + 16.9vw) / 2);
+  }
+
+  &.icdRoots,
+  &.reports {
+    .adaptive-width(50vh, 50vw);
+    .adaptive-height(15vh, 15vw);
+    top: calc((19.85vh + 19.85vw) / 2);
+    left: calc((16.85vh + 16.85vw) / 2);
+  }
+
+  &.reports {
+    .adaptive-width(46.5vh, 46.5vw);
+    top: calc((14.75vh + 14.75vw) / 2);
+    left: calc((57.1vh + 57.1vw) / 2);
+  }
+
+  &__item {
+    .adaptive-font-size(1vh, 1vw);
+    .adaptive-padding(0.4vh, 0.4vw, 0.1vw);
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    background: none;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+
+    &.selected {
+      background: @tuftsBlue;
+      color: @white;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.hidden {
+  display: none;
+}
