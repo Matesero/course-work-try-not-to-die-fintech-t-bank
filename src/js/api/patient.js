@@ -12,10 +12,6 @@ export async function getPatients({
 ){
     const token = getCookie('jwt');
 
-    if (!token){
-        return false;
-    }
-
     let url = new URL(`${path}/patient`);
 
     const params = {
@@ -30,7 +26,13 @@ export async function getPatients({
 
     Object.entries(params).forEach(([key, value]) => {
         if (value) {
-            url.searchParams.append(key, value);
+            if (Array.isArray(value)) {
+                value.forEach((param) => {
+                    url.searchParams.append(key, param);
+                })
+            } else {
+                url.searchParams.append(key, value);
+            }
         }
     });
 
@@ -90,6 +92,8 @@ export async function postPatient(name, birthday, gender){
 export async function getInspections({id, grouped, icdRoots, page, size} = {}){
     const token = getCookie('jwt');
 
+    console.log(icdRoots)
+
     if (!token){
         return false;
     }
@@ -106,7 +110,13 @@ export async function getInspections({id, grouped, icdRoots, page, size} = {}){
 
     Object.entries(params).forEach(([key, value]) => {
         if (value) {
-            url.searchParams.append(key, value);
+            if (Array.isArray(value)) {
+                value.forEach((param) => {
+                    url.searchParams.append(key, param);
+                })
+            } else {
+                url.searchParams.append(key, value);
+            }
         }
     });
 

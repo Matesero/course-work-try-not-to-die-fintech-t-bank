@@ -1,6 +1,6 @@
 export class Pagination {
     name = null;
-    conclusions = null;
+    conclusions = [];
     sorting = null;
     scheduledVisits = null;
     onlyMine = null;
@@ -9,7 +9,7 @@ export class Pagination {
     page = 1;
     size = 5;
 
-    constructor({ name = null, conclusions = null, sorting = null, scheduledVisits = null, onlyMine = null, grouped = null, icdRoots = null, page = null, size = null } = {}) {
+    constructor({ name = null, conclusions = [], sorting = null, scheduledVisits = null, onlyMine = null, grouped = null, icdRoots = null, page = null, size = null } = {}) {
         this.name = name;
         this.conclusions = conclusions;
         this.sorting = sorting;
@@ -34,7 +34,12 @@ export class Pagination {
 
         const params = new URLSearchParams('');
         if (this.name) params.append("name", this.name);
-        if (this.conclusions) params.append("conclusions", this.conclusions);
+        this.conclusions.forEach((conclusion) => {
+            params.append("conclusions", conclusion);
+        })
+        this.icdRoots.forEach((icd) => {
+            params.append("icdRoots", icd);
+        })
         if (this.sorting) params.append("sorting", this.sorting);
         if (this.scheduledVisits) params.append("scheduledVisits", this.scheduledVisits);
         if (this.onlyMine) params.append("onlyMine", this.onlyMine);
@@ -43,10 +48,10 @@ export class Pagination {
         for (let i = start - 1; i <= end + 1; i++) {
             const copyParams = new URLSearchParams(params.toString());
             const pageBtn = renderPaginationButton(copyParams, i, numberedPage, this.size, pageCount, start, end);
-
-            if (i === numberedPage) pageBtn.classList.add("active");
+            if (i === numberedPage && start + end !== 1) pageBtn.classList.add("active");
             if (i === pageCount + 1 && numberedPage === pageCount) pageBtn.classList.add('disabled')
             if (i === 0 && numberedPage === 1) pageBtn.classList.add('disabled')
+            if (start + end === 1) pageBtn.classList.add('disabled');
 
             paginationContainer.appendChild(pageBtn);
         }
@@ -80,16 +85,30 @@ function renderPaginationButton(params, page, currentPage, size, pageCount, star
 export function getParams(){
     const urlParams = new URLSearchParams(window.location.search);
     const name = urlParams.get('name') || '';
-    const conclusions = urlParams.get('conclusions') || '';
+    const conclusions = urlParams.getAll('conclusions') || '';
     const sorting = urlParams.get('sorting') || '';
     const scheduledVisits = urlParams.get('scheduledVisits') || '';
     const onlyMine = urlParams.get('onlyMine') || '';
     const grouped = urlParams.get('grouped') || '';
-    const icdRoots = urlParams.get('icdRoots') || '';
+    const icdRoots = urlParams.getAll('icdRoots') || '';
     const page = urlParams.get('page') || '';
     const size = urlParams.get('size') || '';
 
-    console.log(name, conclusions, sorting, scheduledVisits, onlyMine, grouped, page, size);
-
     return {name, conclusions, sorting, scheduledVisits, onlyMine, grouped, icdRoots, page, size};
+}
+
+export function setPaginationData({name = null, sorting = null, scheduledVisits = null, onlyMine = null, grouped = null, icdRoots = null, page = null, size = null } = {}) {
+    const nameInput = document.getElementById('name-input');
+    const sortInput = document.getElementById('sort-input');
+    const scheduledInput = document.getElementById('scheduled-visits-input');
+    const onlyMineInput = document.getElementById('only-mine-input');
+    const groupedInput = document.getElementById('grouped');
+    const sizeInput = document.getElementById('size-input');
+
+    if (nameInput && name) nameInput.value = name;
+    if (sortInput && sorting) sortInput.value = sorting;
+    if (scheduledInput && scheduledVisits) scheduledInput.value = scheduledVisits;
+    if (onlyMineInput && onlyMine) onlyMineInput.value = onlyMine;
+    if (groupedInput && grouped) groupedInput.checked = grouped;
+    if (sizeInput && size) sizeInput.value = size;
 }

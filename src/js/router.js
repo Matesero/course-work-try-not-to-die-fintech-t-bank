@@ -20,10 +20,18 @@ export function navigateToPatientCard(id) {
     window.location.href = `${path}/patient/${id}`;
 }
 
+export function navigateToCreate() {
+    window.location.href = `${path}/create.html`;
+}
+
 export function navigateToPatients() {
     window.location.href = `${path}/patients.html`;
 }
 
 export function navigateToInspection(id) {
     window.location.href = `${path}/inspection/${id}`;
+}
+
+export function navigateToReports() {
+    window.location.href = `${path}/reports.html`;
 }

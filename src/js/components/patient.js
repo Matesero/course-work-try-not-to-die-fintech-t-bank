@@ -73,7 +73,7 @@ export function resetFields() {
 
 export function formatDate(date) {
     if (!date) {
-        return 'without birthday';
+        return 'не указана';
     }
 
     const parts = date.split('T');

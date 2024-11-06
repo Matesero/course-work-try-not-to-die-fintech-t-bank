@@ -1,27 +1,31 @@
 import {getInspections, getPatient} from "./api/patient.js";
-import {getParams, Pagination} from "./pagination.js";
+import {getParams, Pagination, setPaginationData} from "./pagination.js";
 import {renderInspection} from "./components/inspection.js";
 import {formatDate} from "./components/patient.js";
 import {checkAuth} from "./api/index.js";
-import {navigateToLogin} from "./router.js";
-
-window.addEventListener('DOMContentLoaded', () => {
-    if (!checkAuth()) {
-        navigateToLogin();
-    }
-    onload();
-})
+import {navigateToCreate, navigateToLogin} from "./router.js";
+import {Dropdown} from "./dropdown.js";
+import {getICDRoots} from "./api/dictionary.js";
 
 const filtersForm = document.getElementById('filters');
-const mkbInput = document.getElementById('mkb-select');
+const addConsultationBtn = document.getElementById('add-consultation-button');
 const groupedInput = document.getElementById('grouped');
 const sizeInput = document.getElementById('size-input');
 const patientName = document.getElementById('patient-name');
 const genderIcon = document.getElementById('gender-icon');
 const patientBirthday = document.getElementById('patient-birthday');
 const containerList = document.querySelector('.container__list');
+const dropdown = new Dropdown([], [], [], 'icdRoots');
 
 filtersForm.addEventListener('submit', (event) => submit(event));
+addConsultationBtn.addEventListener('click', () => navigateToCreate())
+
+window.addEventListener('DOMContentLoaded', async () => {
+    if (!checkAuth()) {
+        navigateToLogin();
+    }
+    await onload();
+})
 
 function getPatientId() {
     const urlPath = window.location.pathname;
@@ -43,11 +47,27 @@ function setData(name, gender, birthday) {
 
 async function onload() {
     const patientId = getPatientId();
-    const { grouped, icdRoots, page, size} = getParams();
-    const paginat = new Pagination({ grouped, icdRoots, page, size });
-    const { inspections, pagination } = await getInspections({ id: patientId, grouped, icdRoots, page, size });
+
+    const params = getParams();
+    setPaginationData(params)
+
+    const paginationPage = new Pagination(params);
+    const { inspections, pagination } = await getInspections({id: patientId, ...params});
 
     const { name, gender, birthday } = await getPatient(patientId);
+    const icdRoots = await getICDRoots();
+
+    let options = [];
+    let valueOptions = [];
+    let selectedOptions = [];
+    icdRoots.forEach((icd) => {
+        const option = `(${icd.code}) ${icd.name}`;
+        options.push(option);
+        valueOptions.push(icd.id);
+        selectedOptions.push(icd.code);
+    })
+    dropdown.addNewOptions(options, valueOptions, selectedOptions);
+    dropdown.setSelected(params.icdRoots)
 
     setData(name, gender, birthday)
 
@@ -56,18 +76,19 @@ async function onload() {
         containerList.appendChild(inspection);
     })
 
-    paginat.createPagination(pagination.count)
+    paginationPage.createPagination(pagination.count)
 }
 
 function submit(event){
     event.preventDefault()
-    const mkb = mkbInput.value;
+
+    const icdRoots = dropdown.getValueOptions();
     const grouped = groupedInput.checked;
     const size = sizeInput.value;
 
     const params = new URLSearchParams('');
 
-    if (mkb) mkb.forEach((mk) => params.append("icdRoots", mk));
+    icdRoots.forEach((icd) => params.append("icdRoots", icd));
     if (grouped) params.append("grouped", grouped);
     params.append("size", size);
 
