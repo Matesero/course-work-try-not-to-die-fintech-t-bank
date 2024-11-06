@@ -1,8 +1,18 @@
-import {getParams, Pagination} from "./pagination.js";
+import {getParams, Pagination, setPaginationData} from "./pagination.js";
 import {renderInspection} from "./components/inspection.js";
 import {checkAuth} from "./api/index.js";
 import {navigateToLogin} from "./router.js";
 import {getConsultations} from "./api/consultation.js";
+import {Dropdown} from "./dropdown.js";
+import {getICDRoots} from "./api/dictionary.js";
+
+const filtersForm = document.getElementById('filters');
+const groupedInput = document.getElementById('grouped');
+const sizeInput = document.getElementById('size-input');
+const containerList = document.querySelector('.container__list');
+const dropdown = new Dropdown([], [], [], 'icdRoots');
+
+filtersForm.addEventListener('submit', (event) => submit(event));
 
 window.addEventListener('DOMContentLoaded', async () => {
     if (!checkAuth()) {
@@ -11,37 +21,46 @@ window.addEventListener('DOMContentLoaded', async () => {
     await onload();
 })
 
-const filtersForm = document.getElementById('filters');
-const mkbInput = document.getElementById('mkb-select');
-const groupedInput = document.getElementById('grouped');
-const sizeInput = document.getElementById('size-input');
-const containerList = document.querySelector('.container__list');
-
-filtersForm.addEventListener('submit', (event) => submit(event));
-
 async function onload() {
-    const { grouped, icdRoots, page, size} = getParams();
-    const paginat = new Pagination({ grouped, icdRoots, page, size });
-    const { inspections, pagination } = await getConsultations({ grouped, icdRoots, page, size });
+    const params = getParams();
+
+    console.log(params)
+    setPaginationData(params)
+
+    const paginationPage = new Pagination(params);
+    const { inspections, pagination } = await getConsultations(params);
+    const icdRoots = await getICDRoots();
+
+    let options = [];
+    let valueOptions = [];
+    let selectedOptions = [];
+    icdRoots.forEach((icd) => {
+        const option = `(${icd.code}) ${icd.name}`;
+        options.push(option);
+        valueOptions.push(icd.id);
+        selectedOptions.push(icd.code);
+    })
+    dropdown.addNewOptions(options, valueOptions, selectedOptions);
+    dropdown.setSelected(params.icdRoots)
 
     inspections.forEach(({id, date, conclusion, diagnosis, doctor}) => {
         const inspection = renderInspection(id, date, conclusion, diagnosis, doctor);
         containerList.appendChild(inspection);
     })
 
-    paginat.createPagination(pagination.count)
+    paginationPage.createPagination(pagination.count)
 }
 
 function submit(event){
     event.preventDefault()
 
-    const mkb = null;
+    const icdRoots = dropdown.getValueOptions();
     const grouped = groupedInput.checked;
     const size = sizeInput.value;
 
     const params = new URLSearchParams('');
 
-    if (mkb) mkb.forEach((mk) => params.append("icdRoots", mk));
+    if (icdRoots) icdRoots.forEach((icd) => params.append("icdRoots", icd));
     if (grouped) params.append("grouped", grouped);
     params.append("size", size);
 

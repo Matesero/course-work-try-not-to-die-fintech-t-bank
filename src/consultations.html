@@ -21,9 +21,9 @@
         <div class="col-27"></div>
         <button class="header__button col-7" id="login-button">Вход</button>
         <button class="header__button col-4" id="user-button"></button>
-        <div class="user-menu hidden" id="userMenu">
-            <button class="user-menu__item" id="profile-button">Профиль</button>
-            <button class="user-menu__item" id="logout-button">Выход</button>
+        <div class="dropdown usermenu hidden" id="userMenu">
+            <button class="dropdown__item" id="profile-button">Профиль</button>
+            <button class="dropdown__item" id="logout-button">Выход</button>
         </div>
     </div>
 </div>
@@ -36,18 +36,19 @@
             <div class="filters__row">
                 <label>
                     <p class="input-field__label">МКБ-10</p>
-                    <select id="mkb-input" class="input-field">
-                        <option value="" disabled selected>Выбрать</option>
-                    </select>
+                    <div class="input-list icdRoots" id="select-icdRoots">Выбрать</div>
+                    <div class="dropdown icdRoots input hidden" id="icdRoots"></div>
                 </label>
-                <label class="radio-option">
-                    <input type="radio" name="grouped" id="grouped" value=true />
-                    <span>Сгруппировать по повторным</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="grouped" value=false checked />
-                    <span>Показать все</span>
-                </label>
+                <div class="row">
+                    <label class="radio-option">
+                        <input type="radio" name="grouped" id="grouped" value=true />
+                        <span>Сгруппировать по повторным</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="grouped" value=false checked />
+                        <span>Показать все</span>
+                    </label>
+                </div>
             </div>
             <div class="filters__row bottom">
                 <label>
@@ -70,8 +71,6 @@
     </div>
 </div>
 </body>
-<script type="module" src="./js/pagination.js"></script>
 <script type="module" src="./js/header.js"></script>
 <script type="module" src="./js/consultationsPage.js"></script>
-<script type="module" src="./js/api/doctor.js"></script>
 </html>
