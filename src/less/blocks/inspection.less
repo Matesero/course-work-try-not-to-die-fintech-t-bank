@@ -74,6 +74,10 @@
 }
 
 .inspection-info {
+  display: flex;
+  flex-direction: row;
+  .adaptive-gap(0.25vh, 0.25vw);
+
   &__label, &__value {
     .adaptive-font-size(0.8vh, 0.8vw);
     margin: 0;
@@ -82,7 +86,7 @@
       color: @darkGray;
     }
 
-    &.death {
+    &.bold {
       font-weight: 600;
     }
   }
@@ -90,6 +94,4 @@
   &__label {
     white-space: nowrap;
   }
-
-
 }

@@ -11,6 +11,22 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+
+    & > .head__row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .adaptive-gap(0.6vh, 0.6vw)
+    }
+  }
+
+  &__head {
+    padding-left: calc((2vh + 1vw) / 2);
+    padding-right: calc((2vh + 1vw) / 2);
+
+    & + & {
+      bottom: -calc((1vh + 1vw) / 2);
+    }
   }
 
   &__list {
@@ -22,7 +38,6 @@
     .adaptive-font-size(3vh, 3vw);
     font-weight: bold;
     margin: 0;
-    margin-left: calc((2vh + 1vw) / 2);
     line-height: 1;
   }
 

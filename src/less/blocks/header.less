@@ -25,33 +25,3 @@
     }
   }
 }
-
-.user-menu {
-  position: absolute;
-  top: calc((3vh + 3vw) / 2);
-  right: calc((1.5vh + 1.5vw) / 2);
-  .adaptive-width(12vh, 12vw);
-  background-color: @white;
-  border: calc((0.15vh + 0.15vw) / 2) solid @darkGray;
-  .adaptive-border-radius(0.5vh, 0.5vw);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-
-  &__item {
-    .adaptive-font-size(1vh, 1vw);
-    .adaptive-padding(0.4vh, 0.4vw, 0.1vw);
-    border: none;
-    cursor: pointer;
-    text-align: left;
-    background: none;
-
-    &:hover {
-      background-color: #f0f0f0;
-    }
-  }
-}
-
-.hidden {
-  display: none;
-}

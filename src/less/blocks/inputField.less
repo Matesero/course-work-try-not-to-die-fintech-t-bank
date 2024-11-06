@@ -17,7 +17,72 @@
   }
 
   &:last-child {
-    margin-right: 0; // Убираем отступ у последнего элемента
+    margin-right: 0;
+  }
+}
+
+.input-list {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: center;
+  .adaptive-height(2.8vh, 2.8vw);
+  .adaptive-padding(0.35vh, 0.35vw, 0vw);
+  .adaptive-font-size (1.25vh,1.25vw);
+  background: @white;
+  border: 0.2vh solid @gray;
+  border-radius: 0.4vh;
+  width: 100%;
+  opacity: 0.75;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  .adaptive-gap(0.45vh, 0.45vw);
+
+  &__delete {
+    content: "+";
   }
 
+  &.icd {
+    .adaptive-width(32.5vh, 32.5vw);
+  }
+
+  &.reports {
+    .adaptive-width(45vh, 45vw);
+  }
+
+  &__add {
+
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: @darkSea;
+    border-radius: 0.4vh;
+    .adaptive-padding(0.1vh, 0.1vw, 0.2vw);
+    flex: 0 0 auto;
+
+    & > .value {
+      color: @white;
+      .adaptive-font-size(1vh, 1vw);
+      line-height: 1.75;
+      margin: 0;
+    }
+
+    &.icon {
+
+    }
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+label {
+  height: fit-content;
+  flex-direction: column;
+  display: flex;
+  justify-content: space-between;
 }
