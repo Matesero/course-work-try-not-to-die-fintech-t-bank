@@ -25,6 +25,6 @@ async function onLoginClick() {
 
     await postLogin(email, password);
 
-    window.location.href = `patients.html`;
+    navigateToPatients();
 }
 
