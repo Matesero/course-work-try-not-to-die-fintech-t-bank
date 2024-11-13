@@ -1,46 +1,46 @@
 stages:
-  - install
-  - build
-  - quality
+    - install
+    - build
+    - quality
 
 default:
-  image: node
+    image: node
 
 install:
-  stage: install
-  script:
-    - npm install
-  artifacts:
-    paths:
-      - node_modules/
+    stage: install
+    script:
+        - npm install
+    artifacts:
+        paths:
+            - node_modules/
 
 build:
-  stage: build
-  script:
-    - npm run build
-  dependencies:
-    - install
-  artifacts:
-    paths:
-      - build/
+    stage: build
+    script:
+        - npm run build
+    dependencies:
+        - install
+    artifacts:
+        paths:
+            - build/
 
 eslint:
-  stage: quality
-  script:
-    - npm run lint:check
-  dependencies:
-    - install
+    stage: quality
+    script:
+        - npm run lint:check
+    dependencies:
+        - install
 
 prettier:
-  stage: quality
-  script:
-    - npm run prettier:check
-  dependencies:
-    - install
+    stage: quality
+    script:
+        - npm run prettier:check
+    dependencies:
+        - install
 
 types:
-  stage: quality
-  script:
-    - npm run types:check
-  dependencies:
-    - install
+    stage: quality
+    script:
+        - npm run types:check
+    dependencies:
+        - install
