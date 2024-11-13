@@ -1,0 +1,53 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2023,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "plugins": ["@typescript-eslint", "react", "react-hooks", "import", "prettier"],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "eslint-config-prettier"
+    ],
+    "rules": {
+        "react/display-name": "warn",
+        "no-unused-vars": "warn",
+        "react-hooks/rules-of-hooks": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "object-shorthand": ["error", "always"],
+        "curly": "error",
+        "object-curly-spacing": ["error", "always"],
+        "no-redeclare": "error",
+        "prefer-const": "error",
+        "quotes": ["error", "single"],
+        "keyword-spacing": ["error", { "after": true }],
+        "eqeqeq": ["error", "always"],
+        "no-unreachable": "error",
+        "react/react-in-jsx-scope": "off",
+        "import/order": [
+            "error",
+            {
+                "groups": [
+                    ["builtin", "external"],
+                    ["internal", "parent", "sibling", "index"]
+                ],
+                "newlines-between": "always",
+                "alphabetize": {
+                    "order": "asc",
+                    "caseInsensitive": true
+                }
+            }
+        ]
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    }
+}
