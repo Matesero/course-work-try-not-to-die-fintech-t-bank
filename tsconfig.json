@@ -4,7 +4,7 @@
         "target": "ESNext",
         "skipDefaultLibCheck": true,
         "paths": {
-            "~/*": ["src/*"]
+            "~/*": ["./*"]
         },
         "useDefineForClassFields": true,
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
@@ -22,6 +22,6 @@
         "jsx": "react-jsx",
         "noImplicitAny": false
     },
-    "include": ["./src"],
+    "include": ["src", "declarations.d.ts"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }

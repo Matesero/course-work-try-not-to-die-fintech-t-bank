@@ -4,7 +4,7 @@ module.exports = {
         './index.html',
         './node_modules/react-tailwindcss-select/dist/index.esm.js',
         './node_modules/react-tailwindcss-datepicker/dist/index.esm.{js,ts}',
-        './src/**/*.{js,ts,jsx,tsx}',
+        './src/**/*.{html,js,ts,jsx,tsx}',
     ],
     theme: {
         extend: {
@@ -59,4 +59,12 @@ module.exports = {
         },
     },
     plugins: [],
+    safelist: [
+        'bg-primary-tuftsBlue',
+        'bg-primary-gray',
+        'bg-primary-lightGray',
+        'bg-primary-fairPink',
+        'bg-primary-romanSilver',
+        'bg-primary-orange',
+    ],
 };

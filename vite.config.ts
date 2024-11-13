@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import tailwindcss from 'tailwindcss';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
@@ -16,5 +17,21 @@ export default defineConfig({
             '~': path.resolve(__dirname, 'src'),
         },
     },
-    plugins: [react(), svgr()],
+    css: {
+        postcss: {
+            plugins: [tailwindcss()],
+        },
+    },
+    plugins: [
+        react(),
+        svgr({
+            svgrOptions: {
+                exportType: 'named',
+                ref: true,
+                svgo: true,
+                titleProp: true,
+            },
+            include: '**/*.svg',
+        }),
+    ],
 });
