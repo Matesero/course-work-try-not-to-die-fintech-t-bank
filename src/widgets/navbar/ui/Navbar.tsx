@@ -2,6 +2,9 @@ import React from 'react';
 
 import { BarsIcon } from '~/shared/assets/images';
 import { ScullIcon } from '~/shared/assets/images';
+import { sharedConfigRouter } from '~/shared/config';
+
+const { RouteName } = sharedConfigRouter;
 
 type Props = {
     isAuth: boolean;
@@ -9,7 +12,6 @@ type Props = {
 };
 
 export const Navbar = ({ isAuth, userName }: Props) => {
-
     return (
         <nav>
             <div className="mx-auto bg-primary-darkSea">
@@ -26,9 +28,13 @@ export const Navbar = ({ isAuth, userName }: Props) => {
                         </div>
                         {isAuth && (
                             <div className="hidden lg:flex gap-8 text-white">
-                                <a href="#">Пациенты</a>
-                                <a href="#">Консультации</a>
-                                <a href="#">Отчеты и статистика</a>
+                                <a href={RouteName.PATIENTS_PAGE}>Пациенты</a>
+                                <a href={RouteName.CONSULTATIONS_PAGE}>
+                                    Консультации
+                                </a>
+                                <a href={RouteName.REPORTS_PAGE}>
+                                    Отчеты и статистика
+                                </a>
                             </div>
                         )}
                     </div>
@@ -36,7 +42,7 @@ export const Navbar = ({ isAuth, userName }: Props) => {
                         <div className="hidden xs:flex items-center gap-10">
                             <div className="text-white text-2xl">
                                 {!isAuth ? (
-                                    <a href="#">Вход</a>
+                                    <a href={RouteName.LOGIN_PAGE}>Вход</a>
                                 ) : (
                                     <button>{userName}</button>
                                 )}
@@ -46,7 +52,7 @@ export const Navbar = ({ isAuth, userName }: Props) => {
                     {isAuth && (
                         <div className="lg:hidden flex items-center">
                             {/** Пока что как заглушка, потом заменить на button */}
-                            <a href="#" >
+                            <a href="#">
                                 <BarsIcon className="h-6" />
                             </a>
                         </div>
