@@ -1,19 +1,20 @@
 import React from 'react';
 import { useState } from 'react';
+import ReactInputMask from 'react-input-mask';
 
 import { englishNameToRussian } from '~/shared/lib/englishNameToRussian';
 
 type Props = {
-    value?: string;
+    defaultValue?: string;
     name: string;
-    type: 'text' | 'password' | 'tel';
+    type: 'text' | 'password' | 'phone';
     error?: string;
     placeholder?: string;
     disabled?: boolean;
 };
 
 export const InputField = ({
-    value,
+    defaultValue,
     name,
     type,
     error,
@@ -33,14 +34,26 @@ export const InputField = ({
                 )}
             </div>
             <div className="flex bg-white h-12 items-center border border-gray-500 rounded-custom overflow-hidden">
-                <input
-                    defaultValue={value}
-                    type={show ? 'text' : 'password'}
-                    placeholder={placeholder}
-                    className="w-full px-4 text-xl bg-transparent outline-none"
-                    disabled={disabled}
-                    name={englishNameToRussian(name)}
-                />
+                {type === 'phone' ? (
+                    <ReactInputMask
+                        defaultValue={defaultValue}
+                        mask="+9 (999) 999-99-99"
+                        maskChar="_"
+                        placeholder={placeholder}
+                        className="w-full px-4 text-xl bg-transparent outline-none"
+                        disabled={disabled}
+                        name={englishNameToRussian(name)}
+                    />
+                ) : (
+                    <input
+                        defaultValue={defaultValue}
+                        type={show ? 'text' : 'password'}
+                        placeholder={placeholder}
+                        className="w-full px-4 text-xl bg-transparent outline-none"
+                        disabled={disabled}
+                        name={englishNameToRussian(name)}
+                    />
+                )}
                 {type === 'password' && (
                     <button
                         type="button"
