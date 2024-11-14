@@ -8,10 +8,15 @@ type Pagination = {
     size?: number;
 };
 
-export const getSpecialities = ({
+type Promise = {
+    pagination: Pagination;
+    specialties: medicalSystemApi.models.Specialty[];
+};
+
+export const getSpecialties = ({
     page,
     size,
-}: Pagination): AxiosPromise<medicalSystemApi.models.Speciality[]> => {
+}: Pagination): AxiosPromise<Promise> => {
     return medicalSystemApi.base.medicalSystemRequester.get(
         '/dictionary/speciality',
         {

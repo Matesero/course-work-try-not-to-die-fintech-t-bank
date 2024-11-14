@@ -1,6 +1,6 @@
-import { Speciality } from '~/shared/api/medicalSystem/models';
+import { Specialty } from '~/shared/api/medicalSystem/models';
 
-export const specialtiesToOptions = (specialties: Speciality[]) => {
+export const specialtiesToOptions = (specialties: Specialty[]) => {
     const array: { value: string; label: string }[] = [];
 
     specialties.forEach((speciality) => {

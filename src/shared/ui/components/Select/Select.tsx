@@ -11,7 +11,7 @@ type Option = {
 
 type Props = {
     name: string;
-    value?: Option | Option[];
+    defaultValue?: string;
     options: Option[];
     isSearchable?: boolean;
     disabled?: boolean;
@@ -21,22 +21,25 @@ type Props = {
 
 export const CustomSelect = ({
     name,
-    value,
+    defaultValue,
     options,
     isSearchable,
     disabled,
     classNames,
     error,
 }: Props) => {
-    const [selectedValue, setSelectedValue] = useState<SelectValue>(
-        value ?? options[0],
-    );
+    const initialState =
+        options.find((option) => option.value === defaultValue) || options[0];
+    const [selectedValue, setSelectedValue] =
+        useState<SelectValue>(initialState);
 
     const handleChange = (newValue: SelectValue) => {
         setSelectedValue(newValue);
     };
 
-    const checkedValue = Array.isArray(selectedValue) ? '' : selectedValue?.value;
+    const checkedValue = Array.isArray(selectedValue)
+        ? ''
+        : selectedValue?.value;
 
     return (
         <div className={`flex flex-col gap-1 ${classNames}`}>
@@ -56,21 +59,24 @@ export const CustomSelect = ({
                 isDisabled={disabled}
                 onChange={handleChange}
                 primaryColor={'blue'}
-                /* Не знаю как пофиксить варнинг, может быть игнором*/
                 classNames={{
-                    menuButton: ({ isDisabled }) =>
-                        `flex bg-white h-12 border px-1 text-xl items-center border-gray-500 rounded-custom shadow-sm transition-all duration-300 focus:outline-none ${
+                    menuButton: (value) => {
+                        const isDisabled = value?.isDisabled;
+                        return `flex bg-white h-12 border px-1 text-xl items-center border-gray-500 rounded-custom shadow-sm transition-all duration-300 focus:outline-none ${
                             isDisabled
                                 ? 'bg-gray-200'
                                 : 'bg-white hover:border-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-500/20'
-                        }`,
+                        }`;
+                    },
                     menu: 'absolute z-10 w-full bg-white shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700',
-                    listItem: ({ isSelected }) =>
-                        `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
+                    listItem: (value) => {
+                        const isSelected = value?.isSelected;
+                        return `block transition duration-200 px-2 py-2 cursor-pointer select-none truncate rounded ${
                             isSelected
                                 ? 'text-white bg-blue-500'
                                 : 'text-gray-500 hover:bg-blue-100 hover:text-blue-500'
-                        }`,
+                        }`;
+                    },
                 }}
             />
             <input

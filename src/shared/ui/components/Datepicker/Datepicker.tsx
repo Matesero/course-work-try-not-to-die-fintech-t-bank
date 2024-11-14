@@ -5,7 +5,7 @@ import { englishNameToRussian } from '~/shared/lib/englishNameToRussian';
 
 type Props = {
     name: string;
-    value?: DateValueType;
+    defaultValue?: string;
     asSingle?: boolean;
     useRange?: boolean;
     placeholder?: string;
@@ -17,7 +17,7 @@ type Props = {
 export const CustomDatepicker = (props: Props) => {
     const {
         name,
-        value,
+        defaultValue,
         asSingle,
         useRange,
         placeholder,
@@ -26,7 +26,13 @@ export const CustomDatepicker = (props: Props) => {
         error,
     } = props;
 
-    const [selectedValue, setNewValue] = useState<DateValueType>(value ?? null);
+    const initialState = defaultValue
+        ? {
+              startDate: new Date(defaultValue),
+              endDate: new Date(defaultValue),
+          }
+        : null;
+    const [selectedValue, setNewValue] = useState<DateValueType>(initialState);
 
     const handleChange = (newValue: DateValueType) => {
         setNewValue(newValue);
@@ -57,11 +63,7 @@ export const CustomDatepicker = (props: Props) => {
             <input
                 type="hidden"
                 name={englishNameToRussian(name)}
-                value={
-                    selectedValue && typeof selectedValue === 'object' && selectedValue.start
-                        ? selectedValue.start
-                        : ''
-                }
+                value={selectedValue?.startDate?.toISOString()}
             />
         </div>
     );
