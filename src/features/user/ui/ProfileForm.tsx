@@ -3,15 +3,15 @@ import React from 'react';
 import { FormWrapper } from './FormWrapper';
 import { useForm } from '../model/useForm';
 
+import { medicalSystemApi } from '~/shared/api';
 import { sharedConfigOptions } from '~/shared/config';
-import {
-    InputField,
-    Button,
-    Select,
-    Datepicker,
-} from '~/shared/ui/components';
+import { InputField, Button, Select, Datepicker } from '~/shared/ui/components';
 
-export const ProfileForm = () => {
+type Props = {
+    user: medicalSystemApi.models.User | null;
+};
+
+export const ProfileForm = ({ user }: Props) => {
     const [{ isEditing, errors }, onSubmit, onSwitch] = useForm('profile');
 
     return (
@@ -20,7 +20,7 @@ export const ProfileForm = () => {
                 <InputField
                     type="text"
                     name="ФИО"
-                    value=""
+                    defaultValue={user?.name}
                     placeholder="Иванов Иван Иванович"
                     disabled={!isEditing}
                     error={errors?.['name'] ?? ''}
@@ -28,6 +28,7 @@ export const ProfileForm = () => {
                 <div className="flex flex-row justify-between">
                     <Select
                         name="Пол"
+                        defaultValue={user?.gender}
                         options={sharedConfigOptions.gender}
                         classNames="w-5/12"
                         disabled={!isEditing}
@@ -36,6 +37,7 @@ export const ProfileForm = () => {
                     <Datepicker
                         className="w-5/12"
                         name="Дата рождения"
+                        defaultValue={user?.birthday}
                         asSingle={true}
                         useRange={false}
                         disabled={!isEditing}
@@ -43,8 +45,9 @@ export const ProfileForm = () => {
                     />
                 </div>
                 <InputField
-                    type="text"
+                    type="phone"
                     name="Телефон"
+                    defaultValue={user?.phone}
                     placeholder="+7 (xxx) xxx-xx-xx"
                     disabled={!isEditing}
                     error={errors?.['phone'] ?? ''}
@@ -52,6 +55,7 @@ export const ProfileForm = () => {
                 <InputField
                     type="text"
                     name="Email"
+                    defaultValue={user?.email}
                     placeholder="name@example.com"
                     disabled={!isEditing}
                     error={errors?.['email'] ?? ''}

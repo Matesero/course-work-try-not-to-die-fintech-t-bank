@@ -1,37 +1,57 @@
-type State = {
+import { Specialty } from '~/shared/api/medicalSystem/models';
+
+export type State = {
     isEditing: boolean;
     isUpload?: boolean;
+    isLoading?: boolean;
     errors?: { [key: string]: string };
     error?: string;
+    specialties: Specialty[];
 };
 
-type Action =
+export type Action =
     | { type: 'switchIsEditing' }
-    | { type: 'cancel' }
+    | { type: 'cancelEditing' }
     | { type: 'errorForm'; payload: { [key: string]: string } }
     | { type: 'startUpload' }
     | { type: 'finishUpload' }
-    | { type: 'errorUpload' };
+    | { type: 'finishResponse'; payload: Specialty[] }
+    | { type: 'errorResponse' };
 
 export const reducer = (state: State, action: Action): State => {
     switch (action.type) {
         case 'switchIsEditing':
-            return { isEditing: !state.isEditing };
+            return { ...state, isEditing: !state.isEditing };
 
         case 'errorForm':
             return state.isEditing
-                ? { isEditing: true, errors: action.payload }
+                ? { ...state, isEditing: true, errors: action.payload }
                 : state;
 
         case 'startUpload':
-            return state.isEditing ? { isUpload: true, ...state } : state;
+            return state.isEditing
+                ? { ...state, isUpload: true, ...state }
+                : state;
 
         case 'finishUpload':
-            return state.isUpload ? { isEditing: false } : state;
+            return state.isUpload || state.isLoading
+                ? { ...state, isEditing: false }
+                : state;
 
-        case 'errorUpload':
-            return state.isUpload && state.isEditing
-                ? { error: 'Ошибка загрузки. Попробуйте еще раз', ...state }
+        case 'finishResponse':
+            return {
+                ...state,
+                isLoading: false,
+                specialties: action.payload,
+            };
+
+        case 'errorResponse':
+            return state.isUpload
+                ? {
+                      ...state,
+                      error: 'Ошибка. Попробуйте еще раз',
+                      isUpload: false,
+                  }
                 : state;
     }
 

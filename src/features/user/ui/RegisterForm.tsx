@@ -4,15 +4,11 @@ import { FormWrapper } from './FormWrapper';
 import { useForm } from '../model/useForm';
 
 import { sharedConfigOptions } from '~/shared/config';
-import {
-    InputField,
-    Button,
-    Select,
-    Datepicker,
-} from '~/shared/ui/components';
+import { specialtiesToOptions } from '~/shared/lib/specialtiesToOptions';
+import { InputField, Button, Select, Datepicker } from '~/shared/ui/components';
 
 export const RegisterForm = () => {
-    const [{ errors }, onSubmit] = useForm('register');
+    const [{ errors, specialties }, onSubmit] = useForm('register');
 
     return (
         <FormWrapper title={'Регистрация'} onSubmit={onSubmit}>
@@ -39,14 +35,14 @@ export const RegisterForm = () => {
                     />
                 </div>
                 <InputField
-                    type="text"
+                    type="phone"
                     name="Телефон"
                     placeholder="+7 (xxx) xxx-xx-xx"
                     error={errors?.['phone'] ?? ''}
                 />
                 <Select
                     name="Специальность"
-                    options={[]}
+                    options={specialtiesToOptions(specialties)}
                     isSearchable
                     error={errors?.['specialty'] ?? ''}
                 />

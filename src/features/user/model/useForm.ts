@@ -1,11 +1,12 @@
-import { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import type { FormEventHandler } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { reducer } from './reducer';
+import { Action, reducer } from './reducer';
+import { State } from './reducer';
 import { schema, zod2errors } from './schema';
 
-import { medicalSystemApi } from '~/shared/api'
-import { useNavigate } from 'react-router-dom';
+import { medicalSystemApi } from '~/shared/api';
 import { sharedConfigRouter } from '~/shared/config';
 const { dictionary, user } = medicalSystemApi;
 const { RouteName } = sharedConfigRouter;
@@ -13,28 +14,35 @@ const { RouteName } = sharedConfigRouter;
 type Props = 'login' | 'register' | 'profile';
 
 export const useForm = (formType: Props) => {
-    const [state, dispatch] = useReducer(reducer, {
-        isEditing: formType !== 'profile',
-        isLoading: true,
-        isUpload: false,
-        specialties: [],
-    });
+    const [state, dispatch] = useReducer<React.Reducer<State, Action>>(
+        reducer,
+        {
+            isEditing: formType !== 'profile',
+            isLoading: true,
+            isUpload: false,
+            specialties: [],
+        },
+    );
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSpecialties = async () => {
             try {
-                const { data } = await dictionary.getSpecialties({ page: 1, size: 18 });
+                const { data } = await dictionary.getSpecialties({
+                    page: 1,
+                    size: 18,
+                });
 
                 if (data) {
-                    dispatch({ type: 'finishResponse', payload: data.specialties });
+                    dispatch({
+                        type: 'finishResponse',
+                        payload: data.specialties,
+                    });
                 }
             } catch (error) {
                 dispatch({ type: 'errorResponse' });
             }
         };
-
-        console.log(state.specialties)
 
         fetchSpecialties();
     }, []);
@@ -49,19 +57,71 @@ export const useForm = (formType: Props) => {
             try {
                 dispatch({ type: 'startUpload' });
                 const { data: params } = data;
+                const {
+                    email,
+                    password,
+                    phone,
+                    name,
+                    gender,
+                    specialty,
+                    birthday,
+                } = params;
 
                 switch (formType) {
                     case 'login':
-                        await user.login(params);
-                        navigate({ pathname: RouteName.PATIENTS_PAGE })
+                        if (email && password) {
+                            await user.login({ email, password });
+                            navigate({ pathname: RouteName.PATIENTS_PAGE });
+                        } else {
+                            throw new Error('Почты и пароля нет');
+                        }
                         break;
+
                     case 'register':
-                        await user.register(params);
-                        navigate({ pathname: RouteName.PATIENTS_PAGE })
+                        if (
+                            email &&
+                            password &&
+                            phone &&
+                            name &&
+                            specialty &&
+                            birthday &&
+                            gender === ('Male' || 'Female')
+                        ) {
+                            await user.register({
+                                email,
+                                password,
+                                phone,
+                                name,
+                                specialty,
+                                birthday,
+                                gender,
+                            });
+                            navigate({ pathname: RouteName.PATIENTS_PAGE });
+                        } else {
+                            throw new Error('Данные введены неверно');
+                        }
+
                         break;
                     case 'profile':
-                        await user.putProfile(params);
-                        break
+                        if (
+                            email &&
+                            phone &&
+                            name &&
+                            birthday &&
+                            gender === ('Male' || 'Female')
+                        ) {
+                            await user.putProfile({
+                                email,
+                                phone,
+                                name,
+                                birthday,
+                                gender,
+                            });
+                            navigate({ pathname: RouteName.PATIENTS_PAGE });
+                        } else {
+                            throw new Error('Данные введены неверно');
+                        }
+                        break;
                     default:
                         throw new Error('Не указан тип формы');
                 }
