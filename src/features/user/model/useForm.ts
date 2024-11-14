@@ -67,13 +67,14 @@ export const useForm = (formType: Props) => {
                     birthday,
                 } = params;
 
+                // console.error в дальнейшем в уведомление
                 switch (formType) {
                     case 'login':
                         if (email && password) {
                             await user.login({ email, password });
                             navigate({ pathname: RouteName.PATIENTS_PAGE });
                         } else {
-                            throw new Error('Почты и пароля нет');
+                            console.error('Почты и пароля нет');
                         }
                         break;
 
@@ -98,7 +99,7 @@ export const useForm = (formType: Props) => {
                             });
                             navigate({ pathname: RouteName.PATIENTS_PAGE });
                         } else {
-                            throw new Error('Данные введены неверно');
+                            console.error('Данные введены неверно');
                         }
 
                         break;
@@ -119,11 +120,11 @@ export const useForm = (formType: Props) => {
                             });
                             navigate({ pathname: RouteName.PATIENTS_PAGE });
                         } else {
-                            throw new Error('Данные введены неверно');
+                            console.error('Данные введены неверно');
                         }
                         break;
                     default:
-                        throw new Error('Не указан тип формы');
+                        console.error('Не указан тип формы');
                 }
 
                 dispatch({ type: 'finishUpload' });
