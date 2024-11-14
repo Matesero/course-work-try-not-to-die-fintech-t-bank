@@ -1,10 +1,8 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://mis-api.kreosoft.space/api';
+import { sharedConfigEnvs } from '~/shared/config';
+const { MEDICAL_SYSTEM_HOST } = sharedConfigEnvs;
 
 export const medicalSystemRequester = axios.create({
-    baseURL: BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
+    baseURL: MEDICAL_SYSTEM_HOST,
 });

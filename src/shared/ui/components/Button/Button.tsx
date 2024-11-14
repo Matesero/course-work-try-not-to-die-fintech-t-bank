@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 
 type Props = {
     text?: string;
     type?: 'submit' | 'button';
     textColor?: string;
     bgColor?: string;
-    onClick?: React.MouseEventHandler<HTMLButtonElement>;
+    onClick?: MouseEventHandler<HTMLButtonElement>;
 };
 
 export const Button = ({ text, type, textColor, bgColor, onClick }: Props) => {

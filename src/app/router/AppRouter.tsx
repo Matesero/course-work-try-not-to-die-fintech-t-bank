@@ -5,10 +5,10 @@ import { loginPageUi } from '~/pages/loginPage';
 import { profilePageUi } from '~/pages/profile';
 import { registerPageUi } from '~/pages/register';
 import { sharedConfigRouter } from '~/shared/config';
+
 const { LoginPage } = loginPageUi;
 const { ProfilePage } = profilePageUi;
 const { RegisterPage } = registerPageUi;
-
 const { RouteName } = sharedConfigRouter;
 
 const routes: sharedConfigRouter.RouteDescription[] = [
