@@ -14,6 +14,7 @@
         "types:check": "tsc --noEmit"
     },
     "dependencies": {
+        "@mahiraltinkaya/react-masked-input": "^1.0.5",
         "@types/react-router-dom": "^5.3.3",
         "@vitejs/plugin-react": "^3.0.0",
         "axios": "^1.7.7",
@@ -28,10 +29,12 @@
         "zod": "^3.23.8"
     },
     "devDependencies": {
+        "@reduxjs/toolkit": "^2.3.0",
         "@types/eslint": "^9.6.1",
         "@types/node": "^22.9.0",
         "@types/react": "^18.3.12",
         "@types/react-dom": "^18.0.0",
+        "@types/react-input-mask": "^3.0.6",
         "@typescript-eslint/eslint-plugin": "^5.62.0",
         "@typescript-eslint/parser": "^5.62.0",
         "@vitejs/plugin-react-swc": "^3.7.1",
@@ -44,6 +47,7 @@
         "eslint-plugin-react-hooks": "^5.0.0",
         "prettier": "^3.3.3",
         "prettier-plugin-tailwindcss": "^0.6.8",
+        "react-input-mask": "^2.0.4",
         "tailwindcss": "^3.4.14",
         "typescript": "^4.8.2",
         "vite-plugin-svgr": "^4.3.0"

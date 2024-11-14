@@ -26,7 +26,7 @@
     ],
     "rules": {
         "react/display-name": "warn",
-        "no-unused-vars": "warn",
+        "no-unused-vars": ["warn", { "varsIgnorePattern": "^[A-Z]+_PAGE$" }],
         "react-hooks/rules-of-hooks": "warn",
         "@typescript-eslint/no-explicit-any": "warn",
         "object-shorthand": ["error", "always"],

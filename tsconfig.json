@@ -22,6 +22,6 @@
         "jsx": "react-jsx",
         "noImplicitAny": false
     },
-    "include": ["src", "declarations.d.ts"],
+    "include": ["src", "declarations.d.ts", "vite-env.d.ts"],
     "references": [{ "path": "./tsconfig.node.json" }]
 }
