@@ -76,7 +76,7 @@ export const schema = zod.object({
         .refine((value) => !/[A-Za-z]/.test(value), {
             message: 'ФИО должно состоять только из русских букв',
         })
-        .refine((value) => /^([А-Я][а-я]? ){2}[А-Я][а-я]?$/.test(value), {
+        .refine((value) => /^([А-Я][а-я]+ ){2}[А-Я][а-я]+$/.test(value), {
             message: 'Некорректно введены ФИО',
         })
         .optional(),

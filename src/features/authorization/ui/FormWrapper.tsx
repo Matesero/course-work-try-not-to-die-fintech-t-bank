@@ -1,6 +1,7 @@
 import React, { FormEventHandler, ReactNode } from 'react';
 
-import { FormTittle } from '~/shared/ui/components';
+import { sharedUiComponents } from '~/shared/ui';
+const { FormTittle } = sharedUiComponents;
 
 type Props = {
     title: string;

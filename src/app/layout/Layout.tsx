@@ -1,18 +1,12 @@
-import React from 'react';
-import { ReactNode } from 'react';
+import React, { PropsWithChildren } from 'react';
 
-import { Navbar } from '~/widgets/navbar/ui';
+import { widgetNavbarUi } from '~/widgets/navbar';
+const { Navbar } = widgetNavbarUi;
 
-type Props = {
-    children: ReactNode;
-    isAuth: boolean;
-    userName?: string;
-};
-
-export const Layout = ({ children, isAuth, userName }: Props) => {
+export const Layout = ({ children }: PropsWithChildren) => {
     return (
         <div className="flex flex-col min-h-screen">
-            <Navbar isAuth={isAuth} userName={userName} />
+            <Navbar />
             <div className="flex items-center justify-center flex-grow">
                 {children}
             </div>

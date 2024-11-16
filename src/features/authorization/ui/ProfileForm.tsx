@@ -1,11 +1,13 @@
 import React from 'react';
 
 import { FormWrapper } from './FormWrapper';
-import { useForm } from '../model/useForm';
+import { useForm } from '../model';
 
 import { medicalSystemApi } from '~/shared/api';
 import { sharedConfigOptions } from '~/shared/config';
-import { InputField, Button, Select, Datepicker } from '~/shared/ui/components';
+import { sharedUiComponents } from '~/shared/ui';
+
+const { InputField, Button, Select, Datepicker } = sharedUiComponents;
 
 type Props = {
     user: medicalSystemApi.models.User | null;

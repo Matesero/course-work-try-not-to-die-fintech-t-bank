@@ -1,4 +1,4 @@
-import { Specialty } from '~/shared/api/medicalSystem/models';
+import { medicalSystemApi } from '~/shared/api';
 
 export type State = {
     isEditing: boolean;
@@ -6,7 +6,7 @@ export type State = {
     isLoading?: boolean;
     errors?: { [key: string]: string };
     error?: string;
-    specialties: Specialty[];
+    specialties: medicalSystemApi.models.Specialty[];
 };
 
 export type Action =
@@ -15,7 +15,7 @@ export type Action =
     | { type: 'errorForm'; payload: { [key: string]: string } }
     | { type: 'startUpload' }
     | { type: 'finishUpload' }
-    | { type: 'finishResponse'; payload: Specialty[] }
+    | { type: 'finishResponse'; payload: medicalSystemApi.models.Specialty[] }
     | { type: 'errorResponse' };
 
 export const reducer = (state: State, action: Action): State => {

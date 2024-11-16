@@ -2,11 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { FormWrapper } from './FormWrapper';
-import { useForm } from '../model/useForm';
+import { useForm } from '../model';
 
 import { sharedConfigRouter } from '~/shared/config';
-import { InputField, Button } from '~/shared/ui/components';
+import { sharedUiComponents } from '~/shared/ui';
+
 const { RouteName } = sharedConfigRouter;
+const { InputField, Button } = sharedUiComponents;
 
 export const LoginForm = () => {
     const [{ errors }, onSubmit] = useForm('login');
@@ -22,12 +24,14 @@ export const LoginForm = () => {
                     type="text"
                     name="Email"
                     placeholder={'name@example.com'}
+                    isRequired
                     error={errors?.['email'] ?? ''}
                 />
                 <InputField
                     type="password"
                     name="Пароль"
                     placeholder={'∗∗∗∗∗∗∗'}
+                    isRequired
                     error={errors?.['password'] ?? ''}
                 />
             </div>

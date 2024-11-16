@@ -8,12 +8,19 @@ import { schema, zod2errors } from './schema';
 
 import { medicalSystemApi } from '~/shared/api';
 import { sharedConfigRouter } from '~/shared/config';
+
 const { dictionary, user } = medicalSystemApi;
 const { RouteName } = sharedConfigRouter;
 
 type Props = 'login' | 'register' | 'profile';
 
-export const useForm = (formType: Props) => {
+export type FormResult = readonly [
+    State,
+    FormEventHandler<HTMLFormElement>,
+    () => void,
+];
+
+export const useForm = (formType: Props): FormResult => {
     const [state, dispatch] = useReducer<React.Reducer<State, Action>>(
         reducer,
         {
