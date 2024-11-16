@@ -1,36 +1,40 @@
-import { useEffect, useState } from 'react';
+import { AxiosResponse } from 'axios';
+import { useEffect, useState, useCallback } from 'react';
 
 type FetchedData<T> = {
     data: T | null;
     isLoading: boolean;
+    refetch: () => void;
 };
 
-type Props<T> = () => Promise<T>;
+type FetchFunction<T, P> = (params: P) => Promise<AxiosResponse<T>>;
 
-export const useData = <T>(fetchFunction: Props<T>): FetchedData<T> => {
+export const useData = <T, P>(
+    fetchFunction: FetchFunction<T, P>,
+    params: P,
+): FetchedData<T> => {
     const [data, setData] = useState<T | null>(null);
     const [isLoading, setLoading] = useState<boolean>(true);
+    const [prevParams, setPrevParams] = useState<P | null>(null);
+
+    const refetch = useCallback(async () => {
+        setLoading(true);
+        try {
+            const response = await fetchFunction(params);
+            setData(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [fetchFunction, params]);
 
     useEffect(() => {
-        setLoading(true);
+        if (JSON.stringify(prevParams) !== JSON.stringify(params)) {
+            setPrevParams(params);
+            refetch();
+        }
+    }, [params, prevParams, refetch]);
 
-        let ignore = false;
-
-        fetchFunction()
-            .then((json) => {
-                if (!ignore) {
-                    console.log(json);
-                    setData(json);
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-
-        return () => {
-            ignore = true;
-        };
-    }, [fetchFunction]);
-
-    return { data, isLoading };
+    return { data, isLoading, refetch };
 };
