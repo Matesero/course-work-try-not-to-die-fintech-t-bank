@@ -1,35 +1,47 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { Layout } from '~/app/layout';
-import { userFormsUi } from '~/features/user';
+import { authorizationFeature } from '~/features';
 import { medicalSystemApi } from '~/shared/api';
+import { sharedConfigRouter, sharedConfigTypes } from '~/shared/config';
 import { useData } from '~/shared/hooks/useData';
-import { setUser } from '~/shared/store/user/store';
+import { userSlice } from '~/shared/store';
+import { useAppDispatch } from '~/shared/store/store';
 import { sharedUiComponents } from '~/shared/ui';
 
+const { ProfileForm } = authorizationFeature.ui;
+const { user } = medicalSystemApi;
+const { RouteName } = sharedConfigRouter;
+const { selectors } = userSlice;
+const { setUser } = userSlice.store;
 const { Loading } = sharedUiComponents;
 
-const { user } = medicalSystemApi;
-const { ProfileForm } = userFormsUi;
+type UserType = sharedConfigTypes.User;
 
 export const ProfilePage = () => {
-    const dispatch = useDispatch();
-    const { data, isLoading } = useData(user.getProfile);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const isAuth = useSelector(selectors.isAuth);
+
+    if (!isAuth) {
+        navigate(RouteName.LOGIN_PAGE);
+    }
+    const { data, isLoading } = useData<UserType, sharedConfigTypes.Params>(
+        user.getProfile,
+        {},
+    );
 
     useEffect(() => {
-        if (data && data.data) {
-            dispatch(setUser(data.data));
+        if (data) {
+            dispatch(setUser(data));
         }
     }, [data, dispatch]);
 
     return (
-        <Layout isAuth={true} userName={data?.data?.name}>
-            {isLoading ? (
-                <Loading />
-            ) : (
-                <ProfileForm user={data?.data ?? null} />
-            )}
+        <Layout>
+            {isLoading ? <Loading /> : <ProfileForm user={data ?? null} />}
         </Layout>
     );
 };
