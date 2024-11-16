@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Select from 'react-tailwindcss-select';
 import { SelectValue } from 'react-tailwindcss-select/dist/components/type';
 
-import { englishNameToRussian } from '~/shared/lib/englishNameToRussian';
+import { russianToEnglish } from '~/shared/lib/russianToEnglish';
 
 type Option = {
     label: string;
@@ -11,12 +11,14 @@ type Option = {
 
 type Props = {
     name: string;
-    defaultValue?: string;
+    defaultValue?: string[] | string;
     options: Option[];
     isSearchable?: boolean;
+    isMultiple?: boolean;
     disabled?: boolean;
     classNames?: string;
     error?: string;
+    isRequired?: boolean;
 };
 
 export const CustomSelect = ({
@@ -24,27 +26,47 @@ export const CustomSelect = ({
     defaultValue,
     options,
     isSearchable,
+    isMultiple,
     disabled,
     classNames,
     error,
+    isRequired,
 }: Props) => {
-    const initialState =
-        options.find((option) => option.value === defaultValue) || options[0];
-    const [selectedValue, setSelectedValue] =
-        useState<SelectValue>(initialState);
+    const isFirstRender = useRef(true);
+    const [selectedValue, setSelectedValue] = useState<
+        Option | Option[] | null
+    >(null);
+
+    useEffect(() => {
+        if (isFirstRender.current && defaultValue) {
+            isFirstRender.current = false;
+
+            const initialState =
+                isMultiple && Array.isArray(defaultValue)
+                    ? options.filter((option) =>
+                          defaultValue.includes(option.value),
+                      )
+                    : options.find((option) => option.value === defaultValue);
+
+            setSelectedValue(initialState ?? null);
+        }
+    }, [defaultValue, isMultiple, options]);
+
+    const checkedValue = Array.isArray(selectedValue)
+        ? selectedValue.map((value) => value.value.toString()).join(';')
+        : selectedValue?.value || '';
 
     const handleChange = (newValue: SelectValue) => {
         setSelectedValue(newValue);
     };
 
-    const checkedValue = Array.isArray(selectedValue)
-        ? ''
-        : selectedValue?.value;
-
     return (
         <div className={`flex flex-col gap-1 ${classNames}`}>
             <div className="flex flex-row items-center">
-                <p className="text-gray-500 text-lg">{name}</p>
+                <p className="text-gray-500 text-lg">
+                    {name}{' '}
+                    {isRequired && <span className="text-red-600">*</span>}
+                </p>
                 {error && (
                     <p className="text-sm text-red-600 mt-1 ml-2 font-medium">
                         {error}
@@ -55,10 +77,14 @@ export const CustomSelect = ({
                 value={selectedValue}
                 options={options}
                 isSearchable={isSearchable}
-                placeholder="Выберите"
+                placeholder="Выбрать"
                 isDisabled={disabled}
+                isMultiple={isMultiple}
+                isClearable
                 onChange={handleChange}
                 primaryColor={'blue'}
+                searchInputPlaceholder="Поиск"
+                noOptionsMessage="Ничего не найдено"
                 classNames={{
                     menuButton: (value) => {
                         const isDisabled = value?.isDisabled;
@@ -81,7 +107,7 @@ export const CustomSelect = ({
             />
             <input
                 type="hidden"
-                name={englishNameToRussian(name)}
+                name={russianToEnglish(name)}
                 value={checkedValue || ''}
             />
         </div>
