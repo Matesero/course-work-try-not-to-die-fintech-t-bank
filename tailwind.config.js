@@ -13,6 +13,7 @@ module.exports = {
                     DEFAULT: '#FF592C',
                     darkSea: '#1A3F76',
                     tuftsBlue: '#317CBA',
+                    superLightGray: '#AAAAAA',
                     gray: '#D3D3E6',
                     lightGray: '#F6F6FB',
                     fairPink: '#FFEFE8',
@@ -55,7 +56,10 @@ module.exports = {
             xl: '1280px',
             '2xl': '1440px',
             '3xl': '1780px',
-            '4xl': '2160px', // only need to control product grid mode in ultra 4k device
+            '4xl': '2160px',
+        },
+        lineHeight: {
+            0: '0',
         },
     },
     plugins: [],
