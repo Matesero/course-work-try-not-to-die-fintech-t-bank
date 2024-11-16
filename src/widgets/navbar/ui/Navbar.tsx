@@ -1,17 +1,26 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { BarsIcon } from '~/shared/assets/images';
 import { ScullIcon } from '~/shared/assets/images';
 import { sharedConfigRouter } from '~/shared/config';
+import { userSlice } from '~/shared/store';
+const { selectors } = userSlice;
 
 const { RouteName } = sharedConfigRouter;
 
-type Props = {
-    isAuth: boolean;
-    userName?: string;
-};
+export const Navbar = () => {
+    const isAuth = useSelector(selectors.isAuth);
+    const user = useSelector(selectors.user);
 
-export const Navbar = ({ isAuth, userName }: Props) => {
+    const navigate = useNavigate();
+    const handleLoginClick = () => navigate({ pathname: RouteName.LOGIN_PAGE });
+    const handlePatientsClick = () =>
+        navigate({ pathname: RouteName.PATIENTS_PAGE });
+    const handleConsultationsClick = () =>
+        navigate({ pathname: RouteName.CONSULTATIONS_PAGE });
+
     return (
         <nav>
             <div className="mx-auto bg-primary-darkSea">
@@ -28,8 +37,16 @@ export const Navbar = ({ isAuth, userName }: Props) => {
                         </div>
                         {isAuth && (
                             <div className="hidden lg:flex gap-8 text-white">
-                                <a href={RouteName.PATIENTS_PAGE}>Пациенты</a>
-                                <a href={RouteName.CONSULTATIONS_PAGE}>
+                                <a
+                                    onClick={handlePatientsClick}
+                                    className="cursor-pointer"
+                                >
+                                    Пациенты
+                                </a>
+                                <a
+                                    onClick={handleConsultationsClick}
+                                    className="cursor-pointer"
+                                >
                                     Консультации
                                 </a>
                                 <a href={RouteName.REPORTS_PAGE}>
@@ -42,9 +59,14 @@ export const Navbar = ({ isAuth, userName }: Props) => {
                         <div className="hidden xs:flex items-center gap-10">
                             <div className="text-white text-2xl">
                                 {!isAuth ? (
-                                    <a href={RouteName.LOGIN_PAGE}>Вход</a>
+                                    <a
+                                        onClick={handleLoginClick}
+                                        className="cursor-pointer"
+                                    >
+                                        Вход
+                                    </a>
                                 ) : (
-                                    <button>{userName}</button>
+                                    <button>{user?.name}</button>
                                 )}
                             </div>
                         </div>
