@@ -1,1 +1,2 @@
-export * as userSlice from './store';
+export * as store from './store';
+export * as selectors from './selectors';
