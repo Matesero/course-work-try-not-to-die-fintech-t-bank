@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import ReactInputMask from 'react-input-mask';
 
-import { englishNameToRussian } from '~/shared/lib/englishNameToRussian';
+import { russianToEnglish } from '~/shared/lib/russianToEnglish';
 
 type Props = {
     defaultValue?: string;
@@ -11,6 +11,7 @@ type Props = {
     error?: string;
     placeholder?: string;
     disabled?: boolean;
+    isRequired?: boolean;
 };
 
 export const InputField = ({
@@ -20,13 +21,17 @@ export const InputField = ({
     error,
     placeholder,
     disabled,
+    isRequired,
 }: Props) => {
     const [show, setShow] = useState(type === 'text');
 
     return (
         <div className="flex flex-col gap-1">
             <div className="flex flex-row items-center">
-                <p className="text-gray-500 text-lg">{name}</p>
+                <p className="text-gray-500 text-lg">
+                    {name}{' '}
+                    {isRequired && <span className="text-red-600">*</span>}
+                </p>
                 {error && (
                     <p className="text-sm text-red-600 mt-1 ml-2 font-medium">
                         {error}
@@ -42,7 +47,7 @@ export const InputField = ({
                         placeholder={placeholder}
                         className="w-full px-4 text-xl bg-transparent outline-none"
                         disabled={disabled}
-                        name={englishNameToRussian(name)}
+                        name={russianToEnglish(name)}
                     />
                 ) : (
                     <input
@@ -51,7 +56,7 @@ export const InputField = ({
                         placeholder={placeholder}
                         className="w-full px-4 text-xl bg-transparent outline-none"
                         disabled={disabled}
-                        name={englishNameToRussian(name)}
+                        name={russianToEnglish(name)}
                     />
                 )}
                 {type === 'password' && (

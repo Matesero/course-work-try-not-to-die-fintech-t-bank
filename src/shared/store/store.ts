@@ -1,9 +1,9 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 
-import { userSlice } from './user';
+import { store as userStore } from './user';
 
-const { userReducer } = userSlice;
+const { userReducer } = userStore;
 
 export const rootReducer = combineReducers({
     user: userReducer,

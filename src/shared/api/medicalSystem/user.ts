@@ -3,25 +3,9 @@ import { AxiosPromise } from 'axios';
 import { User } from './models';
 
 import { medicalSystemApi } from '~/shared/api';
+import { cookieService } from '~/shared/store';
 
 const { base } = medicalSystemApi;
-
-const setTokenCookie = (token: string) => {
-    document.cookie = `jwt=${token}; path=/; Secure; HttpsOnly; SaseSite=Strict`;
-};
-
-const getTokenCookie = () => {
-    const cookies = document.cookie.split('; ').reduce(
-        (acc, currentCookie) => {
-            const [name, value] = currentCookie.split('=');
-            acc[name] = value;
-            return acc;
-        },
-        {} as Record<string, string>,
-    );
-
-    return cookies.jwt || null;
-};
 
 interface LoginParams {
     email: string;
@@ -37,7 +21,7 @@ export const login = async (params: LoginParams) => {
     const token = response.data.token;
 
     if (token) {
-        setTokenCookie(token);
+        cookieService.setToken(token);
     }
 };
 
@@ -58,14 +42,14 @@ export const register = async (params: RegisterParams) => {
     const token = response.data.token;
 
     if (token) {
-        setTokenCookie(token);
+        cookieService.setToken(token);
     }
 };
 
 export const logout = () => {
-    const token = getTokenCookie();
+    const token = cookieService.getToken();
 
-    setTokenCookie('');
+    cookieService.setToken('');
 
     return base.medicalSystemRequester.post('/doctor/logout', {
         headers: {
@@ -75,10 +59,9 @@ export const logout = () => {
 };
 
 export const getProfile = (): AxiosPromise<User> => {
-    console.log(getTokenCookie());
     return base.medicalSystemRequester.get('/doctor/profile', {
         headers: {
-            Authorization: `Bearer ${getTokenCookie()}`,
+            Authorization: `Bearer ${cookieService.getToken()}`,
         },
     });
 };
@@ -94,7 +77,7 @@ interface EditParams {
 export const putProfile = (params: EditParams) => {
     return base.medicalSystemRequester.put('/doctor/profile', params, {
         headers: {
-            Authorization: `Bearer ${getTokenCookie()}`,
+            Authorization: `Bearer ${cookieService.getToken()}`,
         },
     });
 };

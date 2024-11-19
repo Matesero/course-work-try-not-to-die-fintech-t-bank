@@ -6,14 +6,22 @@ type Props = {
     textColor?: string;
     bgColor?: string;
     onClick?: MouseEventHandler<HTMLButtonElement>;
+    className?: string;
 };
 
-export const Button = ({ text, type, textColor, bgColor, onClick }: Props) => {
+export const Button = ({
+    text,
+    type,
+    textColor,
+    bgColor,
+    onClick,
+    className,
+}: Props) => {
     return (
         <button
             type={type || 'button'}
             onClick={onClick}
-            className={`bg-${bgColor || 'primary-tuftsBlue'} !important  text-${textColor || 'white'} p-2.5 rounded-custom text-xl`}
+            className={`${className} bg-${bgColor || 'primary-tuftsBlue'} !important  text-${textColor || 'white'} p-2.5 rounded-custom text-xl w-full`}
         >
             {text}
         </button>

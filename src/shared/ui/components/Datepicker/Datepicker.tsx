@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Datepicker, { DateValueType } from 'react-tailwindcss-datepicker';
 
-import { englishNameToRussian } from '~/shared/lib/englishNameToRussian';
+import { russianToEnglish } from '~/shared/lib/russianToEnglish';
 
 type Props = {
     name: string;
@@ -12,6 +12,7 @@ type Props = {
     disabled?: boolean;
     className?: string;
     error?: string;
+    isRequired?: boolean;
 };
 
 export const CustomDatepicker = (props: Props) => {
@@ -24,6 +25,7 @@ export const CustomDatepicker = (props: Props) => {
         disabled,
         className,
         error,
+        isRequired,
     } = props;
 
     const initialState = defaultValue
@@ -40,7 +42,9 @@ export const CustomDatepicker = (props: Props) => {
 
     return (
         <div className={`flex flex-col gap-1 ${className}`}>
-            <p className="text-gray-500 text-lg">{name}</p>
+            <p className="text-gray-500 text-lg">
+                {name} {isRequired && <span className="text-red-600">*</span>}
+            </p>
             <div className="relative">
                 <Datepicker
                     displayFormat="DD.MM.YYYY"
@@ -59,10 +63,9 @@ export const CustomDatepicker = (props: Props) => {
                     </p>
                 )}
             </div>
-            {/* Не знаю как пофиксить варнинг, может быть игнором*/}
             <input
                 type="hidden"
-                name={englishNameToRussian(name)}
+                name={russianToEnglish(name)}
                 value={selectedValue?.startDate?.toISOString()}
             />
         </div>

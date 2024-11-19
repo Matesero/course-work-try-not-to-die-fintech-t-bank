@@ -1,12 +1,13 @@
 import React from 'react';
 
 import { Layout } from '~/app/layout';
-import { userFormsUi } from '~/features/user';
-const { RegisterForm } = userFormsUi;
+import { authorizationFeature } from '~/features';
+
+const { RegisterForm } = authorizationFeature.ui;
 
 export const RegisterPage = () => {
     return (
-        <Layout isAuth={false}>
+        <Layout>
             <RegisterForm />
         </Layout>
     );
