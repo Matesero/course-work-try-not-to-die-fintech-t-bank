@@ -1,70 +1,165 @@
-# Getting Started with Create React App
+# Медицинская информационная система
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Этот проект является курсовой работой на курсе Т-Банк Финтех Javascript.  
+Автор: Гришенков Павел Федорович  
+Ссылка: [https://courseworktrynottodie.vercel.app/](https://courseworktrynottodie.vercel.app/)
 
-## Available Scripts
+## Краткое описание
 
-In the project directory, you can run:
+Медицинская информационная система (МИС) — это веб-приложение, которое позволяет врачам вести учет пациентов, управлять осмотрами и генерировать отчеты.
 
-### `npm start`
+Проект поддерживает авторизацию, регистрацию пользователей (врачей), работу с профилем, список пациентов, карту пациента, создание и редактирование осмотров, а также генерацию статистических отчетов.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Основные функции и маршруты
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Авторизация
 
-### `npm test`
+- **URL:** `/login`
+- **Описание:**  
+Пользователь вводит email и пароль для авторизации. Успешный вход возвращает токен авторизации.
+- **Примечания:**  
+После успешного входа кнопка "Вход" в навбаре меняется на кнопку с ФИО пользователя. При нажатии на ФИО доступен выпадающий список с кнопками:
+  - "Профиль"
+  - "Выход"
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Регистрация
 
-### `npm run build`
+- **URL:** `/registration`
+- **Описание:**  
+Регистрация новых пользователей (только для врачей). Успешная регистрация возвращает токен авторизации.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Профиль
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **URL:** `/profile`
+- **Описание:**  
+Страница профиля позволяет редактировать личные данные врача:
+  - Email
+  - ФИО
+  - Телефон
+  - Пол
+  - Дата рождения
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Список пациентов
 
-### `npm run eject`
+- **URL:** `/patients`
+- **Описание:**  
+Отображение списка всех пациентов системы.
+- **Поддерживаемые функции:**  
+  - **Пагинация:**
+    Пример URL:
+    - `/patients/?page=1&size=5`
+    - `/patients/?page=2&size=10`
+  - **Фильтрация и сортировка:**
+    Пример URL:
+    - `/patients?name=Иван&conclusions=Disease&page=1`
+    - `/patients?onlyMine=true&sorting=CreateDesc`
+- **Фильтры:**
+  - Поиск по имени пациента
+  - Фильтрация по заключению осмотра (выздоровление, болезнь, смерть)
+  - Наличие запланированных визитов
+  - Только мои пациенты
+- **Сортировка:**
+  - По имени (А-Я/Я-А)
+  - По дате создания (новые/старые)
+  - По дате осмотров (новые/старые)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Карта пациента
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **URL:** `/patient/{id}`
+- **Описание:**  
+Страница с деталями пациента и списком его осмотров.
+- **Поддерживаемые функции:**  
+  - **Пагинация:**
+    Пример URL:
+    - `/patient/{id}?page=1&size=5`
+    - `/patient/{id}?page=2&size=10`
+  - **Фильтрация и сортировка:**
+    Пример URL:
+    - `/patient/{id}?icdRoots=e42b938d-1f3b-4119-b495-18afa80f6543`
+    - `/patients/{id}?grouped=true`
+- **Фильтры:**
+  - По корневым кодам МКБ-10
+  - Группировка по повторным осмотрам
+- **Особенности:**
+  - Осмотры пациента делятся на 2 колонки на широких экранах и в 1 колонку на узких.
+  - Иконки пациентов различаются по полу.
+  - Осмотр с заключением "Смерть" выделяется цветом, пациент не может иметь дальнейших осмотров.
+  - При выборе критерия "Сгруппировать по повторным" осмотры группируются в цепочки взаимосвязанных осмотров.
+  - На странице присутствует 2 вида кнопок "Добавить осмотр":
+    1. Расположена вверху страницы.
+    2. Расположена на карточке осмотра:
+       - Отображается только в том случае, если у осмотра еще нет дочерних осмотров.
+       - При нажатии новый осмотр будет отмечен как "Повторный осмотр", а данный осмотр будет выбран как предыдущий для создаваемого.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Создание осмотра
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **URL:** `/inspection/create`
+- **Описание:**  
+Форма для создания нового осмотра.
+- **Требования:**
+  - Дата осмотра не может быть в будущем.
+  - Нельзя создать более одного осмотра с заключением "Смерть".
+  - Основной диагноз обязателен.
+  - При создании консультации необходимо указать комментарий, описывающий проблему.
+  - Заключения:
+    - "Болезнь" — указать дату следующего визита.
+    - "Смерть" — указать дату и время смерти.
+    - "Выздоровление" — дополнительная информация не требуется.
 
-## Learn More
+### Страница осмотра
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **URL:** `/inspection/{id}`
+- **Описание:**  
+Страница с подробностями осмотра.
+- **Особенности:**
+  - При нажатии на кнопку редактирования осмотра открывается модальное окно, предоставляющее возможность отредактировать основные поля осмотра:
+    - Жалобы
+    - Анамнез заболевания
+    - Рекомендации по лечению
+    - Диагнозы
+    - Заключение
+  - Редактирование осмотра доступно только врачу, создавшему данный осмотр!
+  - Просмотр и добавление комментариев к консультациям.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Список консультаций
 
-### Code Splitting
+- **URL:** `/consultations`
+- **Описание:**  
+Список осмотров с консультациями, соответствующими специальности врача.
+- **Поддерживаемые функции:**
+  - **Пагинация:**
+    Пример URL:
+    - `/consultations?page=1&size=5`
+    - `/consultations?page=2&size=10`
+  - **Фильтрация и сортировка:**
+    Пример URL:
+    - `/consultations?icdRoots=e42b938d-1f3b-4119-b495-18afa80f6543`
+    - `/consultations?grouped=true`
+- **Фильтры:**
+  - По корневым кодам МКБ-10
+  - Группировка по повторным осмотрам
+- **Особенности:**
+  - Осмотры делятся на 2 колонки на широких экранах и в 1 колонку на узких.
+  - Осмотр с заключением "Смерть" выделяется цветом, пациент не может иметь дальнейших осмотров.
+  - При выборе критерия "Сгруппировать по повторным" осмотры группируются в цепочки взаимосвязанных осмотров.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Генерация отчета
 
-### Analyzing the Bundle Size
+- **URL:** `/reports`
+- **Описание:**  
+Форма для генерации отчетов по статистике осмотров.
+- **Поля фильтрации:**
+  - Диапазон дат
+  - По корневым кодам МКБ-10
+- **Отчет отображается в виде таблицы:**
+  - Колонки — корни МКБ-10
+  - Строки — пациенты
+  - В ячейке — количество осмотров по каждой группе.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Not found
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **URL:** `*`
+- **Описание:**  
+Страница с сообщением об ошибке 404, когда пользователь пытается перейти по несуществующему маршруту.
+- **Функции:**  
+Предлагает перейти на страницу "Авторизация" или "Список пациентов".
