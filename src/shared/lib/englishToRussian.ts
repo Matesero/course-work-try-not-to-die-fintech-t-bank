@@ -6,6 +6,9 @@ const englishToRussianMap: Record<string, string> = {
     Disease: 'болезнь',
     Male: 'Мужчина',
     Female: 'Женщина',
+    Main: 'Основной',
+    Concomitant: 'Сопутствующий',
+    Complication: 'Осложнение',
 };
 
 export const englishToRussian = (name: Props): string => {

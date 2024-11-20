@@ -20,8 +20,10 @@ export const withTime = (date: Props) => {
 
     const parts = date.split('T');
     const datePart = parts[0];
+    const timePart = parts[1];
 
     const [year, month, day] = datePart.split('-');
+    const [hours, minutes] = timePart.split(':');
 
-    return `${day}.${month}.${year}`;
+    return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
