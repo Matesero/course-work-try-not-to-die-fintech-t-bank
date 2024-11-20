@@ -8,6 +8,8 @@ export const RouteName = {
     PATIENT_PAGE: '/patient/:id',
     CONSULTATIONS_PAGE: '/consultations',
     REPORTS_PAGE: '/reports',
+    CREATE_PAGE: '/inspection/create',
+    INSPECTION_PAGE: '/inspection/:id',
 };
 
 export type RouteDescription = {
