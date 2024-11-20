@@ -1,27 +1,63 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { User } from '~/shared/api/medicalSystem/models';
+import { getCard } from '~/shared/api/medicalSystem/patient';
+import { getInspectionsWithoutChild } from '~/shared/api/medicalSystem/patient';
+import { sharedConfigTypes } from '~/shared/config';
 
 type State = {
-    user: User | null;
+    id: string | null;
+    data: sharedConfigTypes.Patient | null;
+    isLoading: boolean;
+    inspectionsWithoutChild: sharedConfigTypes.InspectionWithoutChild[];
 };
 
 const initialState: State = {
-    user: null,
+    id: null,
+    data: null,
+    isLoading: false,
+    inspectionsWithoutChild: [],
 };
 
-const userSlice = createSlice({
-    name: 'user',
+const patientSlice = createSlice({
+    name: 'patient',
     initialState,
     reducers: {
-        setUser(state, action) {
-            state.user = action.payload;
+        setId(state, action) {
+            state.id = action.payload;
         },
-        removeUser(state) {
-            state.user = null;
+        setData(state, action) {
+            state.data = action.payload;
         },
+        removePatient(state) {
+            state.id = null;
+            state.data = null;
+            state.inspectionsWithoutChild = [];
+        },
+        removeInspectionsWithoutChild(state) {
+            state.inspectionsWithoutChild = [];
+        },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getCard.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getCard.fulfilled, (state, action) => {
+                state.id = action.payload.id;
+                state.data = action.payload;
+                state.isLoading = false;
+            });
+
+        builder
+            .addCase(getInspectionsWithoutChild.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getInspectionsWithoutChild.fulfilled, (state, action) => {
+                state.inspectionsWithoutChild = action.payload;
+                state.isLoading = false;
+            });
     },
 });
 
-export const { setUser, removeUser } = userSlice.actions;
-export const userReducer = userSlice.reducer;
+export const { setId, setData, removePatient } = patientSlice.actions;
+export const patientReducer = patientSlice.reducer;

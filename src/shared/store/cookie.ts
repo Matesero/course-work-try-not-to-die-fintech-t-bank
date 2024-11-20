@@ -3,7 +3,7 @@ export const setToken = (token: string) => {
 };
 
 export const removeToken = () => {
-    document.cookie = 'jwt=""';
+    document.cookie = 'jwt=; max-age=0; path=/;';
 };
 
 export const getToken = () => {
