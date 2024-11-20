@@ -19,7 +19,8 @@ export const PatientsFilter = ({ defaultValues, onSubmit }: Props) => {
         <FiltersWrapper title="Фильтры и сортировка" onSubmit={onSubmit}>
             <div className="col-span-2">
                 <InputField
-                    name="Имя"
+                    label="ФИО"
+                    name="name"
                     type="text"
                     defaultValue={defaultValues.name}
                     placeholder="Иванов Иван Иванович"
@@ -27,30 +28,35 @@ export const PatientsFilter = ({ defaultValues, onSubmit }: Props) => {
             </div>
             <div className="col-span-2">
                 <Select
-                    name="Имеющиеся заключения"
+                    label="Имеющиеся заключения"
+                    name="conclusions"
                     defaultValue={defaultValues.conclusions}
                     options={conclusions}
                     isMultiple
                 />
             </div>
             <Select
-                name="Число пациентов на странице"
+                label="Число пациентов на странице"
+                name="size"
                 defaultValue={defaultValues.size}
                 options={size}
             />
             <Select
-                name="Сортировка пациентов"
+                label="Сортировка пациентов"
+                name="sorting"
                 defaultValue={defaultValues.sorting}
                 options={sorting}
             />
             <div className="flex flex-row gap-6 lg:flex-col lg:gap-1 col-span-1 lg:justify-end">
                 <Checkbox
-                    defaultValue={defaultValues.scheduledVisits}
+                    defaultChecked={!!defaultValues.scheduledVisits}
                     label="Есть запланированные визиты"
+                    name="scheduledVisits"
                 />
                 <Checkbox
-                    defaultValue={defaultValues.onlyMine}
+                    defaultChecked={!!defaultValues.onlyMine}
                     label="Только мои"
+                    name="onlyMine"
                 />
             </div>
             <div className="flex col-start-4 w-full h-2/3 lg:w-2/3 lg:translate-x-1/2 lg:translate-y-1/2">

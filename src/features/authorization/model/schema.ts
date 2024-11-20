@@ -21,8 +21,10 @@ const getAge = (dateOfBirth: Date): number => {
     const month = today.getMonth() - dateOfBirth.getMonth();
 
     if (month < 0 || (month === 0 && today.getDate() < dateOfBirth.getDate())) {
+        console.log(age - 1);
         return age - 1;
     }
+
     return age;
 };
 
@@ -70,6 +72,20 @@ export const schema = zod.object({
         )
         .optional(),
 
+    patientBirthday: zod
+        .string()
+        .min(1, 'Поле является обязательным')
+        .refine(
+            (value) => {
+                const date = new Date(value);
+                return getAge(date) >= 0;
+            },
+            {
+                message: 'День рождения должен быть не позже сегодняшнего дня',
+            },
+        )
+        .optional(),
+
     name: zod
         .string()
         .min(1, 'Поле является обязательным')
@@ -81,7 +97,7 @@ export const schema = zod.object({
         })
         .optional(),
 
-    specialty: zod.string().min(1, 'Поле является обязательным').optional(),
+    speciality: zod.string().min(1, 'Поле является обязательным').optional(),
 
     gender: zod.string().min(1, 'Поле является обязательным').optional(),
 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import type { FormEventHandler } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,12 +7,14 @@ import { State } from './reducer';
 import { schema, zod2errors } from './schema';
 
 import { medicalSystemApi } from '~/shared/api';
+import { getProfile, login, register } from '~/shared/api/medicalSystem/user';
 import { sharedConfigRouter } from '~/shared/config';
+import { useAppDispatch } from '~/shared/store/store';
 
-const { dictionary, user } = medicalSystemApi;
+const { user, patient } = medicalSystemApi;
 const { RouteName } = sharedConfigRouter;
 
-type Props = 'login' | 'register' | 'profile';
+type Props = 'login' | 'registerUser' | 'profile' | 'registerPatient';
 
 export type FormResult = readonly [
     State,
@@ -27,38 +29,18 @@ export const useForm = (formType: Props): FormResult => {
             isEditing: formType !== 'profile',
             isLoading: true,
             isUpload: false,
-            specialties: [],
         },
     );
+    const appDispatch = useAppDispatch();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchSpecialties = async () => {
-            try {
-                const { data } = await dictionary.getSpecialties({
-                    page: 1,
-                    size: 18,
-                });
-
-                if (data) {
-                    dispatch({
-                        type: 'finishResponse',
-                        payload: data.specialties,
-                    });
-                }
-            } catch (error) {
-                dispatch({ type: 'errorResponse' });
-            }
-        };
-
-        fetchSpecialties();
-    }, []);
 
     const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
         const data = schema.safeParse(Object.fromEntries(formData));
+
+        console.log(data);
 
         if (data.success) {
             try {
@@ -70,7 +52,8 @@ export const useForm = (formType: Props): FormResult => {
                     phone,
                     name,
                     gender,
-                    specialty,
+                    patientBirthday,
+                    speciality,
                     birthday,
                 } = params;
 
@@ -78,38 +61,52 @@ export const useForm = (formType: Props): FormResult => {
                 switch (formType) {
                     case 'login':
                         if (email && password) {
-                            await user.login({ email, password });
+                            await appDispatch(login({ email, password }));
                             navigate({ pathname: RouteName.PATIENTS_PAGE });
                         } else {
                             console.error('Почты и пароля нет');
                         }
                         break;
 
-                    case 'register':
+                    case 'registerUser':
                         if (
                             email &&
                             password &&
                             phone &&
                             name &&
-                            specialty &&
+                            speciality &&
                             birthday &&
-                            gender === ('Male' || 'Female')
+                            gender
                         ) {
-                            await user.register({
-                                email,
-                                password,
-                                phone,
-                                name,
-                                specialty,
-                                birthday,
-                                gender,
-                            });
+                            await appDispatch(
+                                register({
+                                    email,
+                                    password,
+                                    phone,
+                                    name,
+                                    speciality,
+                                    birthday,
+                                    gender,
+                                }),
+                            );
                             navigate({ pathname: RouteName.PATIENTS_PAGE });
                         } else {
                             console.error('Данные введены неверно');
                         }
-
                         break;
+
+                    case 'registerPatient':
+                        if (name && patientBirthday && gender) {
+                            await patient.register({
+                                name,
+                                birthday: patientBirthday,
+                                gender,
+                            });
+                        } else {
+                            console.error('Данные введены неверно');
+                        }
+                        break;
+
                     case 'profile':
                         if (
                             email &&
@@ -125,7 +122,7 @@ export const useForm = (formType: Props): FormResult => {
                                 birthday,
                                 gender,
                             });
-                            navigate({ pathname: RouteName.PATIENTS_PAGE });
+                            await appDispatch(getProfile());
                         } else {
                             console.error('Данные введены неверно');
                         }

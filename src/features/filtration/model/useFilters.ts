@@ -6,14 +6,16 @@ import { schema } from './schema';
 import { sharedConfigTypes } from '~/shared/config';
 
 const paramKeys = [
+    'start',
+    'end',
     'name',
     'conclusions',
     'sorting',
     'scheduledVisits',
     'onlyMine',
-    'grouped',
     'icdRoots',
     'size',
+    'grouped',
     'page',
 ];
 
@@ -73,6 +75,10 @@ export const useFilters = (): FiltersResults => {
 
             for (const key in params) {
                 const param = params[key];
+
+                if (['end', 'start'].includes(key)) {
+                    continue;
+                }
 
                 Array.isArray(param)
                     ? param.forEach((value) => urlParams.append(key, value))

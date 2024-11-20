@@ -18,7 +18,7 @@ type PaginationResult = {
 
 export const usePagination = (total: Props): PaginationResult => {
     const [currentPage, setCurrentPage] = useState<number>(getInitialPage());
-    const [startPage, setStartPage] = useState<number>(0);
+    const [startPage, setStartPage] = useState<number>(1);
     const [endPage, setEndPage] = useState<number>(1);
     const navigate = useNavigate();
     const location = useLocation();
@@ -36,11 +36,11 @@ export const usePagination = (total: Props): PaginationResult => {
         const halfRange = Math.floor(maxVisibleButtons / 2);
 
         let start = Math.max(currentPage - halfRange, 1);
-        let end = Math.min(currentPage + halfRange, total | 1);
+        let end = Math.min(currentPage + halfRange, total);
 
         if (end - start + 1 < maxVisibleButtons) {
             if (start === 1) {
-                end = Math.min(start + maxVisibleButtons - 1, total | 1);
+                end = Math.min(start + maxVisibleButtons - 1, total);
             } else if (end === total) {
                 start = Math.max(end - maxVisibleButtons + 1, 1);
             }

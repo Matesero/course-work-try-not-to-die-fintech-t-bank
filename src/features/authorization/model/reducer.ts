@@ -1,12 +1,9 @@
-import { medicalSystemApi } from '~/shared/api';
-
 export type State = {
     isEditing: boolean;
     isUpload?: boolean;
     isLoading?: boolean;
     errors?: { [key: string]: string };
     error?: string;
-    specialties: medicalSystemApi.models.Specialty[];
 };
 
 export type Action =
@@ -15,7 +12,6 @@ export type Action =
     | { type: 'errorForm'; payload: { [key: string]: string } }
     | { type: 'startUpload' }
     | { type: 'finishUpload' }
-    | { type: 'finishResponse'; payload: medicalSystemApi.models.Specialty[] }
     | { type: 'errorResponse' };
 
 export const reducer = (state: State, action: Action): State => {
@@ -37,13 +33,6 @@ export const reducer = (state: State, action: Action): State => {
             return state.isUpload || state.isLoading
                 ? { ...state, isEditing: false }
                 : state;
-
-        case 'finishResponse':
-            return {
-                ...state,
-                isLoading: false,
-                specialties: action.payload,
-            };
 
         case 'errorResponse':
             return state.isUpload
