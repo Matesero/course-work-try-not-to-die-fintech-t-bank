@@ -1,4 +1,4 @@
-import { AxiosPromise } from 'axios';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { User } from './models';
 
@@ -12,18 +12,21 @@ interface LoginParams {
     password: string;
 }
 
-export const login = async (params: LoginParams) => {
-    const response = await base.medicalSystemRequester.post(
-        '/doctor/login',
-        params,
-    );
+export const login = createAsyncThunk<{ token: string }, LoginParams>(
+    'user/login',
+    async (params, { rejectWithValue }) => {
+        try {
+            const response = await base.medicalSystemRequester.post(
+                '/doctor/login',
+                params,
+            );
 
-    const token = response.data.token;
-
-    if (token) {
-        cookieService.setToken(token);
-    }
-};
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message);
+        }
+    },
+);
 
 interface RegisterParams extends LoginParams {
     name: string;
@@ -33,51 +36,82 @@ interface RegisterParams extends LoginParams {
     specialty: string;
 }
 
-export const register = async (params: RegisterParams) => {
-    const response = await base.medicalSystemRequester.post(
-        '/doctor/register',
-        params,
-    );
+export const register = createAsyncThunk<{ token: string }, RegisterParams>(
+    'user/register',
+    async (params, { rejectWithValue }) => {
+        try {
+            const response = await base.medicalSystemRequester.post(
+                '/register',
+                params,
+            );
 
-    const token = response.data.token;
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data.message);
+        }
+    },
+);
 
-    if (token) {
-        cookieService.setToken(token);
-    }
-};
+export const logout = createAsyncThunk<void, void>(
+    'user/logout',
+    async (_, { rejectWithValue }) => {
+        const token = cookieService.getToken();
 
-export const logout = () => {
-    const token = cookieService.getToken();
+        try {
+            await base.medicalSystemRequester.post(
+                '/doctor/logout',
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                },
+            );
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message);
+        }
+    },
+);
 
-    cookieService.setToken('');
+export const getProfile = createAsyncThunk<User, void>(
+    'user/getProfile',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await base.medicalSystemRequester.get(
+                '/doctor/profile',
+                {
+                    headers: {
+                        Authorization: `Bearer ${cookieService.getToken()}`,
+                    },
+                },
+            );
 
-    return base.medicalSystemRequester.post('/doctor/logout', {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-};
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message);
+        }
+    },
+);
 
-export const getProfile = (): AxiosPromise<User> => {
-    return base.medicalSystemRequester.get('/doctor/profile', {
-        headers: {
-            Authorization: `Bearer ${cookieService.getToken()}`,
-        },
-    });
-};
-
-interface EditParams {
+type EditParams = {
     email: string;
     name: string;
     birthday: string;
     gender: 'Male' | 'Female';
     phone: string;
-}
-
-export const putProfile = (params: EditParams) => {
-    return base.medicalSystemRequester.put('/doctor/profile', params, {
-        headers: {
-            Authorization: `Bearer ${cookieService.getToken()}`,
-        },
-    });
 };
+
+export const putProfile = createAsyncThunk<void, EditParams>(
+    'user/putProfile',
+    async (params, { rejectWithValue }) => {
+        try {
+            await base.medicalSystemRequester.put('/doctor/profile', params, {
+                headers: {
+                    Authorization: `Bearer ${cookieService.getToken()}`,
+                },
+            });
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message);
+        }
+    },
+);

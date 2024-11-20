@@ -1,7 +1,9 @@
+import * as Sentry from '@sentry/react'; // Импорт Sentry
 import axios, { AxiosError } from 'axios';
 
 import { sharedConfigEnvs } from '~/shared/config';
 import { cookieService } from '~/shared/store';
+
 const { MEDICAL_SYSTEM_HOST } = sharedConfigEnvs;
 
 export const medicalSystemRequester = axios.create({
@@ -12,7 +14,7 @@ medicalSystemRequester.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
         if (error.response) {
-            const { status } = error.response;
+            const { status, data } = error.response;
 
             switch (status) {
                 case 400:
@@ -65,11 +67,24 @@ medicalSystemRequester.interceptors.response.use(
                     alert(`Произошла ошибка: ${status}`);
                     break;
             }
+
+            // Отправка ошибки в Sentry
+            Sentry.captureException(
+                new Error(
+                    `HTTP Error: ${status}, Message: ${data?.message || 'Unknown'}`,
+                ),
+            );
         } else {
             console.error('Ошибка сети или таймаут!');
             alert('Ошибка сети или таймаут!');
+            Sentry.captureException(
+                new Error(
+                    'Ошибка сети или таймаут! Возможно, сервер недоступен.',
+                ),
+            );
         }
 
+        // Передача ошибки дальше
         return Promise.reject(error);
     },
 );
