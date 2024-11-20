@@ -1,19 +1,18 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { FormWrapper } from './FormWrapper';
 import { useForm } from '../model';
 
-import { medicalSystemApi } from '~/shared/api';
 import { sharedConfigOptions } from '~/shared/config';
+import { userSlice } from '~/shared/store';
 import { sharedUiComponents } from '~/shared/ui';
+const { selectors } = userSlice;
 
 const { InputField, Button, Select, Datepicker } = sharedUiComponents;
 
-type Props = {
-    user: medicalSystemApi.models.User | null;
-};
-
-export const ProfileForm = ({ user }: Props) => {
+export const ProfileForm = () => {
+    const user = useSelector(selectors.user);
     const [{ isEditing, errors }, onSubmit, onSwitch] = useForm('profile');
 
     return (
@@ -21,7 +20,8 @@ export const ProfileForm = ({ user }: Props) => {
             <div className="flex flex-col gap-4">
                 <InputField
                     type="text"
-                    name="ФИО"
+                    label="ФИО"
+                    name="name"
                     defaultValue={user?.name}
                     placeholder="Иванов Иван Иванович"
                     disabled={!isEditing}
@@ -29,7 +29,8 @@ export const ProfileForm = ({ user }: Props) => {
                 />
                 <div className="flex flex-row justify-between">
                     <Select
-                        name="Пол"
+                        label="Пол"
+                        name="gender"
                         defaultValue={user?.gender}
                         options={sharedConfigOptions.gender}
                         classNames="w-5/12"
@@ -37,18 +38,20 @@ export const ProfileForm = ({ user }: Props) => {
                         error={errors?.['gender'] ?? ''}
                     />
                     <Datepicker
-                        className="w-5/12"
-                        name="Дата рождения"
+                        label="Дата рождения"
+                        name="birthday"
                         defaultValue={user?.birthday}
                         asSingle={true}
                         useRange={false}
                         disabled={!isEditing}
+                        className="w-5/12"
                         error={errors?.['birthday'] ?? ''}
                     />
                 </div>
                 <InputField
+                    label="Номер телефона"
                     type="phone"
-                    name="Телефон"
+                    name="phone"
                     defaultValue={user?.phone}
                     placeholder="+7 (xxx) xxx-xx-xx"
                     disabled={!isEditing}
@@ -56,7 +59,8 @@ export const ProfileForm = ({ user }: Props) => {
                 />
                 <InputField
                     type="text"
-                    name="Email"
+                    name="email"
+                    label="Email"
                     defaultValue={user?.email}
                     placeholder="name@example.com"
                     disabled={!isEditing}

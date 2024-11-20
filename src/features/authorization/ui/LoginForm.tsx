@@ -18,20 +18,22 @@ export const LoginForm = () => {
         navigate({ pathname: RouteName.REGISTRATION_PAGE });
 
     return (
-        <FormWrapper title={'Профиль'} onSubmit={onSubmit}>
+        <FormWrapper title={'Вход'} onSubmit={onSubmit}>
             <div className="flex flex-col gap-4">
                 <InputField
                     type="text"
-                    name="Email"
+                    label="Email"
+                    name="email"
                     placeholder={'name@example.com'}
                     isRequired
                     error={errors?.['email'] ?? ''}
                 />
                 <InputField
-                    type="password"
-                    name="Пароль"
+                    label="Пароль"
+                    name="password"
                     placeholder={'∗∗∗∗∗∗∗'}
                     isRequired
+                    type="password"
                     error={errors?.['password'] ?? ''}
                 />
             </div>

@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { Layout } from '~/app/layout';
 import { patientEntity } from '~/entities';
-import { filtrationFeature } from '~/features';
-import { paginationFeature } from '~/features';
+import { filtrationFeature, paginationFeature } from '~/features';
+import { useForm } from '~/features/authorization/model';
+import { FormWrapper } from '~/features/authorization/ui/FormWrapper';
 import { medicalSystemApi } from '~/shared/api';
-import { sharedConfigRouter, sharedConfigTypes } from '~/shared/config';
+import {
+    sharedConfigOptions,
+    sharedConfigRouter,
+    sharedConfigTypes,
+} from '~/shared/config';
 import {
     Patient as PatientType,
     Pagination as PaginationType,
@@ -25,7 +30,7 @@ const { patient } = medicalSystemApi;
 const { getList } = patient;
 const { RouteName } = sharedConfigRouter;
 const { selectors } = userSlice;
-const { Loading } = sharedUiComponents;
+const { Loading, Datepicker, InputField, Button, Select } = sharedUiComponents;
 
 type Params = sharedConfigTypes.Params;
 
@@ -36,6 +41,8 @@ export const PatientsPage = () => {
     if (!isAuth) {
         navigate(RouteName.LOGIN_PAGE);
     }
+    const [{ errors }, onSubmitForm] = useForm('registerPatient');
+    const [regPatientIsOpen, setRegPatientIsOpen] = useState(false);
 
     const { params, onSubmit } = useFilters();
     const { data, isLoading } = useData<
@@ -46,12 +53,72 @@ export const PatientsPage = () => {
         data?.pagination.count,
     );
 
+    const handleModalClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+    };
+
     return (
         <Layout>
             <div className="absolute top-28 w-11/12 2xl:max-w-screen-2xl">
-                <h1 className="text-5xl font-bold ml-2 mb-6 pr-3 pl-3">
-                    Пациенты
-                </h1>
+                <div className="ml-2 mb-4 pr-3 pl-3 flex flex-row justify-between">
+                    <h1 className="text-5xl font-bold ">Пациенты</h1>
+                    <Button
+                        text="Регистрация нового пациента"
+                        className="!w-fit px-6"
+                        onClick={() => setRegPatientIsOpen(true)}
+                    />
+                </div>
+
+                {regPatientIsOpen && (
+                    <div
+                        className="fixed inset-0 z-50 flex justify-center items-center bg-blue-500 bg-opacity-50"
+                        onClick={() => setRegPatientIsOpen(false)}
+                    >
+                        <FormWrapper
+                            title="Регистрация пациента"
+                            onSubmit={onSubmitForm}
+                            onClick={handleModalClick}
+                        >
+                            <InputField
+                                label="ФИО"
+                                type="text"
+                                name="name"
+                                placeholder="Иванов Иван Иванович"
+                                isRequired
+                                error={errors?.['name'] ?? ''}
+                            />
+                            <div className="flex flex-col lg:flex-row justify-between gap-4">
+                                <Select
+                                    label="Пол"
+                                    name="gender"
+                                    options={sharedConfigOptions.gender}
+                                    classNames="w-full lg:w-5/12"
+                                    isRequired
+                                    error={errors?.['gender'] ?? ''}
+                                />
+                                <Datepicker
+                                    label="День рождения"
+                                    name="patientBirthday"
+                                    asSingle={true}
+                                    useRange={false}
+                                    isRequired
+                                    error={errors?.['patientBirthday'] ?? ''}
+                                    className="w-full lg:w-5/12"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <Button text="Зарегистрировать" type="submit" />
+                                <Button
+                                    text="Отмена"
+                                    bgColor="primary-gray"
+                                    type="button"
+                                    className="lg:hidden"
+                                    onClick={() => setRegPatientIsOpen(false)}
+                                />
+                            </div>
+                        </FormWrapper>
+                    </div>
+                )}
                 <PatientsFilter defaultValues={params} onSubmit={onSubmit} />
                 <div className="flex flex-col justify-center pt-4 items-center gap-4">
                     {isLoading ? (
