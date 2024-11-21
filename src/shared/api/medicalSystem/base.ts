@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/react'; // Импорт Sentry
+import * as Sentry from '@sentry/react';
 import axios, { AxiosError } from 'axios';
 
 import { sharedConfigEnvs } from '~/shared/config';
@@ -18,65 +18,65 @@ medicalSystemRequester.interceptors.response.use(
 
             switch (status) {
                 case 400:
-                    console.error('Неверный запрос!');
-                    alert('Неверный запрос!');
+                    Sentry.captureException(new Error('Неверный запрос!'));
                     break;
 
                 case 401:
-                    console.error(
-                        'Токен недействителен. Перенаправление на страницу авторизации.',
+                    Sentry.captureException(
+                        new Error(
+                            'Токен недействителен. Перенаправление на страницу авторизации.',
+                        ),
                     );
                     cookieService.removeToken();
                     window.location.href = '/login';
                     break;
 
                 case 403:
-                    console.error('У вас нет прав!');
-                    alert('У вас нет прав!');
+                    Sentry.captureException(new Error('У вас нет прав!'));
                     break;
 
                 case 404:
-                    console.error('Данные не найдены!');
-                    alert('Данные не найдены!');
+                    Sentry.captureException(new Error('Данные не найдены!'));
                     break;
 
                 case 500:
-                    console.error('Внутренняя ошибка сервера!');
-                    alert('Внутренняя ошибка сервера!');
+                    Sentry.captureException(
+                        new Error('Внутренняя ошибка сервера!'),
+                    );
                     break;
 
                 case 502:
-                    console.error('Сервер недоступен!');
-                    alert('Сервер недоступен!');
+                    Sentry.captureException(new Error('Сервер недоступен!'));
                     break;
 
                 case 503:
-                    console.error('Сервис временно недоступен!');
-                    alert('Сервис временно недоступен!');
+                    Sentry.captureException(
+                        new Error('Сервис временно недоступен!'),
+                    );
                     break;
 
                 case 504:
-                    console.error(
-                        'Превышено время ожидания ответа от сервера!',
+                    Sentry.captureException(
+                        new Error(
+                            'Превышено время ожидания ответа от сервера!',
+                        ),
                     );
-                    alert('Превышено время ожидания ответа от сервера!');
                     break;
 
                 default:
-                    console.error(`Произошла ошибка: ${status}`);
-                    alert(`Произошла ошибка: ${status}`);
+                    Sentry.captureException(
+                        new Error(`Произошла ошибка: ${status}`),
+                    );
                     break;
             }
 
-            // Отправка ошибки в Sentry
             Sentry.captureException(
                 new Error(
-                    `HTTP Error: ${status}, Message: ${data?.message || 'Unknown'}`,
+                    `HTTP Error: ${status}, Message: ${(data as { message: string }).message || 'Unknown'}`,
                 ),
             );
         } else {
             console.error('Ошибка сети или таймаут!');
-            alert('Ошибка сети или таймаут!');
             Sentry.captureException(
                 new Error(
                     'Ошибка сети или таймаут! Возможно, сервер недоступен.',
@@ -84,7 +84,6 @@ medicalSystemRequester.interceptors.response.use(
             );
         }
 
-        // Передача ошибки дальше
         return Promise.reject(error);
     },
 );

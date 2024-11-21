@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+import withMT from '@material-tailwind/react/utils/withMT';
+
+module.exports = withMT({
     content: [
         './index.html',
         './node_modules/react-tailwindcss-select/dist/index.esm.js',
@@ -38,6 +40,10 @@ module.exports = {
                     800: '#141416',
                 },
             },
+            fontWeight: {
+                mediumPlus: '550',
+                regularPlus: '450',
+            },
             fontFamily: {
                 arial: ['Arial', 'sans-serif'],
             },
@@ -71,4 +77,4 @@ module.exports = {
         'bg-primary-romanSilver',
         'bg-primary-orange',
     ],
-};
+});

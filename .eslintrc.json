@@ -33,6 +33,7 @@
         "curly": "error",
         "object-curly-spacing": ["error", "always"],
         "no-redeclare": "error",
+        "import/no-cycle": ["warn", { "maxDepth": 1 }],
         "prefer-const": "error",
         "quotes": ["error", "single"],
         "keyword-spacing": ["error", { "after": true }],
