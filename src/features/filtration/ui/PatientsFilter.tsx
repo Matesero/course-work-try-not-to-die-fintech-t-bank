@@ -60,7 +60,7 @@ export const PatientsFilter = ({ defaultValues, onSubmit }: Props) => {
                 />
             </div>
             <div className="flex col-start-4 w-full h-2/3 lg:w-2/3 lg:translate-x-1/2 lg:translate-y-1/2">
-                <Button text="Поиск" type="submit" />
+                <Button label="Поиск" type="submit" />
             </div>
         </FiltersWrapper>
     );

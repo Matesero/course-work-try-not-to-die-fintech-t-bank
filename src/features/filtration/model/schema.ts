@@ -28,7 +28,7 @@ export const schema = zod
             const startDate = new Date(data.start);
             const endDate = new Date(data.end);
 
-            return (endDate) => startDate;
+            return endDate >= startDate;
         },
         {
             message: 'End date must be after or equal to start date.',

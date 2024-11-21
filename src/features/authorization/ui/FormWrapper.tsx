@@ -6,9 +6,10 @@ const { FormTittle } = sharedUiComponents;
 type Props = {
     title: string;
     onSubmit: FormEventHandler<HTMLFormElement>;
-    onClick: (e: React.MouseEvent) => void;
+    onClick?: (e: React.MouseEvent) => void;
     children: ReactNode;
     className?: string;
+    error?: string;
 };
 
 export const FormWrapper = ({

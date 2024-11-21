@@ -33,3 +33,5 @@ export const Radio = forwardRef<HTMLInputElement | null, Props>(
         );
     },
 );
+
+Radio.displayName = 'Radio';

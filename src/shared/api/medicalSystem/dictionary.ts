@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { medicalSystemApi } from '~/shared/api';
+import { base } from './';
+
 import { sharedConfigTypes } from '~/shared/config';
 
 type Pagination = {
@@ -19,16 +20,17 @@ export const getSpecialties = createAsyncThunk<
     'dictionary/getSpecialties',
     async ({ page, size }: Pagination, { rejectWithValue }) => {
         try {
-            const response =
-                await medicalSystemApi.base.medicalSystemRequester.get(
-                    '/dictionary/speciality',
-                    {
-                        params: { page, size },
-                    },
-                );
+            const response = await base.medicalSystemRequester.get(
+                '/dictionary/speciality',
+                {
+                    params: { page, size },
+                },
+            );
             return response.data;
-        } catch (error) {
-            return rejectWithValue(error.response?.data || error.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
         }
     },
 );
@@ -37,16 +39,17 @@ export const getIcd = createAsyncThunk<sharedConfigTypes.Icd[], Pagination>(
     'dictionary/getIcd',
     async ({ request, page, size }: Pagination, { rejectWithValue }) => {
         try {
-            const response =
-                await medicalSystemApi.base.medicalSystemRequester.get(
-                    '/dictionary/icd10',
-                    {
-                        params: { request, page, size },
-                    },
-                );
-            return response.data; // Assuming response.data contains the required data
-        } catch (error) {
-            return rejectWithValue(error.response?.data || error.message);
+            const response = await base.medicalSystemRequester.get(
+                '/dictionary/icd10',
+                {
+                    params: { request, page, size },
+                },
+            );
+            return response.data.records;
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
         }
     },
 );
@@ -55,14 +58,15 @@ export const getIcdRoots = createAsyncThunk<sharedConfigTypes.Icd[]>(
     'dictionary/getIcdRoots',
     async (_, { rejectWithValue }) => {
         try {
-            const response =
-                await medicalSystemApi.base.medicalSystemRequester.get(
-                    '/dictionary/icd10/roots',
-                );
+            const response = await base.medicalSystemRequester.get(
+                '/dictionary/icd10/roots',
+            );
 
-            return response.data; // Assuming response.data contains the required data
-        } catch (error) {
-            return rejectWithValue(error.response?.data || error.message);
+            return response.data;
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
         }
     },
 );

@@ -1,10 +1,9 @@
 import { AxiosPromise } from 'axios';
 
-import { medicalSystemApi } from '~/shared/api';
+import { base } from './';
+
 import { sharedConfigTypes } from '~/shared/config';
 import { cookieService } from '~/shared/store';
-
-const { base } = medicalSystemApi;
 
 type GetParams = {
     start?: string;

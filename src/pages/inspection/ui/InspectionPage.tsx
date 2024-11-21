@@ -1,51 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+
+import { EditForm } from './EditForm';
 
 import { Layout } from '~/app/layout';
-import { Consultation } from '~/entities/consultation/ui';
-import { useForm } from '~/features/authorization/model';
-import { EditForm } from '~/pages/inspection/ui/EditForm';
-import { getIcdRoots } from '~/shared/api/medicalSystem/dictionary';
-import { sharedConfigRouter } from '~/shared/config';
+import { consultationEntity } from '~/entities';
+import { authorizationFeature } from '~/features';
 import { useStore } from '~/shared/hooks/useStore';
 import { parseDate } from '~/shared/lib';
 import { englishToRussian } from '~/shared/lib/englishToRussian';
-import { userSlice, dictionarySlice } from '~/shared/store';
 import { sharedUiComponents } from '~/shared/ui';
-import { Wrapper } from '~/shared/ui/components';
 
-const { RouteName } = sharedConfigRouter;
-const userSelectors = userSlice.selectors;
-const dictionarySelectors = dictionarySlice.selectors;
-const { Loading, Button } = sharedUiComponents;
+const { useForm } = authorizationFeature.model;
+const { Loading, Wrapper } = sharedUiComponents;
+const { Consultation } = consultationEntity.ui;
 
 export const InspectionPage = () => {
-    const { inspectionData, isLoadingStore } = useStore();
+    const { inspectionData } = useStore({
+        needIcdRoots: true,
+    });
     const [, onSubmit] = useForm('registerPatient');
     const [isEditing, setIsEditing] = useState(false);
-    const navigate = useNavigate();
-    const isAuth = useSelector(userSelectors.isAuth);
-    const icdRoots = useSelector(dictionarySelectors.icdRoots);
 
-    const appDispatch = useDispatch();
-
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!isAuth) {
-                navigate(RouteName.LOGIN_PAGE);
-                return;
-            }
-
-            if (!icdRoots.length) {
-                await appDispatch(getIcdRoots());
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    if (isLoadingStore || !inspectionData) {
+    if (!inspectionData) {
         return (
             <Layout>
                 <Loading />
@@ -58,12 +34,12 @@ export const InspectionPage = () => {
             <div className="absolute flex flex-col top-28 w-11/12 2xl:max-w-screen-2xl gap-3">
                 <div className="flex flex-col rounded-custom bg-primary-lightGray p-5 gap-5">
                     <div className="flex flex-row justify-between items-center">
-                        <p className="text-primary-darkSea font-bold text-4xl leading-0 mt-2">{`Амбулаторный осмотр от ${parseDate.withTime(inspectionData.date)}`}</p>
-                        <Button
-                            text="Редактировать осмотр"
-                            className="!w-fit px-4 py-1.5"
-                            onClick={() => setIsEditing(true)}
-                        />
+                        <p className="text-primary-darkSea font-bold text-2xl md:text-3xl lg:text-4xl leading-0 mt-2">{`Амбулаторный осмотр от ${parseDate.withTime(inspectionData.date)}`}</p>
+                        {/*<Button*/}
+                        {/*    text="Редактировать осмотр"*/}
+                        {/*    className="!w-fit px-4 py-1.5"*/}
+                        {/*    onClick={() => setIsEditing(true)}*/}
+                        {/*/>*/}
                     </div>
                     {isEditing && (
                         <EditForm
@@ -112,23 +88,25 @@ export const InspectionPage = () => {
                     <Consultation {...consultation} key={consultation.id} />
                 ))}
                 <Wrapper label="Диагнозы">
-                    {inspectionData.diagnoses.map((diagnosis) => (
-                        <div key={diagnosis.id}>
-                            <p className="text-md font-semibold">{`(${diagnosis.code}) ${diagnosis.name}`}</p>
-                            <div className="flex flex-col mt-1">
-                                <p className="text-primary-superLightGray text-sm leading-none w-fit">
-                                    Тип:{' '}
-                                    <span>
-                                        {englishToRussian(diagnosis.type)}
-                                    </span>
-                                </p>
-                                <p className="text-primary-superLightGray text-sm leading-none w-fit">
-                                    Расшифровка:{' '}
-                                    <span>{diagnosis.description}</span>
-                                </p>
+                    <div className="space-y-2.5">
+                        {inspectionData.diagnoses.map((diagnosis) => (
+                            <div key={diagnosis.id} className="">
+                                <p className="text-md font-semibold">{`(${diagnosis.code}) ${diagnosis.name}`}</p>
+                                <div className="flex flex-col">
+                                    <p className="text-primary-superLightGray text-sm leading-none w-fit">
+                                        Тип:{' '}
+                                        <span>
+                                            {englishToRussian(diagnosis.type)}
+                                        </span>
+                                    </p>
+                                    <p className="text-primary-superLightGray text-sm leading-none w-fit">
+                                        Расшифровка:{' '}
+                                        <span>{diagnosis.description}</span>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </Wrapper>
                 <Wrapper label="Рекомендации по лечению">
                     <span className="text-sm leading-none w-fit">
@@ -158,6 +136,7 @@ export const InspectionPage = () => {
                         </p>
                     )}
                 </Wrapper>
+                <div className="h-1" />
             </div>
         </Layout>
     );

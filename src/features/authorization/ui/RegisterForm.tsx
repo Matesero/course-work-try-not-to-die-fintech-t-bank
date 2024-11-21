@@ -4,15 +4,15 @@ import { useSelector } from 'react-redux';
 import { FormWrapper } from './FormWrapper';
 import { useForm } from '../model';
 
-import { getSpecialties } from '~/shared/api/medicalSystem/dictionary';
+import { medicalSystemApi } from '~/shared/api';
 import { sharedConfigOptions } from '~/shared/config';
 import { specialtiesToOptions } from '~/shared/lib/specialtiesToOptions';
 import { dictionarySlice } from '~/shared/store';
 import { useAppDispatch } from '~/shared/store/store';
 import { sharedUiComponents } from '~/shared/ui';
-import { Loading } from '~/shared/ui/components';
 
-const { InputField, Button, Select, Datepicker } = sharedUiComponents;
+const { InputField, Button, Select, Datepicker, Loading } = sharedUiComponents;
+const { getSpecialties } = medicalSystemApi.dictionary;
 const dictionarySelectors = dictionarySlice.selectors;
 
 export const RegisterForm = () => {
@@ -42,23 +42,23 @@ export const RegisterForm = () => {
                     isRequired
                     error={errors?.['name'] ?? ''}
                 />
-                <div className="flex flex-col lg:flex-row justify-between">
+                <div className="flex flex-col lg:flex-row justify-between items-end gap-6">
                     <Select
                         label="Пол"
                         name="gender"
                         options={sharedConfigOptions.gender}
-                        classNames="lg:w-5/12"
+                        classNames="w-full"
                         isRequired
                         error={errors?.['gender'] ?? ''}
                     />
                     <Datepicker
-                        className="lg:w-5/12"
                         label="Дата рождения"
                         name="birthday"
                         asSingle={true}
                         useRange={false}
                         isRequired
                         error={errors?.['birthday'] ?? ''}
+                        className="w-full"
                     />
                 </div>
                 <InputField
@@ -94,7 +94,7 @@ export const RegisterForm = () => {
                     error={errors?.['password'] ?? ''}
                 />
                 <div className="flex flex-col gap-2">
-                    <Button text="Зарегистрироваться" type="submit" />
+                    <Button label="Зарегистрироваться" type="submit" />
                 </div>
             </div>
         </FormWrapper>

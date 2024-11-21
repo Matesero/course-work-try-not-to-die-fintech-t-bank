@@ -1,12 +1,8 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 
+import { Wrapper } from './Wrapper';
 import { useForm } from '../model/useForm';
 
-import { Wrapper } from '~/features/createInpsection/ui/Wrapper';
-import { medicalSystemApi } from '~/shared/api';
-import { getSpecialties } from '~/shared/api/medicalSystem/dictionary';
-import { getInspectionsWithoutChild } from '~/shared/api/medicalSystem/patient';
 import { FemaleIcon, MaleIcon } from '~/shared/assets/images';
 import { sharedConfigOptions } from '~/shared/config';
 import { useStore } from '~/shared/hooks/useStore';
@@ -15,23 +11,22 @@ import { englishToRussian } from '~/shared/lib/englishToRussian';
 import { icdToOptions } from '~/shared/lib/icdToOptions';
 import { inspectionsToOptions } from '~/shared/lib/inspectionsToOptions';
 import { specialtiesToOptions } from '~/shared/lib/specialtiesToOptions';
-import { dictionarySlice, inspectionSlice } from '~/shared/store';
-import { useAppDispatch } from '~/shared/store/store';
-import {
-    Button,
-    Datepicker,
-    Loading,
-    Radio,
-    Select,
-    Switch,
-} from '~/shared/ui/components';
-import { Textarea } from '~/shared/ui/components';
+import { sharedUiComponents } from '~/shared/ui';
 
-const inspectionsSelectors = inspectionSlice.selectors;
-const dictionarySelectors = dictionarySlice.selectors;
+const { Button, Datepicker, Loading, Radio, Select, Switch, Textarea } =
+    sharedUiComponents;
 
 export const CreateForm = () => {
-    const { patientData } = useStore();
+    const {
+        patientData,
+        inspectionsWithoutChild,
+        specialties,
+        isLoadingStore,
+    } = useStore({
+        needSpecialties: true,
+        needPatient: true,
+        needInspectionWithoutChild: true,
+    });
     const {
         state,
         icd,
@@ -43,49 +38,20 @@ export const CreateForm = () => {
         onAddDiagnosis,
         onRadioChange,
         handleChangeConclusion,
-        inspectionsWithoutChild,
         onSwitchIsFirst,
         refs,
     } = useForm();
-    const specialties = useSelector(dictionarySelectors.specialties);
-    const appDispatch = useAppDispatch();
-    const prevInspection = useSelector(inspectionsSelectors.data);
 
-    useEffect(() => {
-        const fetch = async () => {
-            await appDispatch(getSpecialties({ page: 1, size: 20 }));
-        };
-        fetch();
-    }, []);
-
-    useEffect(() => {
-        const fetch = async () => {
-            if (patientData) {
-                await appDispatch(
-                    getInspectionsWithoutChild({
-                        id: patientData.id,
-                        request: '',
-                    }),
-                );
-            }
-
-            if (prevInspection) {
-                await appDispatch(
-                    medicalSystemApi.patient.getCard(prevInspection.patient.id),
-                );
-            }
-
-            if (!patientData && state.prevInspection) {
-                await appDispatch(
-                    medicalSystemApi.inspection.get(state.prevInspection),
-                );
-            }
-        };
-        fetch();
-    }, [patientData, prevInspection, state.prevInspection]);
-
-    if (!patientData) {
-        return <Loading />;
+    if (
+        !patientData ||
+        !specialties.length ||
+        (!inspectionsWithoutChild.length && isLoadingStore)
+    ) {
+        return (
+            <div className="flex justify-center">
+                <Loading />
+            </div>
+        );
     }
 
     return (
@@ -121,20 +87,21 @@ export const CreateForm = () => {
                             label="Предыдущий осмотр"
                             name="previousInspectionId"
                             onChange={onHandleChangePrevInspection}
-                            defaultValue={state.prevInspection}
                             options={inspectionsToOptions(
                                 inspectionsWithoutChild,
                             )}
+                            defaultValue={state.prevInspection}
                             labelFromCode
                             isSearchable
                             isRequired
-                            error={state.errors?.['prevInspection']}
+                            error={state.errors?.['previousInspectionId']}
                         />
                     )}
                     <Datepicker
                         label="Дата осмотра"
                         name="date"
                         asSingle
+                        error={state.errors?.['date'] ?? ''}
                         useRange={false}
                         withTime
                         isRequired
@@ -142,11 +109,14 @@ export const CreateForm = () => {
                 </div>
             </div>
 
-            <Wrapper label="Жалобы">
+            <Wrapper label="Жалобы" error={state.errors?.['complaints'] ?? ''}>
                 <Textarea name="complaints" rows={2} />
             </Wrapper>
 
-            <Wrapper label="Анамнез заболевания">
+            <Wrapper
+                label="Анамнез заболевания"
+                error={state.errors?.['anamnesis'] ?? ''}
+            >
                 <Textarea name="anamnesis" rows={2} />
             </Wrapper>
 
@@ -203,7 +173,7 @@ export const CreateForm = () => {
                             error={state.errors?.['content']}
                         />
                         <Button
-                            text="Добавить консультацию"
+                            label="Добавить консультацию"
                             onClick={onAddConsultation}
                             className="!w-fit px-5 mt-4"
                         />
@@ -211,7 +181,11 @@ export const CreateForm = () => {
                 )}
             </Wrapper>
 
-            <Wrapper label="Диагнозы" className="flex flex-col gap-3">
+            <Wrapper
+                label="Диагнозы"
+                error={state.errors?.['diagnoses'] ?? ''}
+                className="flex flex-col gap-3"
+            >
                 {state.diagnoses.length > 0 &&
                     state.diagnoses.map((diagnosis, index) => (
                         <div
@@ -234,10 +208,13 @@ export const CreateForm = () => {
                     onSearchInputChange={handleChangeSearch}
                     options={icd ? icdToOptions(icd) : []}
                     ref={refs.diagnosisRef}
+                    error={state.errors?.['diagnosis'] ?? ''}
+                    searchInputPlaceholder="Начните вводить часть кода или названия"
                 />
                 <Textarea
                     name="diagnosis"
                     rows={1}
+                    error={state.errors?.['diagnosisDescription'] ?? ''}
                     ref={refs.diagnosisDescRef}
                 />
                 <div>
@@ -269,13 +246,16 @@ export const CreateForm = () => {
                     </div>
                 </div>
                 <Button
-                    text="Добавить диагноз"
+                    label="Добавить диагноз"
                     onClick={onAddDiagnosis}
                     className="!w-fit px-5"
                 />
             </Wrapper>
 
-            <Wrapper label="Рекомендации по лечению">
+            <Wrapper
+                label="Рекомендации по лечению"
+                error={state.errors?.['treatment'] ?? ''}
+            >
                 <Textarea name="treatment" rows={2} />
             </Wrapper>
 
@@ -289,32 +269,36 @@ export const CreateForm = () => {
                     options={sharedConfigOptions.conclusions}
                     onChange={handleChangeConclusion}
                     isRequired
+                    error={state.errors?.['conclusion']}
                     classNames="!w-full lg:!w-1/3"
                 />
                 {(state.conclusion === 'Disease' ||
                     state.conclusion === 'Death') && (
                     <Datepicker
-                        name={`${state.conclusion === 'Disease' ? 'nextVisitDate' : 'deathDate'}`}
+                        name={
+                            state.conclusion === 'Disease'
+                                ? 'nextVisitDate'
+                                : 'deathDate'
+                        }
                         label={`Дата ${state.conclusion === 'Disease' ? 'следующего осмотра' : 'и время смерти'}`}
                         asSingle
                         useRange={false}
                         withTime
                         isRequired
                         className="!w-full lg:!w-3/12"
+                        error={
+                            (state.conclusion === 'Disease'
+                                ? state.errors?.['nextVisitDate']
+                                : state.errors?.['deathDate']) || ''
+                        }
                     />
                 )}
             </Wrapper>
 
-            <div className="flex flex-rw gap-4 mt-1 justify-center">
+            <div className="flex flex-rw gap-4 mt-1 justify-center mb-5">
                 <Button
-                    text="Сохранить осмотр"
+                    label="Сохранить осмотр"
                     type="submit"
-                    className="!w-fit px-5"
-                />
-                <Button
-                    text="Отмена"
-                    type="button"
-                    bgColor="primary-gray"
                     className="!w-fit px-5"
                 />
             </div>

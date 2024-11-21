@@ -88,7 +88,7 @@ export type Comment = {
     createTime: string;
     parentId: string;
     content: string;
-    author: Author;
+    author: string;
     authorId: string;
     modifiedDate: string;
 };
@@ -98,7 +98,9 @@ export type Consultations = {
     createTime: string;
     inspectionId: string;
     speciality: Speciality;
-    rootComment: Comment;
+    rootComment: Comment & {
+        author: Author;
+    };
     commentsNumber: number;
 }[];
 
@@ -159,23 +161,26 @@ export type InspectionWithoutChild = {
 };
 
 export type NewInspection = {
+    patientId: string;
     date: string;
     anamnesis: string;
     complaints: string;
     treatment: string;
     conclusion: 'Disease' | 'Recovery' | 'Death';
-    nextVisitDate: string;
-    deathDate: string;
-    previousInspectionId: string;
+    nextVisitDate: string | null;
+    deathDate: string | null;
+    previousInspectionId: string | null;
     diagnoses: {
         icdDiagnosisId: string;
         description: string;
         type: 'Main' | 'Concomitant' | 'Complication';
     }[];
-    consultations: {
-        specialityId: string;
-        comment: {
-            content: string;
-        };
-    }[];
+    consultations:
+        | {
+              specialityId: string;
+              comment: {
+                  content: string;
+              };
+          }[]
+        | null;
 };

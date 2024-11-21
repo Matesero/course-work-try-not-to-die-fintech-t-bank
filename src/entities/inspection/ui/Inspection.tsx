@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,6 +21,8 @@ type Props = ConsultationType & {
     nesteds?: ConsultationType[];
     className?: string;
     isGrouped?: boolean;
+    isDeath?: boolean;
+    isConsultation?: boolean;
     previousHasChain?: boolean;
 };
 
@@ -34,7 +37,10 @@ export const Inspection = ({
     hasNested,
     isGrouped,
     className,
+    patientId,
+    isConsultation,
     nesteds,
+    isDeath,
 }: Props) => {
     const appDispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -51,10 +57,10 @@ export const Inspection = ({
 
     const onAddClick = () => {
         appDispatch(setPrevInspection(id));
-        navigate('/inspection/create');
+        navigate(`/inspection/create/${patientId}`);
     };
 
-    const onDeatailsClick = () => {
+    const onDetailsClick = () => {
         navigate(`/inspection/${id}`);
     };
 
@@ -62,10 +68,10 @@ export const Inspection = ({
         if (!chains && hasChain && isGrouped) {
             const fetchChains = async () => {
                 try {
-                    const data = await inspection.getChain({ id });
-                    setChains(data);
+                    const response = await inspection.getChain({ id });
+                    setChains(response.data);
                 } catch (error) {
-                    console.error('Ошибка:', error);
+                    Sentry.captureException(error);
                 }
             };
 
@@ -101,23 +107,28 @@ export const Inspection = ({
                             </span>
                             <span className="ml-1">Амбулаторный осмотр</span>
                         </div>
-                        <div className="flex flex-col gap-2 lg:flex-row lg:gap-6">
-                            {!hasNested && (
-                                <Button
-                                    label="Добавить осмотр"
-                                    onClick={onAddClick}
-                                />
-                            )}
+                        <div className="flex text-sm gap-6 lg:gap-2 flex-row xl:gap-6">
+                            {!hasNested &&
+                                conclusion !== 'Death' &&
+                                !isConsultation &&
+                                !isDeath && (
+                                    <Button
+                                        label="Добавить осмотр"
+                                        onClick={onAddClick}
+                                    />
+                                )}
                             <Button
                                 label="Детали осмотра"
-                                onClick={onDeatailsClick}
+                                onClick={onDetailsClick}
                             />
                         </div>
                     </div>
                     <div className="flex flex-col mt-3 gap-1">
                         <p className="text-sm leading-none w-fit">
                             Заключение:{' '}
-                            <span>{englishToRussian(conclusion)}</span>
+                            <span>
+                                {englishToRussian(conclusion).toLowerCase()}
+                            </span>
                         </p>
                         <p className="text-sm leading-none w-fit">
                             Основной диагноз:{' '}
@@ -135,6 +146,7 @@ export const Inspection = ({
                         previousHasChain={hasChain}
                         isGrouped
                         nesteds={chains?.slice(1)}
+                        isConsultation
                         className={previousHasChain || hasChain ? '!pl-10' : ''}
                     />
                 )}

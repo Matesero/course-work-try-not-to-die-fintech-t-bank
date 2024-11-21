@@ -1,4 +1,4 @@
-import { Button } from '~/features/pagination/ui/Button';
+import { Button } from './Button';
 
 type Props = {
     current: number;
@@ -9,7 +9,7 @@ type Props = {
 
 export const Pagination = ({ current, start, end, onPageChange }: Props) => {
     return (
-        <div className="flex gap-1">
+        <div className="flex gap-1 mb-5">
             <Button
                 key="prev"
                 onClick={() => onPageChange(current - 1)}

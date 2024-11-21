@@ -1,4 +1,5 @@
 import { Switch } from '@material-tailwind/react';
+import React from 'react';
 
 type Props = {
     id: string;
@@ -9,7 +10,7 @@ type Props = {
     className?: string;
     revert?: boolean;
     defaultChecked?: boolean;
-    onChange: () => void;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export function CustomSwitch({

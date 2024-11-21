@@ -17,17 +17,13 @@ export type Action =
 export const reducer = (state: State, action: Action): State => {
     switch (action.type) {
         case 'switchIsEditing':
-            return { ...state, isEditing: !state.isEditing };
+            return { ...state, isEditing: !state.isEditing, errors: {} };
 
         case 'errorForm':
-            return state.isEditing
-                ? { ...state, isEditing: true, errors: action.payload }
-                : state;
+            return { ...state, isEditing: true, errors: action.payload };
 
         case 'startUpload':
-            return state.isEditing
-                ? { ...state, isUpload: true, ...state }
-                : state;
+            return state.isEditing ? { ...state, isUpload: true } : state;
 
         case 'finishUpload':
             return state.isUpload || state.isLoading

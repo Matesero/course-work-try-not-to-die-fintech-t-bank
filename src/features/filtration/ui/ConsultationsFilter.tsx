@@ -53,7 +53,7 @@ export const ConsultationsFilter = ({ defaultValues, onSubmit }: Props) => {
                 options={size}
             />
             <div className="flex col-start-4 w-full lg:w-2/3 lg:h-3/5 lg:translate-x-1/2 lg:translate-y-2/3 justify-end">
-                <Button text="Поиск" type="submit" />
+                <Button label="Поиск" type="submit" />
             </div>
         </FiltersWrapper>
     );

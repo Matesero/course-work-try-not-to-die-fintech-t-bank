@@ -1,12 +1,13 @@
 import React, { FormEventHandler, useState } from 'react';
 
-import { Wrapper } from '~/features/createInpsection/ui/Wrapper';
+import { createFeature } from '~/features';
 import { sharedConfigOptions, sharedConfigTypes } from '~/shared/config';
 import { englishToRussian } from '~/shared/lib/englishToRussian';
 import { sharedUiComponents } from '~/shared/ui';
-import { FormTittle, Radio } from '~/shared/ui/components';
 
-const { Button, Select, Datepicker, Textarea } = sharedUiComponents;
+const { Button, Select, Datepicker, Textarea, FormTittle, Radio } =
+    sharedUiComponents;
+const { Wrapper } = createFeature.ui;
 
 type Props = sharedConfigTypes.Inspection & {
     setIsEditing: (value: boolean) => void;
@@ -24,11 +25,11 @@ export const EditForm = ({ setIsEditing, onSubmit, ...inspection }: Props) => {
 
     return (
         <div
-            className="fixed inset-0 z-50 flex justify-center items-center bg-primary-darkSea bg-opacity-50 px-4"
+            className="fixed inset-0 z-50 flex justify-center items-center bg-primary-darkSea bg-opacity-50"
             onClick={() => setIsEditing(false)}
         >
             <div
-                className="w-full max-w-screen-md bg-white rounded-lg shadow-custom p-5 sm:pt-6 sm:p-7 sm:pb-5"
+                className="w-full max-w-screen-md bg-white rounded-lg shadow-custom p-5 sm:pt-6 sm:p-7 h-5/6 overflow-y-auto"
                 onClick={handleModalClick}
             >
                 <FormTittle title="Редактирование осмотра" />
@@ -90,12 +91,6 @@ export const EditForm = ({ setIsEditing, onSubmit, ...inspection }: Props) => {
                             <div className="flex flex-row gap-2">
                                 <Radio
                                     name="type"
-                                    label="Основной"
-                                    value="Main"
-                                    checked
-                                />
-                                <Radio
-                                    name="type"
                                     label="Сопутствующий"
                                     value="Concomitant"
                                 />
@@ -107,7 +102,7 @@ export const EditForm = ({ setIsEditing, onSubmit, ...inspection }: Props) => {
                             </div>
                         </div>
                         <Button
-                            text="Добавить диагноз"
+                            label="Добавить диагноз"
                             className="!w-fit px-5"
                         />
                     </Wrapper>
@@ -140,9 +135,9 @@ export const EditForm = ({ setIsEditing, onSubmit, ...inspection }: Props) => {
                         )}
                     </Wrapper>
                     <div className="flex flex-col gap-2">
-                        <Button text="Сохранить изменения" type="submit" />
+                        <Button label="Сохранить изменения" type="submit" />
                         <Button
-                            text="Отмена"
+                            label="Отмена"
                             bgColor="primary-gray"
                             type="button"
                             className="lg:hidden"

@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { Layout } from '~/app/layout';
 import { inspectionEntity } from '~/entities';
 import { filtrationFeature, paginationFeature } from '~/features';
 import { medicalSystemApi } from '~/shared/api';
-import { getIcdRoots } from '~/shared/api/medicalSystem/dictionary';
 import { FemaleIcon, MaleIcon } from '~/shared/assets/images';
-import { sharedConfigRouter, sharedConfigTypes } from '~/shared/config';
+import { sharedConfigTypes } from '~/shared/config';
 import { useData } from '~/shared/hooks/useData';
 import { useStore } from '~/shared/hooks/useStore';
 import { withoutTime } from '~/shared/lib/parseDate';
-import { userSlice, dictionarySlice } from '~/shared/store';
+import { patientSlice } from '~/shared/store';
 import { removeAll } from '~/shared/store/inspection/store';
 import { sharedUiComponents } from '~/shared/ui';
 
@@ -23,9 +22,6 @@ const { usePagination } = paginationFeature.model;
 const { Pagination } = paginationFeature.ui;
 const { patient } = medicalSystemApi;
 const { getInspectionsList } = patient;
-const { RouteName } = sharedConfigRouter;
-const userSelectors = userSlice.selectors;
-const dictionarySelectors = dictionarySlice.selectors;
 const { Loading, Button } = sharedUiComponents;
 
 type ConsultationType = sharedConfigTypes.Consultation;
@@ -33,33 +29,19 @@ type PaginationType = sharedConfigTypes.Pagination;
 type Params = sharedConfigTypes.Params & { id?: string };
 
 export const PatientPage = () => {
-    const { patientData, isLoadingStore } = useStore();
+    const { patientData } = useStore({
+        needIcdRoots: true,
+        needPatient: true,
+        needInspectionWithoutChild: true,
+    });
     const navigate = useNavigate();
-    const location = useLocation();
-    const isAuth = useSelector(userSelectors.isAuth);
-    const icdRoots = useSelector(dictionarySelectors.icdRoots);
     const appDispatch = useDispatch();
-
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!isAuth) {
-                navigate(RouteName.LOGIN_PAGE);
-                return;
-            }
-
-            if (!icdRoots.length) {
-                await appDispatch(getIcdRoots());
-            }
-        };
-
-        fetchData();
-    }, [isAuth, location, navigate, appDispatch]);
-
     const { params, onSubmit } = useFilters();
     const { data, isLoading, refetch } = useData<
         { inspections: ConsultationType[]; pagination: PaginationType },
         Params
     >(getInspectionsList, { id: patientData?.id, ...params }, true);
+    const isDeath = useSelector(patientSlice.selectors.isDeath);
     const { currentPage, startPage, endPage, onChangePage } = usePagination(
         data?.pagination.count,
     );
@@ -72,10 +54,10 @@ export const PatientPage = () => {
 
     const onAddClick = () => {
         appDispatch(removeAll());
-        navigate('/inspection/create');
+        navigate(`/inspection/create/${patientData.id}`);
     };
 
-    if (isLoadingStore || !patientData) {
+    if (!patientData || typeof isDeath === 'undefined') {
         return (
             <Layout>
                 <Loading />
@@ -91,11 +73,13 @@ export const PatientPage = () => {
                         <h1 className="text-5xl font-bold">
                             Медицинская карта пациента
                         </h1>
-                        <Button
-                            text="Добавить осмотр"
-                            className="!h-fit !w-fit !p-5 !pt-2 !pb-2"
-                            onClick={onAddClick}
-                        />
+                        {!isDeath && (
+                            <Button
+                                label="Добавить осмотр"
+                                className="!h-fit !w-fit !p-5 !pt-2 !pb-2"
+                                onClick={onAddClick}
+                            />
+                        )}
                     </div>
 
                     <div className="flex flex-row justify-between mb-2 items-center">
@@ -130,6 +114,7 @@ export const PatientPage = () => {
                                         {...inspection}
                                         key={inspection.id}
                                         isGrouped={!!params?.grouped}
+                                        isDeath={isDeath}
                                     />
                                 ))}
                             </div>

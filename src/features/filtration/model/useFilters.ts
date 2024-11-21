@@ -17,6 +17,8 @@ const paramKeys = [
     'size',
     'grouped',
     'page',
+    'start',
+    'end',
 ];
 
 type Params = sharedConfigTypes.Params;
@@ -69,16 +71,11 @@ export const useFilters = (): FiltersResults => {
             JSON.stringify(data.data) !== JSON.stringify(restParams)
         ) {
             const { data: params } = data;
-            setParams(params);
 
             const urlParams = new URLSearchParams();
 
             for (const key in params) {
                 const param = params[key];
-
-                if (['end', 'start'].includes(key)) {
-                    continue;
-                }
 
                 Array.isArray(param)
                     ? param.forEach((value) => urlParams.append(key, value))

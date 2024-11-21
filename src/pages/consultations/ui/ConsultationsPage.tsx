@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { Layout } from '~/app/layout';
 import { inspectionEntity } from '~/entities';
 import { filtrationFeature, paginationFeature } from '~/features';
 import { medicalSystemApi } from '~/shared/api';
-import { sharedConfigRouter, sharedConfigTypes } from '~/shared/config';
+import { sharedConfigTypes } from '~/shared/config';
 import { useData } from '~/shared/hooks/useData';
-import { userSlice, dictionarySlice } from '~/shared/store';
+import { dictionarySlice, useAppDispatch } from '~/shared/store';
 import { sharedUiComponents } from '~/shared/ui';
 
 const { useFilters } = filtrationFeature.model;
@@ -19,8 +19,6 @@ const { Pagination } = paginationFeature.ui;
 const { consultation, dictionary } = medicalSystemApi;
 const { getList } = consultation;
 const { getIcdRoots } = dictionary;
-const { RouteName } = sharedConfigRouter;
-const userSelectors = userSlice.selectors;
 const dictionarySelectors = dictionarySlice.selectors;
 const { Loading } = sharedUiComponents;
 
@@ -30,24 +28,18 @@ type Params = sharedConfigTypes.Params;
 
 export const ConsultationsPage = () => {
     const navigate = useNavigate();
-    const isAuth = useSelector(userSelectors.isAuth);
     const icdRoots = useSelector(dictionarySelectors.icdRoots);
-    const appDispatch = useDispatch();
+    const appDispatch = useAppDispatch();
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!isAuth) {
-                navigate(RouteName.LOGIN_PAGE);
-                return;
-            }
-
             if (!icdRoots.length) {
                 await appDispatch(getIcdRoots());
             }
         };
 
         fetchData();
-    }, [isAuth, navigate, appDispatch]);
+    }, [navigate, appDispatch]);
 
     const { params, onSubmit } = useFilters();
     const { data, isLoading } = useData<
@@ -85,6 +77,7 @@ export const ConsultationsPage = () => {
                                 <Inspection
                                     {...inspection}
                                     key={inspection.id}
+                                    isConsultation
                                     isGrouped={!!params?.grouped}
                                 />
                             ))}

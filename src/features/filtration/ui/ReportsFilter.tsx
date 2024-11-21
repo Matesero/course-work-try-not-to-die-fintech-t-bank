@@ -3,21 +3,21 @@ import { useSelector } from 'react-redux';
 
 import { FiltersWrapper } from './FiltersWrapper';
 
-import { getIcdRoots } from '~/shared/api/medicalSystem/dictionary';
+import { medicalSystemApi } from '~/shared/api';
 import { icdToOptions } from '~/shared/lib/icdToOptions';
 import { dictionarySlice } from '~/shared/store';
 import { useAppDispatch } from '~/shared/store/store';
 import { sharedUiComponents } from '~/shared/ui';
 
+const { getIcdRoots } = medicalSystemApi.dictionary;
 const dictionarySelectors = dictionarySlice.selectors;
 const { Button, Select, Datepicker } = sharedUiComponents;
 
 type Props = {
     onSubmit: FormEventHandler<HTMLFormElement>;
-    errors: string;
 };
 
-export const ReportsForm = ({ onSubmit, errors }: Props) => {
+export const ReportsForm = ({ onSubmit }: Props) => {
     const icdRoots = useSelector(dictionarySelectors.icdRoots);
     const appDispatch = useAppDispatch();
 
@@ -34,27 +34,31 @@ export const ReportsForm = ({ onSubmit, errors }: Props) => {
     return (
         <FiltersWrapper title="Статистика осмотров" onSubmit={onSubmit}>
             <Datepicker
-                className="w-5/12"
-                name="Дата с"
+                label="Дата с"
+                name="start"
+                className="col-span-1"
                 asSingle={true}
                 useRange={false}
-                error={errors?.['start'] ?? ''}
+                isRequired
             />
             <Datepicker
-                className="w-5/12"
-                name="Дата по"
+                label="Дата по"
+                className="col-span-1"
+                name="end"
                 asSingle={true}
                 useRange={false}
-                error={errors?.['end'] ?? ''}
+                isRequired
             />
             <Select
-                name="МКБ-10"
+                label="МКБ-10"
+                name="icdRoots"
                 options={icdToOptions(icdRoots)}
                 isMultiple
                 labelFromCode
+                classNames="col-span-2"
             />
-            <div className="flex col-start-4 w-full h-2/3 lg:w-2/3 lg:translate-x-1/2 lg:translate-y-1/2">
-                <Button text="Сохранить сводку" type="submit" />
+            <div className="flex col-start-4 w-full 2xl:translate-x-1/2 2xl:w-2/3">
+                <Button label="Сохранить сводку" type="submit" />
             </div>
         </FiltersWrapper>
     );

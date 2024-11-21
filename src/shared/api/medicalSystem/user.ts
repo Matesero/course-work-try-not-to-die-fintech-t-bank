@@ -1,11 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
+import { base } from './';
 import { User } from './models';
 
-import { medicalSystemApi } from '~/shared/api';
 import { cookieService } from '~/shared/store';
-
-const { base } = medicalSystemApi;
 
 interface LoginParams {
     email: string;
@@ -22,8 +20,10 @@ export const login = createAsyncThunk<{ token: string }, LoginParams>(
             );
 
             return response.data;
-        } catch (error) {
-            return rejectWithValue(error.response?.data?.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
         }
     },
 );
@@ -33,7 +33,7 @@ interface RegisterParams extends LoginParams {
     birthday: string;
     gender: 'Male' | 'Female';
     phone: string;
-    specialty: string;
+    speciality: string;
 }
 
 export const register = createAsyncThunk<{ token: string }, RegisterParams>(
@@ -41,13 +41,15 @@ export const register = createAsyncThunk<{ token: string }, RegisterParams>(
     async (params, { rejectWithValue }) => {
         try {
             const response = await base.medicalSystemRequester.post(
-                '/register',
+                'doctor/register',
                 params,
             );
 
             return response.data;
-        } catch (error) {
-            return rejectWithValue(error.response.data.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
         }
     },
 );
@@ -67,8 +69,10 @@ export const logout = createAsyncThunk<void, void>(
                     },
                 },
             );
-        } catch (error) {
-            return rejectWithValue(error.response?.data?.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
         }
     },
 );
@@ -87,8 +91,10 @@ export const getProfile = createAsyncThunk<User, void>(
             );
 
             return response.data;
-        } catch (error) {
-            return rejectWithValue(error.response?.data?.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
         }
     },
 );
@@ -110,8 +116,10 @@ export const putProfile = createAsyncThunk<void, EditParams>(
                     Authorization: `Bearer ${cookieService.getToken()}`,
                 },
             });
-        } catch (error) {
-            return rejectWithValue(error.response?.data?.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
         }
     },
 );

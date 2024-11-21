@@ -1,27 +1,29 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import ReactInputMask from 'react-input-mask';
 
 type Props = {
     label?: string;
-    defaultValue?: string;
+    value?: string;
     name: string;
+    defaultValue?: string;
     type: 'text' | 'password' | 'phone';
     error?: string;
     placeholder?: string;
     disabled?: boolean;
     isRequired?: boolean;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export const InputField = ({
     label,
-    defaultValue,
+    value,
     name,
     type,
     error,
     placeholder,
     disabled,
     isRequired,
+    onChange,
 }: Props) => {
     const [show, setShow] = useState(type === 'text');
 
@@ -46,22 +48,24 @@ export const InputField = ({
             >
                 {type === 'phone' ? (
                     <ReactInputMask
-                        defaultValue={defaultValue}
+                        value={value}
                         mask="+9 (999) 999-99-99"
                         maskChar="_"
                         placeholder={placeholder}
                         className="w-full px-4 text-xl bg-transparent outline-none "
                         disabled={disabled}
                         name={name}
+                        onChange={onChange}
                     />
                 ) : (
                     <input
-                        defaultValue={defaultValue}
+                        value={value}
                         type={show ? 'text' : 'password'}
                         placeholder={placeholder}
                         className="w-full px-4 text-xl bg-transparent outline-none"
                         disabled={disabled}
                         name={name}
+                        onChange={onChange}
                     />
                 )}
                 {type === 'password' && (

@@ -1,64 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
 
 import { Layout } from '~/app/layout';
 import { filtrationFeature } from '~/features';
-import { useFilters } from '~/features/filtration/model';
 import { medicalSystemApi } from '~/shared/api';
-import { getProfile } from '~/shared/api/medicalSystem/user';
-import { sharedConfigRouter, sharedConfigTypes } from '~/shared/config';
-import { userSlice } from '~/shared/store';
-import { useAppDispatch } from '~/shared/store/store';
+import { sharedConfigTypes } from '~/shared/config';
+import { Params } from '~/shared/config/types';
+import { useData } from '~/shared/hooks/useData';
 import { sharedUiComponents } from '~/shared/ui';
 
+const { useFilters } = filtrationFeature.model;
 const { ReportsForm } = filtrationFeature.ui;
-const { RouteName } = sharedConfigRouter;
-const { selectors } = userSlice;
 const { Table } = sharedUiComponents;
 
 export const ReportsPage = () => {
-    const navigate = useNavigate();
-    const appDispatch = useAppDispatch();
-    const isAuth = useSelector(selectors.isAuth);
-
-    useEffect(() => {
-        if (!isAuth) {
-            navigate(RouteName.LOGIN_PAGE);
-            return;
-        }
-
-        const fetchProfile = async () => {
-            try {
-                await appDispatch(getProfile());
-            } catch (e) {
-                console.log(e);
-            }
-        };
-
-        fetchProfile();
-    }, [isAuth, navigate, appDispatch]);
-
-    const [report, setReport] = useState<sharedConfigTypes.Report>();
     const { params, onSubmit } = useFilters();
+    const { data, refetch } = useData<sharedConfigTypes.Report, Params>(
+        medicalSystemApi.report.get,
+        params,
+        true,
+    );
+
     useEffect(() => {
-        const fetch = async () => {
-            if (params.end && params.start) {
-                const data = await medicalSystemApi.report.get(params);
-
-                console.log(data);
-                setReport(data.data);
-            }
-        };
-
-        fetch();
+        if (params.start && params.end) {
+            refetch();
+        }
     }, [params]);
 
     return (
         <Layout>
             <div className="absolute top-28 w-11/12 2xl:max-w-screen-2xl">
                 <ReportsForm onSubmit={onSubmit} />
-                {report && <Table {...report} />}
+                {data && <Table {...data} />}
             </div>
         </Layout>
     );

@@ -1,13 +1,14 @@
 import { DatePicker, DateTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import * as dayjs from 'dayjs';
-import React, { useState } from 'react';
+import dayjs, { Dayjs } from 'dayjs/esm';
+import React, { useState, useEffect } from 'react';
 import 'dayjs/locale/ru';
 
 type Props = {
     name: string;
     label?: string;
+    value?: string;
     defaultValue?: string;
     withTime?: boolean;
     asSingle?: boolean;
@@ -17,26 +18,42 @@ type Props = {
     className?: string;
     error?: string;
     isRequired?: boolean;
+    onChange?: (value: string) => void;
 };
 
 export const CustomDatepicker = (props: Props) => {
     const {
         name,
         label,
+        value,
         defaultValue,
         withTime,
         disabled,
         className,
         error,
         isRequired,
+        onChange,
     } = props;
 
-    const [selectedValue, setNewValue] = useState<dayjs.Dayjs | null>(
-        defaultValue ? dayjs(defaultValue) : null,
-    );
+    const [selectedValue, setSelectedValue] = useState<Dayjs | null>(null);
 
-    const handleChange = (newValue: dayjs.Dayjs | null) => {
-        setNewValue(newValue);
+    useEffect(() => {
+        if (value) {
+            setSelectedValue(dayjs(value));
+        } else if (defaultValue) {
+            setSelectedValue(dayjs(defaultValue));
+        }
+    }, [value, defaultValue]);
+
+    const handleChange = (newValue: Dayjs | null) => {
+        if (newValue && !newValue.isValid()) {
+            setSelectedValue(null);
+        } else {
+            setSelectedValue(newValue);
+            if (onChange) {
+                onChange(newValue ? newValue.toISOString() : '');
+            }
+        }
     };
 
     const inputStyles = {
@@ -72,9 +89,9 @@ export const CustomDatepicker = (props: Props) => {
                     {label}{' '}
                     {isRequired && <span className="text-red-600">*</span>}
                     {error && (
-                        <p className="text-sm text-red-600 mt-1 ml-2 font-medium">
+                        <span className="text-sm text-red-600 mt-1 ml-2 font-medium">
                             {error}
-                        </p>
+                        </span>
                     )}
                 </p>
                 <div className="relative">

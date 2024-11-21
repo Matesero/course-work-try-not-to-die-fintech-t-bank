@@ -1,18 +1,15 @@
+import * as Sentry from '@sentry/react';
 import React, { useReducer } from 'react';
 import type { FormEventHandler } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-import { Action, reducer } from './reducer';
-import { State } from './reducer';
+import { Action, State, reducer } from './reducer';
 import { schema, zod2errors } from './schema';
 
 import { medicalSystemApi } from '~/shared/api';
-import { getProfile, login, register } from '~/shared/api/medicalSystem/user';
-import { sharedConfigRouter } from '~/shared/config';
 import { useAppDispatch } from '~/shared/store/store';
 
 const { user, patient } = medicalSystemApi;
-const { RouteName } = sharedConfigRouter;
+const { getProfile, login, putProfile, register } = medicalSystemApi.user;
 
 type Props = 'login' | 'registerUser' | 'profile' | 'registerPatient';
 
@@ -26,21 +23,19 @@ export const useForm = (formType: Props): FormResult => {
     const [state, dispatch] = useReducer<React.Reducer<State, Action>>(
         reducer,
         {
-            isEditing: formType !== 'profile',
+            isEditing: false,
             isLoading: true,
             isUpload: false,
         },
     );
     const appDispatch = useAppDispatch();
-    const navigate = useNavigate();
 
     const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
 
+        dispatch({ type: 'errorForm', payload: {} });
         const formData = new FormData(e.currentTarget);
         const data = schema.safeParse(Object.fromEntries(formData));
-
-        console.log(data);
 
         if (data.success) {
             try {
@@ -57,14 +52,21 @@ export const useForm = (formType: Props): FormResult => {
                     birthday,
                 } = params;
 
-                // console.error в дальнейшем в уведомление
                 switch (formType) {
                     case 'login':
                         if (email && password) {
-                            await appDispatch(login({ email, password }));
-                            navigate({ pathname: RouteName.PATIENTS_PAGE });
-                        } else {
-                            console.error('Почты и пароля нет');
+                            const response = await appDispatch(
+                                login({ email, password }),
+                            );
+                            if (login.rejected.match(response)) {
+                                dispatch({
+                                    type: 'errorForm',
+                                    payload: {
+                                        response:
+                                            'Что-то пошло не так, проверьте введенные данные и попробуйте еще раз',
+                                    },
+                                });
+                            }
                         }
                         break;
 
@@ -76,9 +78,9 @@ export const useForm = (formType: Props): FormResult => {
                             name &&
                             speciality &&
                             birthday &&
-                            gender
+                            (gender === 'Male' || gender === 'Female')
                         ) {
-                            await appDispatch(
+                            const response = await appDispatch(
                                 register({
                                     email,
                                     password,
@@ -89,21 +91,28 @@ export const useForm = (formType: Props): FormResult => {
                                     gender,
                                 }),
                             );
-                            navigate({ pathname: RouteName.PATIENTS_PAGE });
-                        } else {
-                            console.error('Данные введены неверно');
+                            if (register.rejected.match(response)) {
+                                dispatch({
+                                    type: 'errorForm',
+                                    payload: {
+                                        email: 'Введенная почта занята',
+                                    },
+                                });
+                            }
                         }
                         break;
 
                     case 'registerPatient':
-                        if (name && patientBirthday && gender) {
+                        if (
+                            name &&
+                            patientBirthday &&
+                            (gender === 'Male' || gender === 'Female')
+                        ) {
                             await patient.register({
                                 name,
                                 birthday: patientBirthday,
                                 gender,
                             });
-                        } else {
-                            console.error('Данные введены неверно');
                         }
                         break;
 
@@ -113,18 +122,28 @@ export const useForm = (formType: Props): FormResult => {
                             phone &&
                             name &&
                             birthday &&
-                            gender === ('Male' || 'Female')
+                            (gender === 'Male' || gender === 'Female')
                         ) {
-                            await user.putProfile({
-                                email,
-                                phone,
-                                name,
-                                birthday,
-                                gender,
-                            });
-                            await appDispatch(getProfile());
-                        } else {
-                            console.error('Данные введены неверно');
+                            const response = await appDispatch(
+                                user.putProfile({
+                                    email,
+                                    phone,
+                                    name,
+                                    birthday,
+                                    gender,
+                                }),
+                            );
+                            if (putProfile.rejected.match(response)) {
+                                dispatch({
+                                    type: 'errorForm',
+                                    payload: {
+                                        email: 'Введенная почта занята ',
+                                    },
+                                });
+                                return;
+                            } else {
+                                await appDispatch(getProfile());
+                            }
                         }
                         break;
                     default:
@@ -134,9 +153,16 @@ export const useForm = (formType: Props): FormResult => {
                 dispatch({ type: 'finishUpload' });
             } catch (error) {
                 dispatch({ type: 'errorResponse' });
+                Sentry.captureException(error);
             }
         } else {
             dispatch({ type: 'errorForm', payload: zod2errors(data.error) });
+            Sentry.captureException(
+                new Error(
+                    'Ошибка валидации формы ' +
+                        JSON.stringify(zod2errors(data.error)),
+                ),
+            );
         }
     };
 

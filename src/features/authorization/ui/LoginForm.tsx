@@ -8,7 +8,7 @@ import { sharedConfigRouter } from '~/shared/config';
 import { sharedUiComponents } from '~/shared/ui';
 
 const { RouteName } = sharedConfigRouter;
-const { InputField, Button } = sharedUiComponents;
+const { InputField, Button, Error } = sharedUiComponents;
 
 export const LoginForm = () => {
     const [{ errors }, onSubmit] = useForm('login');
@@ -18,7 +18,11 @@ export const LoginForm = () => {
         navigate({ pathname: RouteName.REGISTRATION_PAGE });
 
     return (
-        <FormWrapper title={'Вход'} onSubmit={onSubmit}>
+        <FormWrapper
+            title={'Вход'}
+            onSubmit={onSubmit}
+            error={errors?.['response'] ?? ''}
+        >
             <div className="flex flex-col gap-4">
                 <InputField
                     type="text"
@@ -37,10 +41,11 @@ export const LoginForm = () => {
                     error={errors?.['password'] ?? ''}
                 />
             </div>
+            <Error error={errors?.['response'] || ''} />
             <div className="flex flex-col gap-2">
-                <Button text="Войти" type="submit" />
+                <Button label="Войти" type="submit" />
                 <Button
-                    text="Регистрация"
+                    label="Регистрация"
                     bgColor="primary-gray"
                     onClick={handleRegisterClick}
                 />

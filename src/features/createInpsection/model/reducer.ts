@@ -66,7 +66,11 @@ export const reducer = (state: State, action: Action): State => {
             };
 
         case 'switchNeedConsultation':
-            return { ...state, needConsultation: !state.needConsultation };
+            return {
+                ...state,
+                needConsultation: !state.needConsultation,
+                errors: {},
+            };
 
         case 'switchIsFirst':
             return { ...state, isFirst: !state.isFirst };

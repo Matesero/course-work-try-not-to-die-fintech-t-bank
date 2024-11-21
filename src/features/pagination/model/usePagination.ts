@@ -29,6 +29,8 @@ export const usePagination = (total: Props): PaginationResult => {
 
     useEffect(() => {
         if (!total) {
+            setStartPage(1);
+            setEndPage(1);
             return;
         }
 

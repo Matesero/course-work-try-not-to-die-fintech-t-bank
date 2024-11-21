@@ -1,7 +1,7 @@
 import React, { MouseEventHandler } from 'react';
 
 type Props = {
-    text?: string;
+    label?: string;
     type?: 'submit' | 'button';
     textColor?: string;
     bgColor?: string;
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const Button = ({
-    text,
+    label,
     type,
     textColor,
     bgColor,
@@ -25,7 +25,7 @@ export const Button = ({
             onClick={onClick}
             className={`${className} bg-${bgColor || 'primary-tuftsBlue'} !important  text-${textColor || 'white'} p-2.5 rounded-custom text-${textSize || 'xl'} w-full`}
         >
-            {text}
+            {label}
         </button>
     );
 };

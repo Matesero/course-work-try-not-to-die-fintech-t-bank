@@ -1,10 +1,10 @@
 import React, { forwardRef } from 'react';
 
 type Props = {
-    defaultValue?: string;
     label?: string;
     name: string;
     error?: string;
+    defaultValue?: string;
     placeholder?: string;
     isRequired?: boolean;
     rows?: number;
@@ -15,10 +15,10 @@ type Props = {
 export const Textarea = forwardRef<HTMLTextAreaElement | null, Props>(
     (
         {
-            defaultValue,
             label,
             name,
             error,
+            defaultValue,
             isRequired,
             rows,
             textSize,
@@ -51,7 +51,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement | null, Props>(
                     )}
                 </div>
                 <div
-                    className={`${className} flex bg-white py-1 pb-2 pl-3 pr-55 h-fit items-center border-2 border-primary-gray rounded-custom`}
+                    className={`${className} flex bg-white py-1 pb-2 pl-3 pr-55 h-fit items-center border-2 ${error ? 'border-red-500' : 'border-primary-gray'} transition-all duration-300 !focus:outline-none!overflow-y-hidden hover:border-gray-400 rounded-custom`}
                 >
                     <textarea
                         ref={ref}
@@ -66,3 +66,5 @@ export const Textarea = forwardRef<HTMLTextAreaElement | null, Props>(
         );
     },
 );
+
+Textarea.displayName = 'Textarea';
