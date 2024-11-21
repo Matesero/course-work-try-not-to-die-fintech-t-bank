@@ -2,34 +2,24 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { getProfile } from '~/shared/api/medicalSystem/user';
 import { BarsIcon } from '~/shared/assets/images';
 import ScullIcon from '~/shared/assets/images/scull.svg?url';
 import { sharedConfigRouter } from '~/shared/config';
 import { useAppDispatch, userSlice } from '~/shared/store';
-import { checkToken } from '~/shared/store/cookie';
-import { Loading } from '~/shared/ui/components';
+import { sharedUiComponents } from '~/shared/ui';
 
 const { selectors } = userSlice;
 const { RouteName } = sharedConfigRouter;
+const { Loading } = sharedUiComponents;
 
 export const Navbar = () => {
     const user = useSelector(selectors.user);
     const addDispatch = useAppDispatch();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const sidebarRef = useRef<HTMLDivElement>(null);
+    const sidebarRef = useRef<HTMLDivElement | null>(null);
+    const dropdownRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetch = async () => {
-            await addDispatch(getProfile());
-        };
-
-        if (!user && checkToken()) {
-            fetch();
-        }
-    }, [user]);
 
     const handleLoginClick = () => navigate({ pathname: RouteName.LOGIN_PAGE });
     const handlePatientsClick = () =>
@@ -38,21 +28,25 @@ export const Navbar = () => {
         navigate({ pathname: RouteName.CONSULTATIONS_PAGE });
     const handleReportsClick = () =>
         navigate({ pathname: RouteName.REPORTS_PAGE });
-
     const handleProfileClick = () =>
         navigate({ pathname: RouteName.PROFILE_PAGE });
-    const handleLogoutClick = () => {
-        addDispatch(userSlice.store.logout());
-    };
+    const handleLogoutClick = () => addDispatch(userSlice.store.logoutUser());
 
     useEffect(() => {
-        const handleClickOutside = (event) => {
+        const handleClickOutside = (event: MouseEvent) => {
             if (
                 sidebarRef.current &&
-                !sidebarRef.current.contains(event.target) &&
+                !sidebarRef.current.contains(event.target as Node) &&
                 isSidebarOpen
             ) {
                 setIsSidebarOpen(false);
+            }
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node) &&
+                isDropdownOpen
+            ) {
+                setIsDropdownOpen(false);
             }
         };
 
@@ -60,7 +54,7 @@ export const Navbar = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isSidebarOpen]);
+    }, [isSidebarOpen, isDropdownOpen]);
 
     return (
         <nav>
@@ -73,7 +67,7 @@ export const Navbar = () => {
                                 className="h-16 w-16"
                                 alt="scullIcon"
                             />
-                            <span className="text-white text-2xl">
+                            <span className="text-white hidden xl:block text-2xl">
                                 Try not to
                                 <span className="block text-right text-3xl font-bold">
                                     DIE
@@ -114,7 +108,10 @@ export const Navbar = () => {
                                         Вход
                                     </a>
                                 ) : (
-                                    <div className="relative hidden lg:block">
+                                    <div
+                                        className="relative hidden lg:block"
+                                        ref={dropdownRef}
+                                    >
                                         {!user ? (
                                             <Loading />
                                         ) : (
@@ -125,29 +122,33 @@ export const Navbar = () => {
                                                             !isDropdownOpen,
                                                         )
                                                     }
-                                                    className="text-white"
+                                                    className="text-white text-2xl"
                                                 >
                                                     {user?.name}
                                                 </button>
                                                 {isDropdownOpen && (
-                                                    <div className="absolute right-0 mt-2 bg-white text-black rounded-lg shadow-lg z-20 w-40">
-                                                        <button
-                                                            onClick={
-                                                                handleProfileClick
-                                                            }
-                                                            className="block px-4 py-2 w-full text-left"
-                                                        >
-                                                            Профиль
-                                                        </button>
-                                                        <button
-                                                            onClick={
-                                                                handleLogoutClick
-                                                            }
-                                                            className="block px-4 py-2 w-full text-left"
-                                                        >
-                                                            Выход
-                                                        </button>
-                                                    </div>
+                                                    <ul className="absolute left-1/2 transform -translate-x-1/2 mt-2 bg-white text-black rounded-custom shadow-lg z-20 w-40">
+                                                        <li>
+                                                            <a
+                                                                onClick={
+                                                                    handleProfileClick
+                                                                }
+                                                                className="block text-xl text-center w-full px-6 py-3 rounded-t-custom text-black hover:bg-gray-200 cursor-pointer"
+                                                            >
+                                                                Профиль
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a
+                                                                onClick={
+                                                                    handleLogoutClick
+                                                                }
+                                                                className="block text-xl text-center w-full px-6 py-3 rounded-b-custom text-black hover:bg-gray-200 cursor-pointer"
+                                                            >
+                                                                Выход
+                                                            </a>
+                                                        </li>
+                                                    </ul>
                                                 )}
                                             </>
                                         )}
