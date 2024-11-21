@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { get } from '~/shared/api/medicalSystem/inspection';
+import { medicalSystemApi } from '~/shared/api';
 import { sharedConfigTypes } from '~/shared/config';
+
+const { get } = medicalSystemApi.inspection;
 
 type State = {
     prevInspection: string | null;
@@ -49,6 +51,11 @@ const inspectionSlice = createSlice({
                 state.curInspection = action.payload.id;
                 state.data = action.payload;
                 state.isLoading = false;
+            })
+            .addCase(get.rejected, (state) => {
+                state.isLoading = false;
+                state.data = null;
+                state.curInspection = null;
             });
     },
 });

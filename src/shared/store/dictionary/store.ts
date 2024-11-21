@@ -51,7 +51,7 @@ const dictionarySlice = createSlice({
             })
             .addCase(getIcd.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.icd = action.payload.records;
+                state.icd = action.payload;
             })
             .addCase(getIcd.rejected, (state, action) => {
                 state.isLoading = false;

@@ -1,12 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { getCard } from '~/shared/api/medicalSystem/patient';
-import { getInspectionsWithoutChild } from '~/shared/api/medicalSystem/patient';
+import { medicalSystemApi } from '~/shared/api';
 import { sharedConfigTypes } from '~/shared/config';
+
+const { getCard, getInspectionsWithoutChild } = medicalSystemApi.patient;
 
 type State = {
     id: string | null;
     data: sharedConfigTypes.Patient | null;
+    isDeath: boolean | undefined;
     isLoading: boolean;
     inspectionsWithoutChild: sharedConfigTypes.InspectionWithoutChild[];
 };
@@ -14,6 +16,7 @@ type State = {
 const initialState: State = {
     id: null,
     data: null,
+    isDeath: undefined,
     isLoading: false,
     inspectionsWithoutChild: [],
 };
@@ -31,10 +34,11 @@ const patientSlice = createSlice({
         removePatient(state) {
             state.id = null;
             state.data = null;
+            state.isDeath = undefined;
             state.inspectionsWithoutChild = [];
         },
-        removeInspectionsWithoutChild(state) {
-            state.inspectionsWithoutChild = [];
+        setIsDeath(state, action) {
+            state.isDeath = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -45,6 +49,11 @@ const patientSlice = createSlice({
             .addCase(getCard.fulfilled, (state, action) => {
                 state.id = action.payload.id;
                 state.data = action.payload;
+                state.isLoading = false;
+            })
+            .addCase(getCard.rejected, (state) => {
+                state.id = null;
+                state.data = null;
                 state.isLoading = false;
             });
 
@@ -59,5 +68,6 @@ const patientSlice = createSlice({
     },
 });
 
-export const { setId, setData, removePatient } = patientSlice.actions;
+export const { setId, setData, setIsDeath, removePatient } =
+    patientSlice.actions;
 export const patientReducer = patientSlice.reducer;
