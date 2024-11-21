@@ -1,10 +1,15 @@
-import React from 'react';
+import * as Sentry from '@sentry/react';
+import React, { useEffect, useState } from 'react';
 
-import { Comment } from '~/features/commenting/ui/Comment';
-import { getOne } from '~/shared/api/medicalSystem/consultation';
+import { commentingFeature } from '~/features';
+import { medicalSystemApi } from '~/shared/api';
 import { sharedConfigTypes } from '~/shared/config';
 import { useData } from '~/shared/hooks/useData';
-import { Loading, Wrapper } from '~/shared/ui/components';
+import { sharedUiComponents } from '~/shared/ui';
+
+const { Comment } = commentingFeature.ui;
+const { getOne } = medicalSystemApi.consultation;
+const { Loading, Wrapper } = sharedUiComponents;
 
 type Props = sharedConfigTypes.Consultations[0];
 
@@ -13,6 +18,32 @@ export const Consultation = ({ id, speciality, rootComment }: Props) => {
         sharedConfigTypes.ConsultationFull,
         string
     >(getOne, id);
+    const [comments, setComments] = useState<sharedConfigTypes.Comment[]>(
+        data?.comments || [],
+    );
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getOne(id);
+
+                if (
+                    JSON.stringify(response.data.comments) !==
+                    JSON.stringify(comments)
+                ) {
+                    setComments(response.data.comments);
+                }
+            } catch (error) {
+                Sentry.captureException(error);
+            }
+        };
+
+        const intervalId = setInterval(fetchData, 2000);
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [comments, id]);
 
     if (isLoading) {
         return <Loading />;
@@ -31,7 +62,11 @@ export const Consultation = ({ id, speciality, rootComment }: Props) => {
             {data && (
                 <div className="mt-3 w-fit max-w-full">
                     <p className="text-md font-semibold">Комментарии</p>
-                    <Comment {...data.comments[0]} comments={data.comments} />
+                    <Comment
+                        {...comments[0]}
+                        consultationId={id}
+                        comments={comments}
+                    />
                 </div>
             )}
         </Wrapper>

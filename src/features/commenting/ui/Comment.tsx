@@ -1,15 +1,18 @@
 import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { medicalSystemApi } from '~/shared/api';
 import { sharedConfigTypes } from '~/shared/config';
 import { parseDate } from '~/shared/lib';
 import { userSlice } from '~/shared/store';
 import { Button, Textarea } from '~/shared/ui/components';
 
 const userSelectors = userSlice.selectors;
+const { postNewComment, putEditedComment } = medicalSystemApi.consultation;
 
 type Props = sharedConfigTypes.Comment & {
     comments: sharedConfigTypes.Comment[];
+    consultationId: string;
 };
 
 export const Comment = ({
@@ -19,13 +22,13 @@ export const Comment = ({
     authorId,
     createTime,
     modifiedDate,
+    consultationId,
     comments,
 }: Props) => {
     const user = useSelector(userSelectors.user);
     const [childIsOpen, setChildIsOpen] = useState(false);
     const [inputIsOpen, setInputIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-
     const editRef = useRef<HTMLTextAreaElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const childComments = comments.filter((comment) => comment.parentId === id);
@@ -49,6 +52,46 @@ export const Comment = ({
         }, 0);
     };
 
+    const onSendClick = async () => {
+        if (!inputRef.current) {
+            return;
+        }
+
+        const newComment = inputRef.current.value.trim();
+
+        if (newComment) {
+            try {
+                await postNewComment({
+                    id: consultationId,
+                    parentId: id,
+                    content: newComment,
+                });
+                setInputIsOpen(false);
+                inputRef.current.value = '';
+            } catch (error) {
+                throw new Error('Ошибка при отправке сообщения');
+            }
+        }
+    };
+
+    const onSaveClick = async () => {
+        if (!editRef.current) {
+            return;
+        }
+
+        const editedComment = editRef.current.value.trim();
+
+        if (editedComment) {
+            try {
+                await putEditedComment({ id, content: editedComment });
+                setIsEditing(false);
+                editRef.current.value = '';
+            } catch (error) {
+                throw new Error('Ошибка при отправке сообщения');
+            }
+        }
+    };
+
     return (
         <div className="h-fit w-full flex flex-col ps-5">
             <div className="flex flex-col gap-1 border-b-2 border-gray-300 pb-1 mb-2">
@@ -58,10 +101,13 @@ export const Comment = ({
                         {authorId === user?.id ? '(Вы)' : ''}
                     </span>
                 </p>
+
                 {!isEditing ? (
                     <p className="ms-2">
                         {content}
-                        <span>{modifiedDate !== createTime ?? 'ред'}</span>
+                        <span className="text-primary-superLightGray text-sm p-1">
+                            {modifiedDate !== createTime ? '(ред)' : ''}
+                        </span>
                     </p>
                 ) : (
                     <div className="flex flex-row items-center gap-3">
@@ -75,13 +121,14 @@ export const Comment = ({
                             textSize="md"
                         />
                         <Button
-                            text="Сохранить"
+                            label="Сохранить"
                             className="!w-fit py-1"
                             bgColor="primary-orange"
                             textSize="md"
+                            onClick={onSaveClick}
                         />
                         <Button
-                            text="Отмена"
+                            label="Отмена"
                             className="!w-fit py-1"
                             bgColor="primary-gray"
                             textSize="md"
@@ -131,9 +178,10 @@ export const Comment = ({
                             textSize="md"
                         />
                         <Button
-                            text="Оставить комментарий"
+                            label="Оставить комментарий"
                             className="!w-fit py-1"
                             textSize="md"
+                            onClick={onSendClick}
                         />
                     </div>
                 )}
@@ -144,6 +192,7 @@ export const Comment = ({
                     {childComments.map((comment) => (
                         <Comment
                             key={comment.id}
+                            consultationId={consultationId}
                             comments={comments}
                             {...comment}
                         />
