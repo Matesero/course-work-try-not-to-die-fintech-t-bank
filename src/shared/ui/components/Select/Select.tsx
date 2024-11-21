@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, forwardRef } from 'react';
+import React, { ChangeEvent, useState, forwardRef, useEffect } from 'react';
 import Select from 'react-tailwindcss-select';
 import { SelectValue } from 'react-tailwindcss-select/dist/components/type';
 
@@ -43,11 +43,15 @@ type Props = {
     disabled?: boolean;
     classNames?: string;
     error?: string;
-    onChange?: (value: string) => void;
+    onChange?: (
+        e: ChangeEvent<HTMLInputElement> | Option | Option[] | string,
+    ) => void;
     placeholder?: string;
     labelFromCode?: boolean;
     isRequired?: boolean;
     onSearchInputChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+    searchInputPlaceholder?: string;
+    value?: string;
 };
 
 export const CustomSelect = forwardRef<HTMLInputElement | null, Props>(
@@ -67,11 +71,13 @@ export const CustomSelect = forwardRef<HTMLInputElement | null, Props>(
             labelFromCode,
             isRequired,
             onSearchInputChange,
+            searchInputPlaceholder,
+            value,
         }: Props,
         ref,
     ) => {
         const getInitialState = () => {
-            if (isMultiple && Array.isArray(defaultValue)) {
+            if (isMultiple && Array.isArray(defaultValue) && defaultValue) {
                 return options
                     .filter((option) => defaultValue.includes(option.value))
                     .map(
@@ -82,6 +88,10 @@ export const CustomSelect = forwardRef<HTMLInputElement | null, Props>(
                                 labelFromCode,
                             }) || option,
                     );
+            }
+
+            if (value) {
+                return getMatchedOption({ value: value as string, options });
             }
 
             return (
@@ -101,6 +111,12 @@ export const CustomSelect = forwardRef<HTMLInputElement | null, Props>(
             ? selectedValue.map((value) => value.value.toString()).join(';')
             : selectedValue?.value || '';
 
+        useEffect(() => {
+            if (value) {
+                setSelectedValue(getInitialState());
+            }
+        }, [value]);
+
         const handleChange = (newValue: SelectValue) => {
             if (!newValue) {
                 setSelectedValue(null);
@@ -108,7 +124,7 @@ export const CustomSelect = forwardRef<HTMLInputElement | null, Props>(
             }
 
             if (!Array.isArray(newValue) && onChange) {
-                onChange(newValue.value);
+                onChange(newValue);
             }
 
             if (!labelFromCode) {
@@ -116,7 +132,9 @@ export const CustomSelect = forwardRef<HTMLInputElement | null, Props>(
                 return;
             }
 
-            const updateLabelToCode = (value: SelectValue): Option => {
+            const updateLabelToCode = (
+                value: SelectValue,
+            ): Option | SelectValue => {
                 if (!Array.isArray(value) && value) {
                     return (
                         getMatchedOption({
@@ -131,7 +149,9 @@ export const CustomSelect = forwardRef<HTMLInputElement | null, Props>(
 
             if (Array.isArray(newValue)) {
                 const updatedValues = newValue.map(updateLabelToCode);
-                setSelectedValue(updatedValues);
+                if (updatedValues instanceof Option) {
+                    setSelectedValue(updatedValues);
+                }
             } else {
                 const updatedValue = updateLabelToCode(newValue);
                 setSelectedValue(updatedValue);
@@ -165,13 +185,13 @@ export const CustomSelect = forwardRef<HTMLInputElement | null, Props>(
                     isClearable
                     onChange={handleChange}
                     primaryColor={'blue'}
-                    searchInputPlaceholder="Поиск"
+                    searchInputPlaceholder={searchInputPlaceholder || 'Поиск'}
                     noOptionsMessage="Ничего не найдено"
                     onSearchInputChange={onSearchInputChange}
                     classNames={{
                         menuButton: (value) => {
                             const isDisabled = value?.isDisabled;
-                            return `flex flex-row h-12 border-2 px-1 text-xl ${!selectedValue ? 'text-gray-400' : 'text-black'}  items-center ${error ? 'border-red-500' : 'border-primary-gray'} rounded-custom transition-all duration-300 !focus:outline-none !overflow-y-hidden ${isDisabled ? 'bg-primary-gray' : 'bg-white'} hover:border-gray-400 focus:border-primary-gray-500 focus:ring-blue-500/20`;
+                            return `flex cursor-pointer flex-row h-12 border-2 px-1 text-xl ${!selectedValue ? 'text-gray-400' : 'text-black'} items-center ${error ? 'border-red-500' : 'border-primary-gray'} rounded-custom transition-all duration-300 !focus:outline-none !overflow-y-hidden ${isDisabled ? 'bg-primary-gray' : 'bg-white'} hover:border-gray-400 focus:border-primary-gray-500 focus:ring-blue-500/20`;
                         },
                         menu: 'absolute z-10 w-full bg-white shadow-lg border rounded py-1 mt-1.5 text-sm text-gray-700',
                         listItem: (value) => {
@@ -191,3 +211,5 @@ export const CustomSelect = forwardRef<HTMLInputElement | null, Props>(
         );
     },
 );
+
+CustomSelect.displayName = 'CustomSelect';

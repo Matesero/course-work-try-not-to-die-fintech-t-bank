@@ -21,11 +21,30 @@ const getAge = (dateOfBirth: Date): number => {
     const month = today.getMonth() - dateOfBirth.getMonth();
 
     if (month < 0 || (month === 0 && today.getDate() < dateOfBirth.getDate())) {
-        console.log(age - 1);
         return age - 1;
     }
 
     return age;
+};
+
+const isBeforeOrEqualToday = (date: string | undefined): boolean => {
+    if (!date) {
+        return true;
+    }
+    const today = new Date();
+    const inputDate = new Date(date);
+    return inputDate <= today;
+};
+
+const isAfterOrEqualTomorrow = (date: string | undefined): boolean => {
+    if (!date) {
+        return true;
+    }
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    const inputDate = new Date(date);
+    return inputDate >= tomorrow;
 };
 
 export const schema = zod.object({
@@ -47,11 +66,23 @@ export const schema = zod.object({
 
     anamnesis: zod.string().min(1, 'Поле является обязательным').optional(),
 
-    treatment: zod.string().optional(),
+    treatment: zod.string().min(1, 'Поле является обязательным').optional(),
 
-    nextVisitDate: zod.string().optional(),
+    nextVisitDate: zod
+        .string()
+        .min(1, 'Поле является обязательным')
+        .optional()
+        .refine((value) => isAfterOrEqualTomorrow(value), {
+            message: 'Дата следующего осмотра должна быть завтра или позже',
+        }),
 
-    deathDate: zod.string().optional(),
+    deathDate: zod
+        .string()
+        .min(1, 'Поле является обязательным')
+        .optional()
+        .refine((value) => isBeforeOrEqualToday(value), {
+            message: 'Дата смерти должна быть до сегодняшнего дня включительно',
+        }),
 
     previousInspectionId: zod
         .string()

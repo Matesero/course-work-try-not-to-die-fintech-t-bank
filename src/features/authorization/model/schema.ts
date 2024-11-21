@@ -44,6 +44,7 @@ export const schema = zod.object({
     email: zod
         .string()
         .min(1, 'Поле является обязательным')
+        .trim()
         .refine((value) => /^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$/.test(value), {
             message: 'Некорректно набран email',
         })
@@ -89,6 +90,7 @@ export const schema = zod.object({
     name: zod
         .string()
         .min(1, 'Поле является обязательным')
+        .trim()
         .refine((value) => !/[A-Za-z]/.test(value), {
             message: 'ФИО должно состоять только из русских букв',
         })
