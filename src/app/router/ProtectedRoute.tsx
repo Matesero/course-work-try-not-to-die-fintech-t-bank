@@ -3,8 +3,10 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import { medicalSystemApi } from '~/shared/api';
+// eslint-disable-next-line import/order
 import { userSlice, useAppDispatch } from '~/shared/store';
+// eslint-disable-next-line import/order
+import { medicalSystemApi } from '~/shared/api';
 
 const { getProfile, logout } = medicalSystemApi.user;
 const userSelectors = userSlice.selectors;
