@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { sharedConfigTypes } from '~/shared/config';
 import { parseDate } from '~/shared/lib';
+import { patientSlice } from '~/shared/store';
+import { useAppDispatch } from '~/shared/store/store';
+
+const { store } = patientSlice;
 
 export const Patient = ({
     id,
@@ -10,9 +14,12 @@ export const Patient = ({
     birthday,
     gender,
 }: sharedConfigTypes.Patient) => {
+    const appDispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const onClick = () => {
+        appDispatch(store.setId(id));
+        appDispatch(store.setData({ id, name, birthday, gender }));
         navigate(`/patient/${id}`);
     };
 

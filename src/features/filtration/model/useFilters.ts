@@ -6,15 +6,19 @@ import { schema } from './schema';
 import { sharedConfigTypes } from '~/shared/config';
 
 const paramKeys = [
+    'start',
+    'end',
     'name',
     'conclusions',
     'sorting',
     'scheduledVisits',
     'onlyMine',
-    'grouped',
     'icdRoots',
     'size',
+    'grouped',
     'page',
+    'start',
+    'end',
 ];
 
 type Params = sharedConfigTypes.Params;
@@ -67,7 +71,6 @@ export const useFilters = (): FiltersResults => {
             JSON.stringify(data.data) !== JSON.stringify(restParams)
         ) {
             const { data: params } = data;
-            setParams(params);
 
             const urlParams = new URLSearchParams();
 

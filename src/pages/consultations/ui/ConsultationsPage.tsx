@@ -1,25 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { Layout } from '~/app/layout';
-import { consultationEntity } from '~/entities';
+import { inspectionEntity } from '~/entities';
 import { filtrationFeature, paginationFeature } from '~/features';
 import { medicalSystemApi } from '~/shared/api';
-import { sharedConfigRouter, sharedConfigTypes } from '~/shared/config';
+import { sharedConfigTypes } from '~/shared/config';
 import { useData } from '~/shared/hooks/useData';
-import { userSlice } from '~/shared/store';
+import { dictionarySlice, useAppDispatch } from '~/shared/store';
 import { sharedUiComponents } from '~/shared/ui';
 
 const { useFilters } = filtrationFeature.model;
-const { Consultation } = consultationEntity.ui;
+const { Inspection } = inspectionEntity.ui;
 const { ConsultationsFilter } = filtrationFeature.ui;
 const { usePagination } = paginationFeature.model;
 const { Pagination } = paginationFeature.ui;
-const { consultation } = medicalSystemApi;
+const { consultation, dictionary } = medicalSystemApi;
 const { getList } = consultation;
-const { RouteName } = sharedConfigRouter;
-const { selectors } = userSlice;
+const { getIcdRoots } = dictionary;
+const dictionarySelectors = dictionarySlice.selectors;
 const { Loading } = sharedUiComponents;
 
 type ConsultationType = sharedConfigTypes.Consultation;
@@ -28,11 +28,18 @@ type Params = sharedConfigTypes.Params;
 
 export const ConsultationsPage = () => {
     const navigate = useNavigate();
-    const isAuth = useSelector(selectors.isAuth);
+    const icdRoots = useSelector(dictionarySelectors.icdRoots);
+    const appDispatch = useAppDispatch();
 
-    if (!isAuth) {
-        navigate(RouteName.LOGIN_PAGE);
-    }
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!icdRoots.length) {
+                await appDispatch(getIcdRoots());
+            }
+        };
+
+        fetchData();
+    }, [navigate, appDispatch]);
 
     const { params, onSubmit } = useFilters();
     const { data, isLoading } = useData<
@@ -43,10 +50,18 @@ export const ConsultationsPage = () => {
         data?.pagination.count,
     );
 
+    if (!icdRoots.length) {
+        return (
+            <Layout>
+                <Loading />
+            </Layout>
+        );
+    }
+
     return (
         <Layout>
             <div className="absolute top-28 w-11/12 2xl:max-w-screen-2xl">
-                <h1 className="text-5xl font-bold mb-6 pr-3 pl-3">
+                <h1 className="text-5xl font-bold mb-4 pr-3 pl-3">
                     Консультации
                 </h1>
                 <ConsultationsFilter
@@ -58,10 +73,11 @@ export const ConsultationsPage = () => {
                         <Loading />
                     ) : data?.inspections && data?.inspections.length > 0 ? (
                         <div className="gap-3 grid grid-cols-1 lg:grid-cols-2 grid-rows-[0.01px] w-full">
-                            {data?.inspections.map((consultation) => (
-                                <Consultation
-                                    {...consultation}
-                                    key={consultation.id}
+                            {data?.inspections.map((inspection) => (
+                                <Inspection
+                                    {...inspection}
+                                    key={inspection.id}
+                                    isConsultation
                                     isGrouped={!!params?.grouped}
                                 />
                             ))}

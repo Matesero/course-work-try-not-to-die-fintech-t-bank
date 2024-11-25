@@ -1,18 +1,17 @@
-import React, { useEffect, useReducer } from 'react';
+import * as Sentry from '@sentry/react';
+import React, { useReducer } from 'react';
 import type { FormEventHandler } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-import { Action, reducer } from './reducer';
-import { State } from './reducer';
+import { Action, State, reducer } from './reducer';
 import { schema, zod2errors } from './schema';
 
 import { medicalSystemApi } from '~/shared/api';
-import { sharedConfigRouter } from '~/shared/config';
+import { useAppDispatch } from '~/shared/store/store';
 
-const { dictionary, user } = medicalSystemApi;
-const { RouteName } = sharedConfigRouter;
+const { user, patient } = medicalSystemApi;
+const { getProfile, login, putProfile, register } = medicalSystemApi.user;
 
-type Props = 'login' | 'register' | 'profile';
+type Props = 'login' | 'registerUser' | 'profile' | 'registerPatient';
 
 export type FormResult = readonly [
     State,
@@ -24,39 +23,17 @@ export const useForm = (formType: Props): FormResult => {
     const [state, dispatch] = useReducer<React.Reducer<State, Action>>(
         reducer,
         {
-            isEditing: formType !== 'profile',
+            isEditing: false,
             isLoading: true,
             isUpload: false,
-            specialties: [],
         },
     );
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchSpecialties = async () => {
-            try {
-                const { data } = await dictionary.getSpecialties({
-                    page: 1,
-                    size: 18,
-                });
-
-                if (data) {
-                    dispatch({
-                        type: 'finishResponse',
-                        payload: data.specialties,
-                    });
-                }
-            } catch (error) {
-                dispatch({ type: 'errorResponse' });
-            }
-        };
-
-        fetchSpecialties();
-    }, []);
+    const appDispatch = useAppDispatch();
 
     const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
 
+        dispatch({ type: 'errorForm', payload: {} });
         const formData = new FormData(e.currentTarget);
         const data = schema.safeParse(Object.fromEntries(formData));
 
@@ -70,64 +47,103 @@ export const useForm = (formType: Props): FormResult => {
                     phone,
                     name,
                     gender,
-                    specialty,
+                    patientBirthday,
+                    speciality,
                     birthday,
                 } = params;
 
-                // console.error в дальнейшем в уведомление
                 switch (formType) {
                     case 'login':
                         if (email && password) {
-                            await user.login({ email, password });
-                            navigate({ pathname: RouteName.PATIENTS_PAGE });
-                        } else {
-                            console.error('Почты и пароля нет');
+                            const response = await appDispatch(
+                                login({ email, password }),
+                            );
+                            if (login.rejected.match(response)) {
+                                dispatch({
+                                    type: 'errorForm',
+                                    payload: {
+                                        response:
+                                            'Что-то пошло не так, проверьте введенные данные и попробуйте еще раз',
+                                    },
+                                });
+                            }
                         }
                         break;
 
-                    case 'register':
+                    case 'registerUser':
                         if (
                             email &&
                             password &&
                             phone &&
                             name &&
-                            specialty &&
+                            speciality &&
                             birthday &&
-                            gender === ('Male' || 'Female')
+                            (gender === 'Male' || gender === 'Female')
                         ) {
-                            await user.register({
-                                email,
-                                password,
-                                phone,
+                            const response = await appDispatch(
+                                register({
+                                    email,
+                                    password,
+                                    phone,
+                                    name,
+                                    speciality,
+                                    birthday,
+                                    gender,
+                                }),
+                            );
+                            if (register.rejected.match(response)) {
+                                dispatch({
+                                    type: 'errorForm',
+                                    payload: {
+                                        email: 'Введенная почта занята',
+                                    },
+                                });
+                            }
+                        }
+                        break;
+
+                    case 'registerPatient':
+                        if (
+                            name &&
+                            patientBirthday &&
+                            (gender === 'Male' || gender === 'Female')
+                        ) {
+                            await patient.register({
                                 name,
-                                specialty,
-                                birthday,
+                                birthday: patientBirthday,
                                 gender,
                             });
-                            navigate({ pathname: RouteName.PATIENTS_PAGE });
-                        } else {
-                            console.error('Данные введены неверно');
                         }
-
                         break;
+
                     case 'profile':
                         if (
                             email &&
                             phone &&
                             name &&
                             birthday &&
-                            gender === ('Male' || 'Female')
+                            (gender === 'Male' || gender === 'Female')
                         ) {
-                            await user.putProfile({
-                                email,
-                                phone,
-                                name,
-                                birthday,
-                                gender,
-                            });
-                            navigate({ pathname: RouteName.PATIENTS_PAGE });
-                        } else {
-                            console.error('Данные введены неверно');
+                            const response = await appDispatch(
+                                user.putProfile({
+                                    email,
+                                    phone,
+                                    name,
+                                    birthday,
+                                    gender,
+                                }),
+                            );
+                            if (putProfile.rejected.match(response)) {
+                                dispatch({
+                                    type: 'errorForm',
+                                    payload: {
+                                        email: 'Введенная почта занята ',
+                                    },
+                                });
+                                return;
+                            } else {
+                                await appDispatch(getProfile());
+                            }
                         }
                         break;
                     default:
@@ -137,9 +153,16 @@ export const useForm = (formType: Props): FormResult => {
                 dispatch({ type: 'finishUpload' });
             } catch (error) {
                 dispatch({ type: 'errorResponse' });
+                Sentry.captureException(error);
             }
         } else {
             dispatch({ type: 'errorForm', payload: zod2errors(data.error) });
+            Sentry.captureException(
+                new Error(
+                    'Ошибка валидации формы ' +
+                        JSON.stringify(zod2errors(data.error)),
+                ),
+            );
         }
     };
 

@@ -1,6 +1,7 @@
 import { ComponentType, PropsWithChildren } from 'react';
 
 export const RouteName = {
+    WELCOME_PAGE: '/',
     LOGIN_PAGE: '/login',
     REGISTRATION_PAGE: '/registration',
     PROFILE_PAGE: '/profile',
@@ -8,6 +9,9 @@ export const RouteName = {
     PATIENT_PAGE: '/patient/:id',
     CONSULTATIONS_PAGE: '/consultations',
     REPORTS_PAGE: '/reports',
+    CREATE_PAGE: '/inspection/create/:id',
+    INSPECTION_PAGE: '/inspection/:id',
+    NOT_FOUND_PAGE: '*',
 };
 
 export type RouteDescription = {

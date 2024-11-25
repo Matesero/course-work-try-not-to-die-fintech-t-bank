@@ -1,27 +1,73 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { User } from '~/shared/api/medicalSystem/models';
+import { medicalSystemApi } from '~/shared/api';
+import { sharedConfigTypes } from '~/shared/config';
+
+const { getCard, getInspectionsWithoutChild } = medicalSystemApi.patient;
 
 type State = {
-    user: User | null;
+    id: string | null;
+    data: sharedConfigTypes.Patient | null;
+    isDeath: boolean | undefined;
+    isLoading: boolean;
+    inspectionsWithoutChild: sharedConfigTypes.InspectionWithoutChild[];
 };
 
 const initialState: State = {
-    user: null,
+    id: null,
+    data: null,
+    isDeath: undefined,
+    isLoading: false,
+    inspectionsWithoutChild: [],
 };
 
-const userSlice = createSlice({
-    name: 'user',
+const patientSlice = createSlice({
+    name: 'patient',
     initialState,
     reducers: {
-        setUser(state, action) {
-            state.user = action.payload;
+        setId(state, action) {
+            state.id = action.payload;
         },
-        removeUser(state) {
-            state.user = null;
+        setData(state, action) {
+            state.data = action.payload;
         },
+        removePatient(state) {
+            state.id = null;
+            state.data = null;
+            state.isDeath = undefined;
+            state.inspectionsWithoutChild = [];
+        },
+        setIsDeath(state, action) {
+            state.isDeath = action.payload;
+        },
+    },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getCard.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getCard.fulfilled, (state, action) => {
+                state.id = action.payload.id;
+                state.data = action.payload;
+                state.isLoading = false;
+            })
+            .addCase(getCard.rejected, (state) => {
+                state.id = null;
+                state.data = null;
+                state.isLoading = false;
+            });
+
+        builder
+            .addCase(getInspectionsWithoutChild.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getInspectionsWithoutChild.fulfilled, (state, action) => {
+                state.inspectionsWithoutChild = action.payload;
+                state.isLoading = false;
+            });
     },
 });
 
-export const { setUser, removeUser } = userSlice.actions;
-export const userReducer = userSlice.reducer;
+export const { setId, setData, setIsDeath, removePatient } =
+    patientSlice.actions;
+export const patientReducer = patientSlice.reducer;
