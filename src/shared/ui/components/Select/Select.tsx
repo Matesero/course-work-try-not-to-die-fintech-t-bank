@@ -149,9 +149,7 @@ export const CustomSelect = forwardRef<HTMLInputElement | null, Props>(
 
             if (Array.isArray(newValue)) {
                 const updatedValues = newValue.map(updateLabelToCode);
-                if (updatedValues instanceof Option) {
-                    setSelectedValue(updatedValues);
-                }
+                setSelectedValue(updatedValues as Option[]);
             } else {
                 const updatedValue = updateLabelToCode(newValue);
                 setSelectedValue(updatedValue);
